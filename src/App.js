@@ -24,7 +24,8 @@ function App() {
 		<div>
 			<span>{item.objectId} </span>
 			<span>{item.title}</span>
-			<Notes/>
+			
+			<MeetingItem/>
 		</div>
 		);
 	})}
@@ -33,12 +34,43 @@ function App() {
   );
 }
 
-class Notes extends Component{
+class MeetingItem extends Component{
+	
+	constructor(props){
+		super(props);
+		this.edit=this.edit.bind(this);
+	}
 	
 	render(){
 		return (
 			<div>
-				<p>Type before/after</p>
+				<button onClick={()=>this.edit()} type="button"	>Edit</button>
+				<span>Meeting Item</span>
+				<Notes/>
+				<Notes/>
+				<Notes/>
+			</div>
+		)
+	}
+	
+	edit(){
+		alert("fdSA");
+	}
+}
+
+class Notes extends Component{
+	
+	constructor(props){
+		super(props);
+		this.state={
+			title:'ddd'
+		}
+	}
+	
+	render(){
+		return (
+			<div>
+				<p>{this.state.title}</p>
 				<p><input type="text"></input></p>
 			</div>
 		)
