@@ -44,11 +44,12 @@ class MeetingItem extends Component{
 	render(){
 		return (
 			<div>
-				<button onClick={()=>this.edit()} type="button"	>Edit</button>
+				<butitleon onClick={()=>this.edit()} type="butitleon"	>Edit</butitleon>
 				<span>Meeting Item</span>
 				<Notes/>
 				<Notes/>
 				<Notes/>
+				<NameForm/>
 			</div>
 		)
 	}
@@ -63,18 +64,57 @@ class Notes extends Component{
 	constructor(props){
 		super(props);
 		this.state={
-			title:'ddd'
-		}
+			title:'',
+		};
+		console.log("constructor called");
+		this.titlehanged=this.titlehanged.bind(this);
 	}
 	
 	render(){
 		return (
 			<div>
 				<p>{this.state.title}</p>
-				<p><input type="text"></input></p>
+				<p><input type="text" value={this.state.title} onChange={this.titlehanged}></input></p>
 			</div>
 		)
 	}
+
+	titlehanged(event){
+		this.setState({title:event.target.value});
+		console.log("title changed"+event.target.value);
+	}
 }
+
+
+class NameForm extends React.Component {
+	constructor(props) {
+	  super(props);
+	  this.state = {value: ''};
+  
+	  this.handleChange = this.handleChange.bind(this);
+	  this.handleSubmit = this.handleSubmit.bind(this);
+	}
+  
+	handleChange(event) {
+	  this.setState({value: event.target.value});
+	}
+  
+	handleSubmit(event) {
+	  alert('Podano następujące imię: ' + this.state.value);
+	  event.preventDefault();
+	}
+  
+	render() {
+	  return (
+		<form onSubmit={this.handleSubmit}>
+		  <label>
+			Imię:
+			<input type="text" value={this.state.value} onChange={this.handleChange} />
+		  </label>
+		  <input type="submit" value="Wyślij" />
+		</form>
+	  );
+	}
+  }
 
 export default App;
