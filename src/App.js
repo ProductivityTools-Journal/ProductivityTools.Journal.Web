@@ -44,7 +44,7 @@ class MeetingItem extends Component{
 	render(){
 		return (
 			<div>
-				<butitleon onClick={()=>this.edit()} type="butitleon"	>Edit</butitleon>
+				<button onClick={()=>this.edit()} type="button"	>Edit</button>
 				<span>Meeting Item</span>
 				<Notes/>
 				<Notes/>
@@ -67,19 +67,19 @@ class Notes extends Component{
 			title:'',
 		};
 		console.log("constructor called");
-		this.titlehanged=this.titlehanged.bind(this);
+		this.titlechanged=this.titlechanged.bind(this);
 	}
 	
 	render(){
 		return (
 			<div>
 				<p>{this.state.title}</p>
-				<p><input type="text" value={this.state.title} onChange={this.titlehanged}></input></p>
+				<p><input type="text" value={this.state.title} onChange={this.titlechanged}></input></p>
 			</div>
 		)
 	}
 
-	titlehanged(event){
+	titlechanged(event){
 		this.setState({title:event.target.value});
 		console.log("title changed"+event.target.value);
 	}
