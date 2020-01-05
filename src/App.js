@@ -38,7 +38,11 @@ class MeetingItem extends Component{
 	
 	constructor(props){
 		super(props);
+		this.state={
+			notes:'init'
+		}
 		this.edit=this.edit.bind(this);
+		this.onNotesChanged=this.onNotesChanged.bind(this);
 	}
 	
 	render(){
@@ -46,12 +50,17 @@ class MeetingItem extends Component{
 			<div>
 				<button onClick={()=>this.edit()} type="button"	>Edit</button>
 				<span>Meeting Item</span>
-				<Notes title='Before notes'/>
+				<Notes title='Before notes' notes={this.state.notes} onNotesChanged={this.onNotesChanged}/>
 				<Notes title='During notes'/>
 				<Notes title='After notes'/>
 				<NameForm/>
 			</div>
 		)
+	}
+
+	onNotesChanged(event){
+		this.setState({notes:event.target.value});
+		console.log(event.target.value);
 	}
 	
 	edit(){
@@ -63,27 +72,18 @@ class Notes extends Component{
 	
 	constructor(props){
 		super(props);
-		this.state={
-			notes:'',
-		};
 		console.log("constructor called");
-		this.noteschanged=this.noteschanged.bind(this);
 	}
 	
 	render(){
-		const {title}=this.props;
+		const {title,notes,onNotesChanged}=this.props;
 		return (
 			<div>
 				<p>{title}</p>
-				<p><input type="text" value={this.state.notes} onChange={this.noteschanged}></input></p>
-				<p>{this.state.notes}</p>
+				<p><input type="text" value={notes} onChange={onNotesChanged}></input></p>
+				<p>{notes}</p>
 			</div>
 		)
-	}
-
-	noteschanged(event){
-		this.setState({notes:event.target.value});
-		console.log("title changed"+event.target.value);
 	}
 }
 
