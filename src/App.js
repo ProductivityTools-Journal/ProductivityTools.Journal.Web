@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import './App.css';
 
-
+const PATH_BASE='https://localhost:44366/api/';
+const PATH_MEETINGS_CONTROLER='Meetings';
+const PATH_MEETINGS_ACTION='List';
 
 const list=[
 	{
@@ -16,23 +18,50 @@ const list=[
 	}
 ]
 
-function App() {
-  return (
-    <div className="App">
-	{list.map(function(item){
-		return (
-		<div>
-			<span>{item.objectId} </span>
-			<span>{item.title}</span>
-			
-			<MeetingItem/>
-		</div>
-		);
-	})}
+class App extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state={
+			meetings:[]
+		}
+
+		this.setMeetings=this.setMeetings.bind(this);
+	}	
+
+  	render (){
+	  	return(
+    		<div className="App">
+			{this.state.meetings.map(function(item){
+				return (
+				<div>
+					<span>{item.objectId} </span>
+					<span>{item.subject}</span>
+				
+					<MeetingItem/>
+				</div>
+				);
+			})}
 	
-    </div>
-  );
+   			 </div>
+ 		);
+	}
+
+	setMeetings(meetings){
+		console.log(meetings)
+		this.setState({meetings});
+	}
+
+	componentDidMount(){
+		console.log("Post");
+		fetch(`${PATH_BASE}${PATH_MEETINGS_CONTROLER}/${PATH_MEETINGS_ACTION}`,{method:'POST'})
+		.then(respone=>respone.json())
+		.then(result=>this.setMeetings(result))
+		.catch(error=>error);
+		console.log("Finish post");
+	}
 }
+
 
 class MeetingItem extends Component{
 	
