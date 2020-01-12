@@ -30,7 +30,14 @@ class App extends Component {
 	}	
 
   	render (){
+		
+		const{meetings}=this.state;
+		//because render is before compnentDidMount
+		if(!meetings){return null}
+		
 	  	return(
+		
+			
     		<div className="App">
 			{this.state.meetings.map(function(item){
 				return (
@@ -38,7 +45,7 @@ class App extends Component {
 					<span>{item.objectId} </span>
 					<span>{item.subject}</span>
 				
-					<MeetingItem/>
+					<MeetingItem meeting={item}/>
 				</div>
 				);
 			})}
@@ -80,7 +87,7 @@ class MeetingItem extends Component{
 				<button onClick={()=>this.edit()} type="button"	>Edit</button>
 				<span>Meeting Item</span>
 				<Notes title='Before notes' notes={this.state.notes} onNotesChanged={this.onNotesChanged}/>
-				<Notes title='During notes'/>
+				<Notes title='During notes' notes={this.props.meeting.subject}/>
 				<Notes title='After notes'/>
 				<NameForm/>
 			</div>
