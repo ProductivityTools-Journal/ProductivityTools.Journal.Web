@@ -11,10 +11,13 @@ class Notes extends Component{
 		const {title,notes,onNotesChanged,readonly}=this.props;
 		return (
 			<div>
-				<p>{title}</p>
 				{readonly
-				? <p>{notes}</p>
-				: <input  value={notes} onChange={onNotesChanged}></input>
+				? <fieldset class='NotesReadOnly'>
+					<legend>{title}</legend>
+					{notes}
+					</fieldset>
+				
+				: <input value={notes} onChange={onNotesChanged}></input>
 	}
 			</div>
 		)
