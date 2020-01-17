@@ -8,12 +8,14 @@ class Notes extends Component{
 	}
 	
 	render(){
-		const {title,notes,onNotesChanged}=this.props;
+		const {title,notes,onNotesChanged,readonly}=this.props;
 		return (
 			<div>
 				<p>{title}</p>
-				<p><input type="hidden" value={notes} onChange={onNotesChanged}></input></p>
-				<p>{notes}</p>
+				{readonly
+				? <p>{notes}</p>
+				: <input  value={notes} onChange={onNotesChanged}></input>
+	}
 			</div>
 		)
 	}

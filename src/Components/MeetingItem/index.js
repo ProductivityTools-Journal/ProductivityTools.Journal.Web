@@ -6,7 +6,8 @@ class MeetingItem extends Component{
 	constructor(props){
 		super(props);
 		this.state={
-			notes:'init'
+			notes:'init',
+			readonly:1
 		}
 		this.edit=this.edit.bind(this);
 		this.onNotesChanged=this.onNotesChanged.bind(this);
@@ -17,9 +18,9 @@ class MeetingItem extends Component{
 			<div>
 				<button onClick={()=>this.edit()} type="button"	>Edit</button>
 				<span>Meeting Item</span>
-				<Notes title='Before notes' notes={this.props.meeting.beforeNotes} onNotesChanged={this.onNotesChanged}/>
-				<Notes title='During notes' notes={this.props.meeting.duringNotes}/>
-				<Notes title='After notes' notes={this.props.meeting.afterNotes}/>
+				<Notes title='Before notes' notes={this.props.meeting.beforeNotes} onNotesChanged={this.onNotesChanged} readonly={this.state.readonly} />
+				<Notes title='During notes' notes={this.props.meeting.duringNotes} readonly={this.state.readonly}/>
+				<Notes title='After notes' notes={this.props.meeting.afterNotes} readonly={this.state.readonly}/>
 			</div>
 		)
 	}
@@ -30,7 +31,7 @@ class MeetingItem extends Component{
 	}
 	
 	edit(){
-		alert("fdSA");
+		this.setState({readonly:0});
 	}
 }
 
