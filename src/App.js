@@ -1,22 +1,13 @@
 import React, {Component} from 'react';
 import './App.css';
+import Button from '@material-ui/core/Button';
 
-const PATH_BASE='https://localhost:44366/api/';
+
+//const PATH_BASE='http://productivitytools.tech:8081/api/	';
+const PATH_BASE='https://localhost:5001/api/';
 const PATH_MEETINGS_CONTROLER='Meetings';
 const PATH_MEETINGS_ACTION='List';
 
-const list=[
-	{
-		title:'React',
-		author:'React author',
-		objectId:1
-	},
-	{
-		title:'Node',
-		author:'Node author',
-		objectId:2
-	}
-]
 
 class App extends Component {
 
@@ -35,14 +26,14 @@ class App extends Component {
 		//because render is before compnentDidMount
 		if(!meetings){return null}
 		
-	  	return(
-		
-			
+	  	return(		
     		<div className="App">
 			{this.state.meetings.map(function(item){
+				
 				return (
-				<div>
-					<span>{item.objectId} </span>
+				<div key={item.meetingId}>
+					<span>CXX</span>
+					<span>{item.meetingId} </span>
 					<span>{item.subject}</span>
 				
 					<MeetingItem meeting={item}/>
@@ -60,8 +51,17 @@ class App extends Component {
 	}
 
 	componentDidMount(){
+
+
 		console.log("Post");
-		fetch(`${PATH_BASE}${PATH_MEETINGS_CONTROLER}/${PATH_MEETINGS_ACTION}`,{method:'POST'})
+		fetch(`${PATH_BASE}${PATH_MEETINGS_CONTROLER}/${PATH_MEETINGS_ACTION}`,{
+			mode: 'cors',
+			crossDomain:true,
+			method:'POST',
+			headers: {'Content-Type':'application/json'},
+			body: JSON.stringify("SS")
+	
+		})
 		.then(respone=>respone.json())
 		.then(result=>this.setMeetings(result))
 		.catch(error=>error);
@@ -78,26 +78,23 @@ class MeetingItem extends Component{
 			notes:'init'
 		}
 		this.edit=this.edit.bind(this);
-		this.onNotesChanged=this.onNotesChanged.bind(this);
+
 	}
 	
 	render(){
 		return (
-			<div>
-				<button onClick={()=>this.edit()} type="button"	>Edit</button>
+			<div key={this.props.meeting.meetingId}>
+				<Button  variant="contained"  color="primary" onClick={()=>this.edit()} >Edit</Button>
 				<span>Meeting Item</span>
-				<Notes title='Before notes' notes={this.state.notes} onNotesChanged={this.onNotesChanged}/>
-				<Notes title='During notes' notes={this.props.meeting.subject}/>
-				<Notes title='After notes'/>
+				<Notes title='Before notes' notes={this.props.meeting.beforeNotes}/>
+				<Notes title='During notes' notes={this.props.meeting.duringnotes} />
+				<Notes title='After notes' notes={this.props.meeting.afterNotes}/>
 				<NameForm/>
 			</div>
 		)
 	}
 
-	onNotesChanged(event){
-		this.setState({notes:event.target.value});
-		console.log(event.target.value);
-	}
+
 	
 	edit(){
 		alert("fdSA");
@@ -108,18 +105,27 @@ class Notes extends Component{
 	
 	constructor(props){
 		super(props);
+		this.state={title:props.title,
+			 notes:props.notes?props.notes:""}
 		console.log("constructor called");
+		this.onNotesChanged=this.onNotesChanged.bind(this);
 	}
 	
 	render(){
-		const {title,notes,onNotesChanged}=this.props;
+		
 		return (
 			<div>
-				<p>{title}</p>
-				<p><input type="text" value={notes} onChange={onNotesChanged}></input></p>
-				<p>{notes}</p>
+				<p>{this.state.title}</p>
+				<p><input type="text" value={this.state.notes} onChange={this.onNotesChanged}/></p>
+				<p>{this.state.notes}</p>
 			</div>
 		)
+	}
+
+	onNotesChanged(event){
+
+		this.setState({notes:event.target.value});
+		console.log(event.target.value);
 	}
 }
 
