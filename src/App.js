@@ -20,8 +20,7 @@ class App extends Component {
 		this.setMeetings=this.setMeetings.bind(this);
 	}	
 
-  	render (){
-		
+  	render (){	
 		const{meetings}=this.state;
 		//because render is before compnentDidMount
 		if(!meetings){return null}
@@ -112,7 +111,12 @@ class Notes extends Component{
 	}
 	
 	render(){
-		
+		if (this.state.notes==="")
+		{
+			return null;
+		}
+		else
+		{
 		return (
 			<div>
 				<p>{this.state.title}</p>
@@ -120,6 +124,7 @@ class Notes extends Component{
 				<p>{this.state.notes}</p>
 			</div>
 		)
+		}
 	}
 
 	onNotesChanged(event){
