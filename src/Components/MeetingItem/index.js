@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Notes from 'Components/Notes';
 import NameForm from 'Components/NameForm';
 import Button from '@material-ui/core/Button';;
+import Box from '@material-ui/core/Box';;
 
 class MeetingItem extends Component{
 	
@@ -16,6 +17,7 @@ class MeetingItem extends Component{
 	
 	render(){
 		return (
+			<Box>
 			<div key={this.props.meeting.meetingId}>
 				<Button  variant="contained"  color="primary" onClick={()=>this.edit()} >Edit</Button>
 				<span>Meeting Item</span>
@@ -24,6 +26,7 @@ class MeetingItem extends Component{
 				<Notes title='After notes' notes={this.props.meeting.afterNotes}/>
 				<NameForm/>
 			</div>
+			</Box>
 		)
 	}
 	edit(){
