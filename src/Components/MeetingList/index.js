@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import MeetingItem from 'Components/MeetingItem'
-import EditMeeting from 'Components/EditMeeting'
+import MeetingItem from 'Components/MeetingItem';
+import * as Consts from 'Consts';
 
 
-//const PATH_BASE='http://productivitytools.tech:8081/api/	';
-const PATH_BASE = 'https://localhost:5001/api/';
-const PATH_MEETINGS_CONTROLER = 'Meetings';
-const PATH_MEETINGS_ACTION = 'List';
 
 class MeetingList extends Component {
 
@@ -50,15 +46,13 @@ class MeetingList extends Component {
     }
 
     componentDidMount() {
-
-
         console.log("Post");
-        fetch(`${PATH_BASE}${PATH_MEETINGS_CONTROLER}/${PATH_MEETINGS_ACTION}`, {
+        fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, {
             mode: 'cors',
             crossDomain: true,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify("SS")
+            body: JSON.stringify("xxx")
 
         })
             .then(respone => respone.json())
