@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import Notes from 'Components/Notes';
 import NameForm from 'Components/NameForm';
-import Button from '@material-ui/core/Button';;
-import Box from '@material-ui/core/Box';;
+import Button from '@material-ui/core/Button';
 
 class MeetingItem extends Component{
 	
@@ -17,16 +16,16 @@ class MeetingItem extends Component{
 	
 	render(){
 		return (
-			<Box>
-			<div key={this.props.meeting.meetingId}>
-				<Button  variant="contained"  color="primary" onClick={()=>this.edit()} >Edit</Button>
-				<span>Meeting Item</span>
+	
+			<fieldset key={this.props.meeting.meetingId} style={{border: 'dotted',borderRadius:'10px', borderWidth:'1px',margin:'10px'}}>
+				<legend>{this.props.meeting.Subject}</legend>
+				<Button  variant="contained"  color="primary" onClick={()=>this.edit()}>Edit</Button>
 				<Notes title='Before notes' notes={this.props.meeting.beforeNotes}/>
 				<Notes title='During notes' notes={this.props.meeting.duringnotes} />
 				<Notes title='After notes' notes={this.props.meeting.afterNotes}/>
 				<NameForm/>
-			</div>
-			</Box>
+			</fieldset>
+		
 		)
 	}
 	edit(){
