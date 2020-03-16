@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Notes from 'Components/Notes'
+import Button from '@material-ui/core/Button'
 import * as Consts from 'Consts';
 
 class EditMeeting extends Component {
@@ -16,6 +17,7 @@ class EditMeeting extends Component {
                 <Notes title='Before notes' notes={this.state.meeting.beforeNotes} />
                 <Notes title='During notes' notes={this.state.meeting.duringNotes} />
                 <Notes title='After notes' notes={this.state.meeting.afterNotes} />
+                <Button variant="contained" color="primary">Save</Button>
             </div>
         )
     }

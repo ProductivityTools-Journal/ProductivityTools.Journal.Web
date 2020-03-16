@@ -21,7 +21,6 @@ class MeetingList extends Component {
         if (!meetings) { return null }
 
         return (
-
             <div className="App">
                 {this.state.meetings.map(function (item) {
 
