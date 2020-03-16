@@ -18,8 +18,8 @@ class EditMeeting extends Component {
             <div>
                 <p>Title: {this.state.meeting.subject}</p>
                 <Notes title='Before notes' name='beforeNotes' notes={this.state.meeting.beforeNotes} updateState={this.updateState} />
-                <Notes title='During notes' notes={this.state.meeting.duringNotes} />
-                <Notes title='After notes' notes={this.state.meeting.afterNotes} />
+                <Notes title='During notes'  name='duringNotes' notes={this.state.meeting.duringNotes} updateState={this.updateState}/>
+                <Notes title='After notes'  name='afterNotes' notes={this.state.meeting.afterNotes} updateState={this.updateState}/>
                 <Button variant="contained" color="primary" onClick={()=>this.save()}>Save</Button>
             </div>
         )
@@ -52,10 +52,6 @@ class EditMeeting extends Component {
        
         const value=event.target.value;
         const name=event.target.name
-        this.setState({
-            ...this.state,
-            [name]:value
-        })
 
         const x={...this.state.meeting,[name]:value}
         this.setState({...this.state,meeting:x})
