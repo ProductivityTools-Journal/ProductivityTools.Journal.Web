@@ -6,7 +6,8 @@ class Notes extends Component {
 		super(props);
 		this.state = {
 			title: props.title,
-			notes: props.notes ? props.notes : ""
+			notes: props.notes ? props.notes : "",
+			updateState: props.updateState
 		}
 		console.log("constructor called");
 		this.onNotesChanged = this.onNotesChanged.bind(this);
@@ -16,7 +17,7 @@ class Notes extends Component {
 		return (
 			<div>
 				<p>{this.state.title}</p>
-				<p><input type="text" value={this.state.notes} onChange={this.onNotesChanged} /></p>
+				<p><input type="text" name={this.props.name} value={this.state.notes} onChange={this.onNotesChanged} /></p>
 				<p>{this.state.notes}</p>
 			</div>
 		)
@@ -24,7 +25,7 @@ class Notes extends Component {
 
 
 	onNotesChanged(event) {
-
+		this.state.updateState(event);
 		this.setState({ notes: event.target.value });
 		console.log(event.target.value);
 	}
