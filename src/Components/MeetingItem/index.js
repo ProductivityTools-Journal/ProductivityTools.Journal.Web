@@ -23,8 +23,8 @@ class MeetingItem extends Component{
 	
 			<fieldset key={this.props.meeting.meetingId} style={{border: 'dotted',borderRadius:'10px', borderWidth:'1px',margin:'10px'}}>
 				<legend>{this.props.meeting.Subject}</legend>
-				<Link to="Edit">	
-					<Button  variant="contained"  color="primary">Edit</Button>
+				<Link to={`Edit/${this.props.meeting.meetingId}`}>	
+					<Button  variant="contained" color="primary">Edit</Button>
 				</Link>
 				{/*<Button  variant="contained"  color="primary" onClick={()=>this.edit()}>Edit</Button>*/}
 				<AutoHideNotes title='Before notes' notes={this.props.meeting.beforeNotes}/>

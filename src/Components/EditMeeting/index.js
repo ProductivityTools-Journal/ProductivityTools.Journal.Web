@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import Notes from 'Components/Notes'
 import Button from '@material-ui/core/Button'
 import * as Consts from 'Consts';
+import {useParams} from 'react-router-dom'
 
 class EditMeeting extends Component {
 
     constructor(props) {
         super(props);
-
-        this.save=this.save.bind(this);
+    
         this.updateState=this.updateState.bind(this);
     }
 
@@ -31,16 +31,25 @@ class EditMeeting extends Component {
     }
 
     componentDidMount() {
+        let id=this.props.match.params.Id;
+        console.log(id);
+        this.fetchMeeting(id);
+    }
+
+    fetchMeeting=(id)=>{
         console.log("Fetch one meeting from server");
+
+        const data={
+            Id: parseInt(id),
+            Secret: 'xxx'
+        }
+        
         fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_ACTION}`, {
             mode: 'cors',
             crossDomain: true,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                Id: 2,
-                Secret: 'xxx'
-            })
+            body: JSON.stringify(data)
         })
             .then(respone => respone.json())
             .then(result => this.setMeeting(result))
@@ -48,18 +57,32 @@ class EditMeeting extends Component {
         console.log("Finish post");
     }
 
-    updateState(event){
-       
+    saveMeeting=()=>{
+        debugger;
+        console.log("Save meeting");
+        fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, {
+            mode: 'cors',
+            crossDomain: true,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(this.state.meeting)
+        })
+            .then(respone => respone.json())
+            .then(result => this.setMeeting(result))
+            .catch(error => error);
+        console.log("Finish post");
+    }
+
+    updateState(event){     
         const value=event.target.value;
         const name=event.target.name
 
         const x={...this.state.meeting,[name]:value}
         this.setState({...this.state,meeting:x})
-        debugger;
     }
 
-    save() {
-        debugger;
+    save=()=> {
+        this.saveMeeting();
         alert("fdsa");
     }
 }

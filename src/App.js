@@ -20,8 +20,11 @@ class App extends Component {
 					<Link to="Edit">New</Link>
 				</div>
 				<Switch>
-					<Route path="/Edit">
-						<EditMeeting/>
+					<Route path="/Edit/:Id"
+					render={(props) => (
+						<EditMeeting {...props} key={this.props.Id} />
+					  )}
+					>
 					</Route>
 					<Route path="/">
 						<MeetingList/>
