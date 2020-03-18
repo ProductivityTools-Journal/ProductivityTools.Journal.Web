@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Notes from 'Components/Notes'
+import NotesLabel from 'Components/NotesLabel'
 
 class AutoHideNotes extends Component{
 
@@ -11,7 +11,7 @@ class AutoHideNotes extends Component{
     }
 
     render(){
-        return (this.state.notes!=null && <Notes title={this.state.title} notes={this.state.notes} />)
+        return (this.state.notes!=null && <NotesLabel title={this.state.title} notes={this.state.notes} />)
     }
 }
 export default AutoHideNotes

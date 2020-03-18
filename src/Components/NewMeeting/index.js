@@ -1,16 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Notes from 'Components/Notes'
 import * as Consts from 'Consts';
 import Button from '@material-ui/core/Button'
 
 function NewMeeting() {
 
-    let meeting ={beforeNotes:'',duringNotes:'',afterNotes:''}
+    const [meeting, setMeeting]=useState({beforeNotes:'',duringNotes:'',afterNotes:''});
+    
 
     const updateState=(event) =>{
         const value = event.target.value;
         const name = event.target.name;
-        meeting={...meeting,[name]:value}
+        setMeeting({...meeting,[name]:value})
     }
 
     const save=()=>{
@@ -29,11 +30,10 @@ function NewMeeting() {
         console.log("Finish post");
     }
 
-
-
-
+    debugger;
     return (
         <div>
+            
             <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
             <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
             <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} />

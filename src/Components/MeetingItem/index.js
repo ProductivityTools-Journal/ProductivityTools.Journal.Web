@@ -30,8 +30,6 @@ class MeetingItem extends Component{
 				<AutoHideNotes title='Before notes' notes={this.props.meeting.beforeNotes}/>
 				<AutoHideNotes title='During notes' notes={this.props.meeting.duringnotes} />
 				<AutoHideNotes title='After notes' notes={this.props.meeting.afterNotes}/>
-				
-				<NameForm/>
 			</fieldset>
 		
 		)
