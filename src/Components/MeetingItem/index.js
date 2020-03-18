@@ -19,10 +19,9 @@ class MeetingItem extends Component{
 
 	
 	render(){
-		return (
-	
+		return (	
 			<fieldset key={this.props.meeting.meetingId} style={{border: 'dotted',borderRadius:'10px', borderWidth:'1px',margin:'10px'}}>
-				<legend>{this.props.meeting.Subject}</legend>
+				<legend>[{this.props.meeting.meetingId}]{this.props.meeting.subject}{this.props.meeting.date}</legend>
 				<Link to={`Edit/${this.props.meeting.meetingId}`}>	
 					<Button  variant="contained" color="primary">Edit</Button>
 				</Link>
