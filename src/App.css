@@ -1,4 +1,11 @@
-.App {
-  text-align: center;
+
+fieldset {
+  border: dotted;
+  border-radius: 10px;
+  border-width: 1px;
+  margin: 10px
 }
 
+.notesInput{
+  margin-top: 10px;
+}

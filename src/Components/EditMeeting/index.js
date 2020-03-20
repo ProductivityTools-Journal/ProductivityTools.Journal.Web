@@ -15,13 +15,14 @@ class EditMeeting extends Component {
     render() {
         if (!this.state) { return null }
         return (
-            <div>
+            <fieldset>
                 <p>Title: {this.state.meeting.subject}</p>
+                <Notes title='Subject' name='subject' notes={this.state.meeting.subject} updateState={this.updateState} />
                 <Notes title='Before notes' name='beforeNotes' notes={this.state.meeting.beforeNotes} updateState={this.updateState} />
                 <Notes title='During notes' name='duringNotes' notes={this.state.meeting.duringNotes} updateState={this.updateState} />
                 <Notes title='After notes' name='afterNotes' notes={this.state.meeting.afterNotes} updateState={this.updateState} />
                 <Button variant="contained" color="primary" onClick={() => this.save()}>Save</Button>
-            </div>
+            </fieldset>
         )
     }
 
@@ -36,9 +37,8 @@ class EditMeeting extends Component {
             console.log(id);
             this.fetchMeeting(id);
         }
-        else
-        {
-            this.setState({meeting:{beforeNotes:'',duringNotes:'',afterNotes:''}});
+        else {
+            this.setState({ meeting: { beforeNotes: '', duringNotes: '', afterNotes: '' } });
         }
     }
 
@@ -64,7 +64,6 @@ class EditMeeting extends Component {
     }
 
     saveMeeting = () => {
-        debugger;
         console.log("Save meeting");
         fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, {
             mode: 'cors',

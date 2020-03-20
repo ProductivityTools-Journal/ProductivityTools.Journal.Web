@@ -1,4 +1,4 @@
-//export const PATH_BASE='http://productivitytools.tech:8081/api/	';
+//export const PATH_BASE='http://192.168.1.51:8081/api/	';
 export const PATH_BASE = 'https://localhost:5001/api/';
 export const PATH_MEETINGS_CONTROLER = 'Meetings';
 export const PATH_MEETINGS_ACTION = 'List';

@@ -13,12 +13,17 @@ function NotesLabel(props) {
     const classes = useStyles();
     return (
         <div>
-            <TextField readonly
+            <TextField 
                 label={props.title}
+                value={props.notes}
+                multiline
+                fullWidth
+                variant="outlined" 
+                readOnly
+
                 id="outlined-start-adornment"
                 className={clsx(classes.margin, classes.textField)}
-                value={props.notes}
-                variant="outlined" />
+                />
 
         </div>
     )

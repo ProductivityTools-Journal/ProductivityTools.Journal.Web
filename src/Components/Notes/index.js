@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import TextField from '@material-ui/core/TextField'
+import { withStyles} from '@material-ui/core/styles';
 
 class Notes extends Component {
 
@@ -16,9 +18,22 @@ class Notes extends Component {
 	render() {
 		return (
 			<div>
-				<p>{this.state.title}</p>
-				<p><input type="text" name={this.props.name} value={this.state.notes} onChange={this.onNotesChanged} /></p>
-				<p>{this.state.notes}</p>
+
+				<TextField
+					label={this.state.title}
+					name={this.props.name}
+					value={this.state.notes}
+					onChange={this.onNotesChanged}
+	
+					style={{marginTop: '10px', marginBottom:'10px'}}
+					multiline
+					fullWidth
+					variant="outlined"
+
+				/>
+				
+				{/*<p><input type="text" name={this.props.name} value={this.state.notes} onChange={this.onNotesChanged} /></p>*/}
+				{/*<p>{this.state.notes}</p>*/}
 			</div>
 		)
 	}

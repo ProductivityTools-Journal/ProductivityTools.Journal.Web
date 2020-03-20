@@ -25,13 +25,7 @@ class MeetingList extends Component {
                 {this.state.meetings.map(function (item) {
 
                     return (
-                        <div key={item.meetingId}>
-                            <span>CXX</span>
-                            <span>{item.meetingId} </span>
-                            <span>{item.subject}</span>
-
-                            <MeetingItem meeting={item} />
-                        </div>
+                        <MeetingItem meeting={item} />
                     );
                 })}
 
