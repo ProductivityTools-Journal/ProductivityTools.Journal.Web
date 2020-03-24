@@ -16,7 +16,7 @@ function NewMeeting() {
     }
 
     const save = () => {
-        debugger;
+        
         console.log("Save meeting");
         fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, {
             mode: 'cors',
@@ -31,7 +31,6 @@ function NewMeeting() {
         console.log("Finish post");
     }
 
-    debugger;
     return (
         <div>
             <Notes title='Subject' name='subject' notes={meeting.subject} updateState={updateState} />
