@@ -16,6 +16,17 @@ export default class Auth {
         this.auth0.authorize();
     }
 
+    logout = () => {
+        
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("id_token");
+        localStorage.removeItem("expires_at");
+        this.auth0.logout({
+            clientID:process.env.REACT_APP_AUTH0_CLIENTID,
+            returnTo:process.env.REACT_APP_AUTH0_CALLBACK_LOGOUTRETURN
+        })
+    }
+
     handleAuthentication = () => {
         this.auth0.parseHash((err, authResult) => {
             if (authResult && authResult.accessToken && authResult.idToken) {
@@ -38,7 +49,7 @@ export default class Auth {
     }
 
     isAuthenticated() {
-        
+
         const expiresAt = JSON.parse(localStorage.getItem("expires_at"));
         return new Date().getTime() < expiresAt;
     }

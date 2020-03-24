@@ -17,7 +17,6 @@ import Auth from "./Auth/Auth";
 class App extends Component {
 	constructor(props) {
 		super(props);
-		debugger;
 		this.auth = new Auth(this.props.history);
 	}
 
