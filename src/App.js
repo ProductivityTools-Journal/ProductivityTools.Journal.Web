@@ -32,18 +32,12 @@ class App extends Component {
 					<Route path="/New/">
 						<NewMeeting />
 					</Route>
-					<Route path="/Edit/:Id"
-						render={(props) => (
-							<EditMeeting {...props} key={this.props.Id} />
-						)}
-					>
-					</Route>
-					<Route path="/List">
-						<MeetingList  />
+					<Route path="/Edit/:Id" render={(props) => (<EditMeeting {...props} key={this.props.Id} />)}></Route>
+					<Route path="/List" render={(props => <MeetingList auth={this.auth} {...props} />)}>
 					</Route>
 
 					<Route path="/Callback">
-						<Callback  auth={this.auth} {...this.props}  />
+						<Callback auth={this.auth} {...this.props} />
 					</Route>
 
 

@@ -8,6 +8,7 @@ class MeetingList extends Component {
 
     constructor(props) {
         super(props);
+        debugger;
         this.state = {
             meetings: []
         }
@@ -39,12 +40,16 @@ class MeetingList extends Component {
     }
 
     componentDidMount() {
+        debugger;
         console.log("Post");
         fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, {
             mode: 'cors',
             crossDomain: true,
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.props.auth.getAccessToken()}`
+            },
             body: JSON.stringify("xxx")
 
         })

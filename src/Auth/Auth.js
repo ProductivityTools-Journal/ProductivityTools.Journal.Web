@@ -41,6 +41,7 @@ export default class Auth {
     }
 
     setSession = authResult => {
+        debugger;
         const expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime())
 
         localStorage.setItem("access_token", authResult.accessToken);
@@ -52,5 +53,13 @@ export default class Auth {
 
         const expiresAt = JSON.parse(localStorage.getItem("expires_at"));
         return new Date().getTime() < expiresAt;
+    }
+    
+    getAccessToken=()=>{
+        const accessToken=localStorage.getItem("access_token");
+        if (!accessToken){
+            throw new Error("No access token found");
+        }
+        return accessToken;
     }
 }
