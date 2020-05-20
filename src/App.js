@@ -12,12 +12,11 @@ import EditMeeting from 'Components/EditMeeting';
 import NewMeeting from 'Components/NewMeeting';
 import Home from 'Components/Home';
 import Callback from 'Components/Callback';
-import Auth from "./Auth/Auth";
 
 class App extends Component {
 	constructor(props) {
 		super(props);
-		this.auth = new Auth(this.props.history);
+		this.auth='f';
 	}
 
 	render() {
