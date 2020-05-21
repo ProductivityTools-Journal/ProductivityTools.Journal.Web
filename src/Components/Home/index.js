@@ -9,7 +9,10 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.authService = new AuthService();
-        this.state = { date: null }
+        this.state = {
+            date: null,
+            userAuthenticated: false
+        }
     }
 
     login = () => {
@@ -37,23 +40,31 @@ class Home extends Component {
             .then(result => this.loadDate(result))
             .catch(error => error);
         console.log("Finish post");
+
+
+        this.authService.getUser().then(user => {
+            debugger;
+            if (user == null) {
+                this.setState({ userAuthenticated: false });
+            }
+           else {
+               this.setState({ userAuthenticated: true });
+            }
+           console.log(user);
+       })
     }
 
 
     render() {
         //const { isAuthenticated, login, logout } = this.props.auth;
         let mt = moment(this.state.date);
-        let dtFormated = mt.format('YYYY.MM.DD hh:mm:ss')
+        let dtFormated = mt.format('YYYY.MM.DD hh:mm:ss')       
         return (
-
             <div>
-
                 <p>Welcome on home page of ProductivityTools.Meeting</p>
                 <p>{this.state.date ? `Server responded with date ${dtFormated}` : "Server hasn't responded yet"}</p>
-                {/*   {isAuthenticated() ? (<Link to="/List">List</Link>) : <p></p>} */}
-                {/*  <button onClick={isAuthenticated() ? logout : login}>{isAuthenticated() ? "Log out" : "Log in"}</button> */}
-                <button onClick={this.login}>Login2</button>
-                <button onClick={this.logout}>Logout2</button>
+                {this.state.userAuthenticated ? (<Link to="/List">List</Link>) : <p></p>}
+                <button onClick={this.state.userAuthenticated  ? this.logout : this.login}>{this.state.userAuthenticated? "Log out" : "Log in"}</button> 
             </div >
         )
     }

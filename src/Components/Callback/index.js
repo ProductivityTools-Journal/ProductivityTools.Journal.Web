@@ -1,25 +1,25 @@
-import React, { useEffect,useState } from 'react';
-import { useLocation } from 'react-router-dom';
+// import React, { useEffect,useState } from 'react';
+// import { useLocation } from 'react-router-dom';
 
-export const Callback = ({auth}) => {
+// export const Callback = ({auth}) => {
 
-    const location = useLocation();
+//     const location = useLocation();
     
 
 
-    useEffect(() => {
-        if (/access_token|id_token|error/.test(location.hash)) {
-            auth.handleAuthentication();
-        }
-        else {
-            throw new Error("Invalid callback URL.")
-        }
-    })
+//     useEffect(() => {
+//         if (/access_token|id_token|error/.test(location.hash)) {
+//             auth.handleAuthentication();
+//         }
+//         else {
+//             throw new Error("Invalid callback URL.")
+//         }
+//     })
 
 
 
-    return (<h1>loading...</h1>)
+//     return (<h1>loading...</h1>)
 
-}
+// }
 
-export default Callback;
+// export default Callback;
