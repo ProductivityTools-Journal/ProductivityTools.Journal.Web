@@ -10,7 +10,7 @@ export class AuthService{
             silent_redirect_uri: `${Consts.clientRoot}silent-renew.html`,
             // tslint:disable-next-line:object-literal-sort-keys
             post_logout_redirect_uri: `${Consts.clientRoot}`,
-            response_type: 'code',
+            response_type: 'id_token token',
             scope: Consts.clientScope
           };
           this.userManager = new UserManager(settings);
