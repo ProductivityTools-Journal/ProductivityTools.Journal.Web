@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MeetingItem from 'Components/MeetingItem';
 import * as Consts from 'Consts';
+import { AuthService } from '../../OAuth/OAuth';
 
 
 
@@ -8,12 +9,11 @@ class MeetingList extends Component {
 
     constructor(props) {
         super(props);
-        debugger;
         this.state = {
             meetings: []
         }
-
         this.setMeetings = this.setMeetings.bind(this);
+        this.authService  = new AuthService();
     }
 
     render() {
@@ -40,24 +40,28 @@ class MeetingList extends Component {
     }
 
     componentDidMount() {
-        debugger;
         console.log("Post");
-        fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, {
-            mode: 'cors',
-            crossDomain: true,
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${this.props.auth.getAccessToken()}`
-            },
-            body: JSON.stringify("xxx")
+        this.authService.getUser().then(user => {
+            if (user && user.access_token) {
 
+                fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, {
+                    mode: 'cors',
+                    crossDomain: true,
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${user.access_token}`
+                    },
+                    body: JSON.stringify("xxx")
+
+                })
+                    .then(respone => respone.json())
+                    .then(result => this.setMeetings(result))
+                    .catch(error => error);
+                console.log("Finish post");
+            }
         })
-            .then(respone => respone.json())
-            .then(result => this.setMeetings(result))
-            .catch(error => error);
-        console.log("Finish post");
     }
 }
 
-export default MeetingList;
+    export default MeetingList;

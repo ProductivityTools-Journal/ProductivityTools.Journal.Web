@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
-import {AuthService} from '../../OAuth/OAuth';
+import { AuthService } from '../../OAuth/OAuth';
 import * as Consts from 'Consts'
 import * as moment from 'moment';
 
@@ -8,16 +8,20 @@ class Home extends Component {
 
     constructor(props) {
         super(props);
-        this.authService=new AuthService();
+        this.authService = new AuthService();
         this.state = { date: null }
     }
 
     login = () => {
         this.authService.login();
-      };
+    }
+
+    logout = () => {
+        this.authService.logout();
+    }
 
     loadDate = (date) => {
-       
+
         this.setState({ date });
     }
 
@@ -46,9 +50,10 @@ class Home extends Component {
 
                 <p>Welcome on home page of ProductivityTools.Meeting</p>
                 <p>{this.state.date ? `Server responded with date ${dtFormated}` : "Server hasn't responded yet"}</p>
-              {/*   {isAuthenticated() ? (<Link to="/List">List</Link>) : <p></p>} */}
-               {/*  <button onClick={isAuthenticated() ? logout : login}>{isAuthenticated() ? "Log out" : "Log in"}</button> */}
+                {/*   {isAuthenticated() ? (<Link to="/List">List</Link>) : <p></p>} */}
+                {/*  <button onClick={isAuthenticated() ? logout : login}>{isAuthenticated() ? "Log out" : "Log in"}</button> */}
                 <button onClick={this.login}>Login2</button>
+                <button onClick={this.logout}>Logout2</button>
             </div >
         )
     }
