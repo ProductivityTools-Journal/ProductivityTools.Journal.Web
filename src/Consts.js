@@ -9,6 +9,7 @@ export const PATH_MEETING_NEW_MEETING= 'New';
 
 
 export const stsAuthority = 'https://localhost:5001/';
+//export const stsAuthority = 'http://192.168.0.51:8083/';
 export const clientId = 'js';
 export const clientRoot = 'http://localhost:3000/';
 export const clientScope = 'openid profile ProductivityTools.Meetings.API';
