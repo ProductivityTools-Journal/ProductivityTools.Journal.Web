@@ -8,7 +8,7 @@ export const PATH_MEETING_UPDATE_MEETING= 'Update';
 export const PATH_MEETING_NEW_MEETING= 'New';
 
 
-export const stsAuthority = 'https://localhost:5001/';
+export const stsAuthority = 'https://identityserver.productivitytools.tech:8084/';
 //export const stsAuthority = 'http://192.168.0.51:8083/';
 export const clientId = 'js';
 export const clientRoot = 'http://localhost:3000/';
