@@ -52,7 +52,7 @@ class MeetingList extends Component {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${user.access_token}`
                     },
-                    body: JSON.stringify("xxx")
+                    body: JSON.stringify({x:"xxx"})
 
                 })
                     .then(respone => respone.json())
