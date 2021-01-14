@@ -17,6 +17,7 @@ class MeetingList extends Component {
     }
 
     render() {
+        debugger;
         const { meetings } = this.state;
         //because render is before compnentDidMount
         if (!meetings) { return null }
@@ -26,7 +27,7 @@ class MeetingList extends Component {
                 {this.state.meetings.map(function (item) {
 
                     return (
-                        <MeetingItem meeting={item} />
+                        <MeetingItem meeting={item} key={item.meetingId} />
                     );
                 })}
 
@@ -52,7 +53,7 @@ class MeetingList extends Component {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${user.access_token}`
                     },
-                    body: JSON.stringify({x:"xxx"})
+                    body: JSON.stringify({Id:null,DrillDown:true})
 
                 })
                     .then(respone => respone.json())

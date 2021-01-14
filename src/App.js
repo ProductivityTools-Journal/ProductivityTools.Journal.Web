@@ -17,7 +17,7 @@ import OAuthCallback from 'Components/OAuthCallback';
 class App extends Component {
 	constructor(props) {
 		super(props);
-		this.auth='f';
+		
 	}
 
 	render() {
@@ -35,15 +35,6 @@ class App extends Component {
 					<Route path="/Edit/:Id" render={(props) => (<EditMeeting {...props} key={this.props.Id} />)}></Route>
 					<Route path="/List" render={(props => <MeetingList auth={this.auth} {...props} />)}>
 					</Route>
-
-					<Route path="/Callback">
-						<Callback auth={this.auth} {...this.props} />
-					</Route>
-					<Route path="/OAuthCallback">
-						<OAuthCallback auth={this.auth} {...this.props} />
-					</Route>
-
-
 					<Route path="/">
 						<Home auth={this.auth} {...this.props} />
 					</Route>
