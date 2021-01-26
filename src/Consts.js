@@ -7,6 +7,9 @@ export const PATH_MEETING_ACTION = 'Meeting';
 export const PATH_MEETING_UPDATE_MEETING= 'Update';
 export const PATH_MEETING_NEW_MEETING= 'New';
 
+export const PATH_TREE_CONTROLER = 'Tree';
+export const PATH_TREE_GET= 'Get';
+
 
 export const stsAuthority = 'https://identityserver.productivitytools.tech:8084/';
 //export const stsAuthority = 'http://192.168.0.51:8083/';

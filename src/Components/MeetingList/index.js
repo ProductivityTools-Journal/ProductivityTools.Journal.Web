@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MeetingItem from 'Components/MeetingItem';
 import * as Consts from 'Consts';
 import { AuthService } from '../../OAuth/OAuth';
+import Tree from 'Components/Tree'
 
 
 
@@ -13,24 +14,28 @@ class MeetingList extends Component {
             meetings: []
         }
         this.setMeetings = this.setMeetings.bind(this);
-        this.authService  = new AuthService();
+        this.authService = new AuthService();
     }
 
     render() {
-        debugger;
         const { meetings } = this.state;
         //because render is before compnentDidMount
         if (!meetings) { return null }
 
         return (
-            <div className="App">
-                {this.state.meetings.map(function (item) {
+            <div>
 
-                    return (
-                        <MeetingItem meeting={item} key={item.meetingId} />
-                    );
-                })}
+                <div><Tree></Tree></div>
 
+                <div className="App">
+                    {this.state.meetings.map(function (item) {
+
+                        return (
+                            <MeetingItem meeting={item} key={item.meetingId} />
+                        );
+                    })}
+
+                </div>
             </div>
         );
     }
@@ -53,7 +58,7 @@ class MeetingList extends Component {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${user.access_token}`
                     },
-                    body: JSON.stringify({Id:null,DrillDown:true})
+                    body: JSON.stringify({ Id: null, DrillDown: true })
 
                 })
                     .then(respone => respone.json())
@@ -65,4 +70,4 @@ class MeetingList extends Component {
     }
 }
 
-    export default MeetingList;
+export default MeetingList;
