@@ -24,12 +24,9 @@ class MeetingList extends Component {
 
         return (
             <div>
-
-                <div><Tree></Tree></div>
-
-                <div className="App">
+                <div style={{ width: '300px', float: 'left' }}><Tree></Tree></div>
+                <div className="App" style={{ color: 'blue', marginLeft: '300px', width: '1200px' }} >
                     {this.state.meetings.map(function (item) {
-
                         return (
                             <MeetingItem meeting={item} key={item.meetingId} />
                         );
