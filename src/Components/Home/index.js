@@ -29,7 +29,7 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        debugger;
+        
         console.log("calling endpoint to get current date");
         fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DATE}`, {
             mode: 'cors',
@@ -44,7 +44,7 @@ class Home extends Component {
 
 
         this.authService.getUser().then(user => {
-            debugger;
+            
             if (user == null) {
                 this.setState({ userAuthenticated: false });
             }

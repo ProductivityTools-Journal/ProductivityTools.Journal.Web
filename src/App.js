@@ -29,7 +29,7 @@ class App extends Component {
 					<Link to="New">New</Link>
 				</div>
 				<Switch>
-					<Route path="/New/">
+					<Route path="/New/:TreeId">
 						<NewMeeting />
 					</Route>
 					<Route path="/Edit/:Id" render={(props) => (<EditMeeting {...props} key={this.props.Id} />)}></Route>

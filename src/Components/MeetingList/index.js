@@ -21,7 +21,6 @@ class MeetingList extends Component {
         const { meetings } = this.state;
         //because render is before compnentDidMount
         if (!meetings) { return null }
-
         return (
             <div>
                 <div style={{ width: '300px', float: 'left' }}><Tree></Tree></div>

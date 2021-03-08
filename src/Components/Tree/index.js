@@ -6,6 +6,8 @@ import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Collapse from '@material-ui/core/Collapse';
 import * as apiService from 'services/apiService'
+import { Button } from '@material-ui/core';
+import { Link } from "react-router-dom";
 
 
 function MinusSquare(props) {
@@ -92,7 +94,14 @@ export default function CustomizedTreeView() {
   function GetNode(nodes) {
     if (nodes !== undefined) {
       return (nodes.map(x => {
-        return <StyledTreeItem nodeId={x.id} label={x.name}>{GetNode(x.nodes)}</StyledTreeItem>
+        return <StyledTreeItem nodeId={x.id} label={
+        <div>
+
+          <span>{x.name}</span>
+          <Link to={`New/${x.id}`}>
+						<Button>+</Button>
+					</Link>
+        </div>}>{GetNode(x.nodes)}</StyledTreeItem>
       })
       )
     }
@@ -101,7 +110,7 @@ export default function CustomizedTreeView() {
   return (
     <TreeView
       className={classes.root}
-      defaultExpanded={['1']}
+      defaultExpanded={['1','2']}
       defaultCollapseIcon={<MinusSquare />}
       defaultExpandIcon={<PlusSquare />}
       defaultEndIcon={<CloseSquare />}
