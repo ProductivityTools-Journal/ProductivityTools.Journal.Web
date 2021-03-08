@@ -92,7 +92,7 @@ export default function CustomizedTreeView() {
   function GetNode(nodes) {
     if (nodes !== undefined) {
       return (nodes.map(x => {
-        return <StyledTreeItem nodeId={x.id} label={x.value}>{GetNode(x.nodes)}</StyledTreeItem>
+        return <StyledTreeItem nodeId={x.id} label={x.name}>{GetNode(x.nodes)}</StyledTreeItem>
       })
       )
     }
@@ -107,7 +107,7 @@ export default function CustomizedTreeView() {
       defaultEndIcon={<CloseSquare />}
     >
       {list.map(x => {
-        return <StyledTreeItem nodeId={x.id} label={x.value}>{GetNode(x.nodes)}</StyledTreeItem>
+        return <StyledTreeItem nodeId={x.id} label={x.name}>{GetNode(x.nodes)}</StyledTreeItem>
       })}
     </TreeView>
   );
