@@ -33,7 +33,8 @@ class App extends Component {
 						<NewMeeting />
 					</Route>
 					<Route path="/Edit/:Id" render={(props) => (<EditMeeting {...props} key={this.props.Id} />)}></Route>
-					<Route path="/List" render={(props => <MeetingList auth={this.auth} {...props} />)}>
+					<Route path="/List/:TreeId" render={(props => <MeetingList auth={this.auth} {...props} />)}>
+					
 					</Route>
 					<Route path="/">
 						<Home auth={this.auth} {...this.props} />

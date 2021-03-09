@@ -97,7 +97,7 @@ export default function CustomizedTreeView() {
         return <StyledTreeItem nodeId={x.id} label={
         <div>
 
-          <span>{x.name}</span>
+          <Link to={`/List/${x.id}`}>{x.name}</Link>
           <Link to={`New/${x.id}`}>
 						<Button>+</Button>
 					</Link>
