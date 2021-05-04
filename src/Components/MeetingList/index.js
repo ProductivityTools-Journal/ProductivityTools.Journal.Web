@@ -45,13 +45,27 @@ class MeetingList extends Component {
         })
     }
 
-    render() {
+    componentDidUpdate(prevProps) {
+        console.log("did update");
+       // console.log(prevProps);
+        //console.log(this.props);
+       // console.log(this.state.treeId);
+       // console.log(this.props.match.params.TreeId);
         let newTreeId = this.props.match.params.TreeId;
-        if (newTreeId != this.state.treeId) {
+        console.log(newTreeId);
+        console.log(prevProps.match.params.TreeId);
+
+        if(newTreeId!==prevProps.match.params.TreeId){
+        //if (newTreeId != this.state.treeId) {
             console.log("call endpoint");
             this.callService();
-            this.setState({ treeId: newTreeId })
+            // this.setState({ treeId: newTreeId })
         }
+    }
+
+    render() {
+        console.log("render");
+       
     
         const { meetings } = this.state;
         //because render is before compnentDidMount

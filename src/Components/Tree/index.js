@@ -75,48 +75,92 @@ const useStyles = makeStyles({
     height: 264,
     flexGrow: 1,
     maxWidth: 400,
+
   },
 });
 
 export default function CustomizedTreeView() {
   const classes = useStyles();
   const [list, setList] = useState([])
+  const [expanded, setExpanded] = useState([])
 
   useEffect(() => {
     getTreeList();
   }, []);
 
+
+
   async function getTreeList() {
     const r = await apiService.getTree();
     setList(r);
+    setExpanded([1, 2, 3]);
   }
 
   function GetNode(nodes) {
     if (nodes !== undefined) {
       return (nodes.map(x => {
-        return <StyledTreeItem nodeId={x.id} label={
-        <div>
+        return <StyledTreeItem nodeId={x.id.toString()} key={x.id} label={
+          <div>
 
-          <Link to={`/List/${x.id}`}>{x.name}</Link>
-          <Link to={`New/${x.id}`}>
-						<Button>+</Button>
-					</Link>
-        </div>}>{GetNode(x.nodes)}</StyledTreeItem>
+            <Link to={`/List/${x.id}`}>{x.name}</Link>
+            <Link to={`/New/${x.id}`}>
+              <Button>+</Button>
+            </Link>
+          </div>}>{GetNode(x.nodes)}</StyledTreeItem>
       })
       )
     }
   }
 
+  function getNodesIdRoot(list) {
+
+    // return ["0", "1", "2"];
+    if (list.length) {
+      var result =getNodeIds(list[0]);
+      debugger;
+      return result;
+    }
+    else {
+      return [];
+    }
+
+  }
+
+  function getNodeIds(node) {
+    //return ["0", "1", "2"];
+
+    if (node != null) {
+      console.log(node);
+      var result = [];
+      result=result.concat([node.id.toString()]);
+      if (node.nodes != null && node.nodes.length > 0) {
+          node.nodes.forEach(x => {
+          result=result.concat(getNodeIds(x));
+        })
+      }
+      return result;
+
+
+      return ["0", "1", "2"];
+    }
+    else {
+      return [];
+    }
+
+  }
+
   return (
     <TreeView
       className={classes.root}
-      defaultExpanded={['1','2']}
+      //  defaultExpanded={getNodesIdRoot(list)}///recursive function
+
+      expanded={getNodesIdRoot(list)}///recursive function
       defaultCollapseIcon={<MinusSquare />}
       defaultExpandIcon={<PlusSquare />}
       defaultEndIcon={<CloseSquare />}
     >
       {list.map(x => {
-        return <StyledTreeItem nodeId={x.id} label={x.name}>{GetNode(x.nodes)}</StyledTreeItem>
+        return <StyledTreeItem key={x.id} nodeId={x.id.toString()} label={x.name}>{GetNode(x.nodes)}</StyledTreeItem>
       })}
     </TreeView>
   );
