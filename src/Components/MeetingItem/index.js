@@ -21,6 +21,7 @@ class MeetingItem extends Component {
 
 
 	render() {
+
 		let mt = moment(this.props.meeting.date);
 		let dtDescription = mt.fromNow();
 		let dtFormated = mt.format('YYYY.MM.DD hh:mm')
@@ -31,7 +32,7 @@ class MeetingItem extends Component {
 				
 				{/*<Button  variant="contained"  color="primary" onClick={()=>this.edit()}>Edit</Button>*/}
 				<AutoHideNotes title='Before notes' notes={this.props.meeting.beforeNotes} />
-				<AutoHideNotes title='During notes' notes={this.props.meeting.duringnotes} />
+				<AutoHideNotes title='During notes' notes={this.props.meeting.duringNotes} />
 				<AutoHideNotes title='After notes' notes={this.props.meeting.afterNotes} />
 				<p style={buttonStyle}>
 					<Link to={`Edit/${this.props.meeting.meetingId}`}>

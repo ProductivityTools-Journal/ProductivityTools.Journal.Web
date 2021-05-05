@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import Notes from 'Components/Notes'
 import * as Consts from 'Consts';
 import Button from '@material-ui/core/Button'
@@ -6,16 +6,23 @@ import { useParams } from 'react-router-dom'
 
 function NewMeeting() {
 
-    const [meeting, setMeeting] = useState({ subject:'MeetingXX', beforeNotes: null, duringNotes: null, afterNotes: null});
+    const [meeting, setMeeting] = useState({ subject:'InitialMeetingName', beforeNotes: null, duringNotes: null, afterNotes: null});
     const params = useParams();
+
+    // useEffect(() => {
+    //     console.log("useeffect");
+    //     console.log(meeting);
+    //   }, [meeting]);
+
     console.log('pawel');
     console.log(JSON.stringify(params));
 
     const updateState = (event) => {
-        
         const value = event.target.value;
         const name = event.target.name;
-        setMeeting({ ...meeting, [name]: value })
+        const x = {}
+        x[name]=value;
+        setMeeting(prevMeeting=>({...prevMeeting,...x}));
     }
 
     const save = () => {

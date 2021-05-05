@@ -82,7 +82,6 @@ const useStyles = makeStyles({
 export default function CustomizedTreeView() {
   const classes = useStyles();
   const [list, setList] = useState([])
-  const [expanded, setExpanded] = useState([])
 
   useEffect(() => {
     getTreeList();
@@ -93,7 +92,6 @@ export default function CustomizedTreeView() {
   async function getTreeList() {
     const r = await apiService.getTree();
     setList(r);
-    setExpanded([1, 2, 3]);
   }
 
   function GetNode(nodes) {
@@ -117,7 +115,6 @@ export default function CustomizedTreeView() {
     // return ["0", "1", "2"];
     if (list.length) {
       var result =getNodeIds(list[0]);
-      debugger;
       return result;
     }
     else {
