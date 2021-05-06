@@ -88,7 +88,6 @@ class EditMeeting extends Component {
 
     save = () => {
         this.saveMeeting();
-        alert("fdsa");
     }
 }
 

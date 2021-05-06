@@ -25,7 +25,7 @@ class App extends Component {
 			<div>
 				<div>
 					<Link to="/">Home</Link>
-					<Link to="List">List</Link>
+					<Link to="/List">List</Link>
 					<Link to="New">New</Link>
 				</div>
 				<Switch>

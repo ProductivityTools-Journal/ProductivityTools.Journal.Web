@@ -94,13 +94,18 @@ export default function CustomizedTreeView() {
     setList(r);
   }
 
+  function getLabel(x){
+    let l=x.name +" [Id:"+x.id+"]";
+    return l;
+  }
+
   function GetNode(nodes) {
     if (nodes !== undefined) {
       return (nodes.map(x => {
         return <StyledTreeItem nodeId={x.id.toString()} key={x.id} label={
           <div>
 
-            <Link to={`/List/${x.id}`}>{x.name}</Link>
+            <Link to={`/List/${x.id}`}>{getLabel(x)}</Link>
             <Link to={`/New/${x.id}`}>
               <Button>+</Button>
             </Link>
@@ -157,7 +162,8 @@ export default function CustomizedTreeView() {
       defaultEndIcon={<CloseSquare />}
     >
       {list.map(x => {
-        return <StyledTreeItem key={x.id} nodeId={x.id.toString()} label={x.name}>{GetNode(x.nodes)}</StyledTreeItem>
+        
+        return <StyledTreeItem key={x.id} nodeId={x.id.toString()} label={getLabel(x)}>{GetNode(x.nodes)}</StyledTreeItem>
       })}
     </TreeView>
   );

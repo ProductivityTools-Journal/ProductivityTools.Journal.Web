@@ -13,9 +13,6 @@ class MeetingItem extends Component {
 		this.state = {
 			notes: 'init'
 		}
-		this.edit = this.edit.bind(this);
-
-
 	}
 
 
@@ -28,24 +25,19 @@ class MeetingItem extends Component {
 		const buttonStyle={textAlign:'right'}
 		return (
 			<fieldset  key={this.props.meeting.meetingId}>
-				<legend>[{this.props.meeting.meetingId}] {dtFormated} ({dtDescription}) - {this.props.meeting.subject}</legend>
+				<legend>[{this.props.meeting.meetingId}] {dtFormated} ({dtDescription}) - {this.props.meeting.subject} Treeid:{this.props.meeting.treeId}</legend>
 				
 				{/*<Button  variant="contained"  color="primary" onClick={()=>this.edit()}>Edit</Button>*/}
 				<AutoHideNotes title='Before notes' notes={this.props.meeting.beforeNotes} />
 				<AutoHideNotes title='During notes' notes={this.props.meeting.duringNotes} />
 				<AutoHideNotes title='After notes' notes={this.props.meeting.afterNotes} />
 				<p style={buttonStyle}>
-					<Link to={`Edit/${this.props.meeting.meetingId}`}>
+					<Link to={`/Edit/${this.props.meeting.meetingId}`}>
 						<Button variant="contained" color="primary">Edit</Button>
 					</Link>
 				</p>	
 			</fieldset>
-
 		)
-	}
-	edit() {
-
-		alert("fdSA");
 	}
 }
 
