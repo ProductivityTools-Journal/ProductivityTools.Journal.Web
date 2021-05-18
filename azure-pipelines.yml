@@ -9,6 +9,9 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  directory: reactdir
+
 steps:
 - task: NodeTool@0
   inputs:
@@ -19,11 +22,12 @@ steps:
     npm install
     npm run build
   displayName: 'npm install and build'
+  workingDirectory: $(directory)
 
 - task: CopyFiles@2
   displayName: 'Copy files'
   inputs:
-    sourceFolder: '/build' 
+    sourceFolder: '$(directory)/build' 
     Contents: '**/*'
     TargetFolder: '$(Build.BinariesDirectory)'
     cleanTargetFolder: true
