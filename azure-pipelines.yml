@@ -10,7 +10,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  directory: reactdir
+  directory: productivitytools.meetings.web
 
 steps:
 - task: NodeTool@0
