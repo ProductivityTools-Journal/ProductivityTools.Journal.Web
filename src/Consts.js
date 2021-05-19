@@ -10,7 +10,7 @@ export const PATH_TREE_CONTROLER = 'Tree';
 export const PATH_TREE_GET= 'Get';
 
 //export const stsAuthority = 'http://192.168.0.51:8083/';
-export const clientId = 'js';
+
 
 export const clientScope = 'openid profile ProductivityTools.Meetings.API';
 
@@ -26,7 +26,7 @@ const dev={
 
 const prod={
     clientId:"prodmeetingsweb",
-    PATH_BASE :'http://localhost:5002/api/',
+    PATH_BASE :'http://meetings.productivitytools.tech:8081/api/',
     stsAuthority : 'https://identityserver.productivitytools.tech:8084/',
     clientRoot : 'https://meetingsweb.z13.web.core.windows.net/',
   //  apiRoot : 'http://localhost:5002/'
