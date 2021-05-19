@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import MeetingItem from 'Components/MeetingItem';
 import * as Consts from 'Consts';
+import {config} from 'Consts';
 import { AuthService } from '../../OAuth/OAuth';
 import Tree from 'Components/Tree'
 
@@ -26,7 +27,7 @@ class MeetingList extends Component {
         this.authService.getUser().then(user => {
             if (user && user.access_token) {
 
-                fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, {
+                fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, {
                     mode: 'cors',
                     crossDomain: true,
                     method: 'POST',

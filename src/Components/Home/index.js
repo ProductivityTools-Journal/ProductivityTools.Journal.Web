@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { AuthService } from '../../OAuth/OAuth';
 import * as Consts from 'Consts';
+import {config} from 'Consts';
 import * as moment from 'moment';
 
 class Home extends Component {
@@ -31,7 +32,7 @@ class Home extends Component {
     componentDidMount() {
         
         console.log("calling endpoint to get current date");
-        fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DATE}`, {
+        fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DATE}`, {
             mode: 'cors',
             crossDomain: true,
             method: 'POST',

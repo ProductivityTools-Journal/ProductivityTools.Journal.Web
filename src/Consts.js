@@ -1,5 +1,4 @@
 //export const PATH_BASE='http://192.168.1.51:8081/api/	';
-export const PATH_BASE = 'http://localhost:5002/api/';
 export const PATH_MEETINGS_CONTROLER = 'Meetings';
 export const PATH_MEETINGS_ACTION = 'List';
 export const PATH_MEETINGS_DATE = 'Date';
@@ -10,10 +9,25 @@ export const PATH_MEETING_NEW_MEETING= 'New';
 export const PATH_TREE_CONTROLER = 'Tree';
 export const PATH_TREE_GET= 'Get';
 
-
-export const stsAuthority = 'https://identityserver.productivitytools.tech:8084/';
 //export const stsAuthority = 'http://192.168.0.51:8083/';
 export const clientId = 'js';
-export const clientRoot = 'http://localhost:3000/';
+
 export const clientScope = 'openid profile ProductivityTools.Meetings.API';
-export const apiRoot = 'http://localhost:5002/';
+
+
+const dev={
+    PATH_BASE :'http://localhost:5002/api/',
+    stsAuthority : 'https://identityserver.productivitytools.tech:8084/',
+    clientRoot : 'http://localhost:3000/',
+    apiRoot : 'http://localhost:5002/'
+}
+
+
+const prod={
+    PATH_BASE :'http://localhost:5002/api/',
+    stsAuthority : 'https://identityserver.productivitytools.tech:8084/',
+    clientRoot : 'http://localhost:3000/',
+    apiRoot : 'http://localhost:5002/'
+}
+
+export const config = process.env.NODE_ENV === 'development' ? dev : prod;

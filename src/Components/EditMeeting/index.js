@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Notes from 'Components/Notes'
 import Button from '@material-ui/core/Button'
 import * as Consts from 'Consts';
+import {config} from 'Consts';
 import { useParams } from 'react-router-dom'
 
 class EditMeeting extends Component {
@@ -50,7 +51,7 @@ class EditMeeting extends Component {
             Secret: 'xxx'
         }
 
-        fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_ACTION}`, {
+        fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_ACTION}`, {
             mode: 'cors',
             crossDomain: true,
             method: 'POST',
@@ -65,7 +66,7 @@ class EditMeeting extends Component {
 
     saveMeeting = () => {
         console.log("Save meeting");
-        fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, {
+        fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, {
             mode: 'cors',
             crossDomain: true,
             method: 'POST',

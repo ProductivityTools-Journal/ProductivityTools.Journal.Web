@@ -1,15 +1,16 @@
 import { Log, User, UserManager } from 'oidc-client';
 import * as Consts from 'Consts';
+import {config} from 'Consts';
 
 export class AuthService{
     constructor(){
         const settings = {
-            authority: Consts.stsAuthority,
+            authority: config.stsAuthority,
             client_id: Consts.clientId,
-            redirect_uri: `${Consts.clientRoot}signin-callback.html`,
-            silent_redirect_uri: `${Consts.clientRoot}silent-renew.html`,
+            redirect_uri: `${config.clientRoot}signin-callback.html`,
+            silent_redirect_uri: `${config.clientRoot}silent-renew.html`,
             // tslint:disable-next-line:object-literal-sort-keys
-            post_logout_redirect_uri: `${Consts.clientRoot}`,
+            post_logout_redirect_uri: `${config.clientRoot}`,
             response_type: 'id_token token',
             scope: Consts.clientScope
           };

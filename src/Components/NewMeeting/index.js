@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import Notes from 'Components/Notes'
 import * as Consts from 'Consts';
+import {config} from 'Consts';
 import Button from '@material-ui/core/Button'
 import { useParams } from 'react-router-dom'
 
@@ -30,7 +31,7 @@ function NewMeeting() {
         console.log(id);
         meeting.TreeId=Number(id);
         console.log("Save meeting");
-        fetch(`${Consts.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, {
+        fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, {
             mode: 'cors',
             crossDomain: true,
             method: 'POST',
