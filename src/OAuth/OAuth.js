@@ -6,7 +6,7 @@ export class AuthService{
     constructor(){
         const settings = {
             authority: config.stsAuthority,
-            client_id: Consts.clientId,
+            client_id: config.clientId,
             redirect_uri: `${config.clientRoot}signin-callback.html`,
             silent_redirect_uri: `${config.clientRoot}silent-renew.html`,
             // tslint:disable-next-line:object-literal-sort-keys
