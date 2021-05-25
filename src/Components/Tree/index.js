@@ -154,9 +154,8 @@ export default function CustomizedTreeView() {
   return (
     <TreeView
       className={classes.root}
-      //  defaultExpanded={getNodesIdRoot(list)}///recursive function
 
-      expanded={getNodesIdRoot(list)}///recursive function
+     // expanded={getNodesIdRoot(list)}///recursive function
       defaultCollapseIcon={<MinusSquare />}
       defaultExpandIcon={<PlusSquare />}
       defaultEndIcon={<CloseSquare />}

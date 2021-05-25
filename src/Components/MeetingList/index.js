@@ -62,8 +62,8 @@ class MeetingList extends Component {
         if (!meetings) { return null }
         return (
             <div>
-                <div style={{ width: '300px', float: 'left' }}><Tree></Tree></div>
-                <div className="App" style={{ color: 'blue', marginLeft: '300px', width: '1200px' }} >
+                <div style={{ width: '400px', float: 'left' }}><Tree></Tree></div>
+                <div className="App" style={{ color: 'blue', marginLeft: '400px', width: '1200px' }} >
                     {this.state.meetings.map(function (item) {
                         return (
                             <MeetingItem meeting={item} key={item.meetingId} />
