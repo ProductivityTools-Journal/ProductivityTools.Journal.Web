@@ -6,7 +6,7 @@ import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Collapse from '@material-ui/core/Collapse';
 import * as apiService from 'services/apiService'
-import { Button } from '@material-ui/core';
+import { Button, Checkbox } from '@material-ui/core';
 import { Link } from "react-router-dom";
 
 
@@ -108,6 +108,7 @@ export default function CustomizedTreeView() {
             <Link to={`/List/${x.id}`}>{getLabel(x)}</Link>
             <Link to={`/New/${x.id}`}>
               <Button>+</Button>
+              <Checkbox onClick={(e)=>{e.stopPropagation(); }}></Checkbox>
             </Link>
           </div>}>{GetNode(x.nodes)}</StyledTreeItem>
       })

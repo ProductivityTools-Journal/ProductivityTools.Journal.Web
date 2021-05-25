@@ -35,7 +35,7 @@ class MeetingList extends Component {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${user.access_token}`
                     },
-                    body: JSON.stringify({ Id: Number(this.props.match.params.TreeId), DrillDown: true })
+                    body: JSON.stringify({ Id: Number(this.props.match.params.TreeId), DrillDown: false })
 
                 })
                     .then(respone => respone.json())
