@@ -4,6 +4,7 @@ import * as Consts from 'Consts';
 import {config} from 'Consts';
 import Button from '@material-ui/core/Button'
 import { useParams } from 'react-router-dom'
+import * as apiService from 'services/apiService'
 
 function NewMeeting() {
 
@@ -26,22 +27,27 @@ function NewMeeting() {
         setMeeting(prevMeeting=>({...prevMeeting,...x}));
     }
 
-    const save = () => {
+    const save = async () => {
         let id = params.TreeId;
-        console.log(id);
         meeting.TreeId=Number(id);
-        console.log("Save meeting");
-        fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, {
-            mode: 'cors',
-            crossDomain: true,
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(meeting)
-        })
-            .then(respone => respone.json())
-            .then(result => this.setMeeting(result))
-            .catch(error => error);
-        console.log("Finish post");
+        const r=await apiService.saveMeeting(meeting);
+        setMeeting(r);
+        return;
+        // debugger;
+        // id = params.TreeId;
+        // meeting.TreeId=Number(id);
+        // console.log("Save meeting");
+        // fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, {
+        //     mode: 'cors',
+        //     crossDomain: true,
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(meeting)
+        // })
+        //     .then(respone => respone.json())
+        //     .then(result => this.setMeeting(result))
+        //     .catch(error => error);
+        // console.log("Finish post");
     }
 
     return (

@@ -8,8 +8,16 @@ async function getTree(){
     return response.data;
 }
 
+async function saveMeeting(meeting){
+
+    debugger;
+    const response=await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`,meeting)
+    return response.data;
+}
+
 
 
 export {
-    getTree
+    getTree,
+    saveMeeting
 }
