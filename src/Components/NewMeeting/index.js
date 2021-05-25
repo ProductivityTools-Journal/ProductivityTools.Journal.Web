@@ -3,13 +3,14 @@ import Notes from 'Components/Notes'
 import * as Consts from 'Consts';
 import {config} from 'Consts';
 import Button from '@material-ui/core/Button'
-import { useParams } from 'react-router-dom'
+import { useParams,useHistory} from 'react-router-dom'
 import * as apiService from 'services/apiService'
 
 function NewMeeting() {
 
     const [meeting, setMeeting] = useState({ subject:'InitialMeetingName', beforeNotes: null, duringNotes: null, afterNotes: null});
     const params = useParams();
+    let history = useHistory();
 
     // useEffect(() => {
     //     console.log("useeffect");
@@ -50,6 +51,10 @@ function NewMeeting() {
         // console.log("Finish post");
     }
 
+    const close=()=>{
+        history.push('/List/'+params.TreeId);
+    }
+
     return (
         <div>
             <Notes title='Subject' name='subject' notes={meeting.subject} updateState={updateState} />
@@ -57,6 +62,7 @@ function NewMeeting() {
             <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
             <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} />
             <Button variant="contained" color="primary" onClick={save}>Save</Button>
+            <Button variant="contained" color="primary" onClick={close}>Close</Button>
         </div>
     )
 

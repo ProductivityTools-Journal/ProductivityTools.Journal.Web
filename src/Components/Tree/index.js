@@ -7,7 +7,7 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import Collapse from '@material-ui/core/Collapse';
 import * as apiService from 'services/apiService'
 import { Button, Checkbox } from '@material-ui/core';
-import { Link } from "react-router-dom";
+import { Link,useParams } from "react-router-dom";
 
 
 function MinusSquare(props) {
@@ -80,11 +80,14 @@ const useStyles = makeStyles({
 });
 
 export default function CustomizedTreeView() {
+  const [expanded, setExpanded] = React.useState([]);
   const classes = useStyles();
   const [list, setList] = useState([])
+  const params = useParams();
 
   useEffect(() => {
     getTreeList();
+
   }, []);
 
 
@@ -92,6 +95,7 @@ export default function CustomizedTreeView() {
   async function getTreeList() {
     const r = await apiService.getTree();
     setList(r);
+    getNodePath(r[0],params.TreeId);
   }
 
   function getLabel(x){
@@ -129,6 +133,33 @@ export default function CustomizedTreeView() {
 
   }
 
+  function getNodePath(node, targetId){
+    debugger;
+    if (targetId==null) return [];
+    if(node!=null){
+      if (node.id==targetId){
+        var result = [];
+        result=result.concat([targetId.toString()]);
+        return result;
+      } else{
+        for(let n of node.nodes){
+        //node.nodes.forEach(x=>{
+          var chain=getNodePath(n, targetId);
+          if(chain!=null){
+            var finalResult=chain.concat(node.id.toString());
+            setExpanded(finalResult)
+            return finalResult;
+          }
+        }
+      }
+    }
+    else
+    {
+      return [];
+    }
+    
+  }
+
   function getNodeIds(node) {
     //return ["0", "1", "2"];
 
@@ -152,14 +183,21 @@ export default function CustomizedTreeView() {
 
   }
 
+  const handleToggle = (event, nodeIds) => {
+    setExpanded(nodeIds);
+  };
+
+
+
   return (
     <TreeView
       className={classes.root}
-
+      expanded={expanded}
      // expanded={getNodesIdRoot(list)}///recursive function
       defaultCollapseIcon={<MinusSquare />}
       defaultExpandIcon={<PlusSquare />}
       defaultEndIcon={<CloseSquare />}
+      onNodeToggle={handleToggle}
     >
       {list.map(x => {
         
