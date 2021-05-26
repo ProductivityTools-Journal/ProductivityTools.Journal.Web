@@ -3,7 +3,6 @@ import './App.css';
 
 import MeetingList from 'Components/MeetingList'
 import {
-	BrowserRouter as Router,
 	Switch,
 	Route,
 	Link
@@ -11,14 +10,9 @@ import {
 import EditMeeting from 'Components/EditMeeting';
 import NewMeeting from 'Components/NewMeeting';
 import Home from 'Components/Home';
-import Callback from 'Components/Callback';
 
 
 class App extends Component {
-	constructor(props) {
-		super(props);
-		
-	}
 
 	render() {
 		return (

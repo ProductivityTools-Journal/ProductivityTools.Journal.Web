@@ -1,4 +1,4 @@
-import { Log, User, UserManager } from 'oidc-client';
+import { Log, UserManager } from 'oidc-client';
 import * as Consts from 'Consts';
 import {config} from 'Consts';
 

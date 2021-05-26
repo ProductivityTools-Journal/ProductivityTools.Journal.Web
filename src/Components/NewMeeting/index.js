@@ -1,7 +1,5 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState} from 'react';
 import Notes from 'Components/Notes'
-import * as Consts from 'Consts';
-import {config} from 'Consts';
 import Button from '@material-ui/core/Button'
 import { useParams,useHistory} from 'react-router-dom'
 import * as apiService from 'services/apiService'
