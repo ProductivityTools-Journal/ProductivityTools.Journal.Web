@@ -80,7 +80,7 @@ const useStyles = makeStyles({
 });
 
 export default function CustomizedTreeView() {
-  const [expanded, setExpanded] = React.useState();
+  const [expanded, setExpanded] = useState([]);
   const classes = useStyles();
   const [list, setList] = useState([]);
   const params = useParams();
