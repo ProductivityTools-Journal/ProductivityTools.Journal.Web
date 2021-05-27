@@ -22,20 +22,19 @@ async function fetchMeeting(id) {
     return response.data;
 }
 
-function fetchMeetingList(treeId) {
+async function fetchMeetingList(treeId) {
     let authService = new AuthService();
-
-
     
-    authService.getUser().then(async user => {
+    return await authService.getUser().then(async user => {
         if (user && user.access_token) {
-
             const header = {
                 headers: { Authorization: `Bearer ${user.access_token}` }
             };
 
             const data = { Id: Number(treeId), DrillDown: false }
             const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, data, header)
+            console.log("api call");
+            console.log(response.data);
             return response.data;
         }
     })

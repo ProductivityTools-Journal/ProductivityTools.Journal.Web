@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MeetingItem from 'Components/MeetingItem';
 import { AuthService } from '../../OAuth/OAuth';
@@ -9,19 +9,21 @@ import * as apiService from 'services/apiService'
 
 export default function MeetingList() {
 
-    const [meetings, setMeetings] = React.useState([]);
+    const [meetings, setMeetings] = useState([]);
     //const [treeId, setTreeId] = React.useState(-1);
     const params = useParams();
     let authService = new AuthService();
     useEffect(() => {
         const fetchData = async () => {
-            var data = await apiService.fetchMeetingList(params.TreeId);
-            console.log("data froms ervice")
-            console.log(meetings);
+            console.log("parameter")
+            console.log(params.TreeId);
+            const data = await apiService.fetchMeetingList(params.TreeId);
+            console.log("data returned from async method")
+            console.log(data);
             setMeetings(data);
         }
         fetchData();
-    }, []);
+    }, [params.TreeId]);
 
     // constructor(props) {
     //     super(props);
@@ -84,7 +86,7 @@ export default function MeetingList() {
 
 
     //     const { meetings } = this.state;
-    console.log("meetings");
+    console.log("meetings before render");
     console.log(meetings);
         return (
             <div>
