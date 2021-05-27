@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import AutoHideNotes from 'Components/AutoHideNotes'
-import Notes from 'Components/Notes';
-import NameForm from 'Components/NameForm';
 import Button from '@material-ui/core/Button';
 import { Link } from "react-router-dom";
 import * as moment from 'moment';
@@ -14,8 +12,6 @@ class MeetingItem extends Component {
 			notes: 'init'
 		}
 	}
-
-
 
 	render() {
 

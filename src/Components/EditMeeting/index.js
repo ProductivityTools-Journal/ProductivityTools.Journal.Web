@@ -1,94 +1,103 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Notes from 'Components/Notes'
 import Button from '@material-ui/core/Button'
 import * as Consts from 'Consts';
-import {config} from 'Consts';
-import { useParams } from 'react-router-dom'
+import { config } from 'Consts';
+import { useParams, useHistory } from "react-router-dom";
+import * as apiService from 'services/apiService'
 
-class EditMeeting extends Component {
+function EditMeeting() {
 
-    constructor(props) {
-        super(props);
+    const [meeting, setMeeting] = useState();
+    const params = useParams();
+    let history = useHistory();
 
-        this.updateState = this.updateState.bind(this);
-    }
+    useEffect(getMeeting, []);
 
-    render() {
-        if (!this.state) { return null }
-        return (
-            <fieldset>
-                <p>Title: {this.state.meeting.subject}</p>
-                <Notes title='Subject' name='subject' notes={this.state.meeting.subject} updateState={this.updateState} />
-                <Notes title='Before notes' name='beforeNotes' notes={this.state.meeting.beforeNotes} updateState={this.updateState} />
-                <Notes title='During notes' name='duringNotes' notes={this.state.meeting.duringNotes} updateState={this.updateState} />
-                <Notes title='After notes' name='afterNotes' notes={this.state.meeting.afterNotes} updateState={this.updateState} />
-                <Button variant="contained" color="primary" onClick={() => this.save()}>Save</Button>
-            </fieldset>
-        )
-    }
-
-    setMeeting(meeting) {
-        console.log(meeting);
-        this.setState({ meeting })
-    }
-
-    componentDidMount() {
-        if (this.props.match) {
-            let id = this.props.match.params.Id;
+    function getMeeting() {
+        if (params.Id) {
+            let id = params.Id;
             console.log(id);
-            this.fetchMeeting(id);
+            fetchMeeting(id);
         }
         else {
-            this.setState({ meeting: { beforeNotes: '', duringNotes: '', afterNotes: '' } });
+            setMeeting({ meeting: { beforeNotes: '', duringNotes: '', afterNotes: '' } });
         }
     }
 
-    fetchMeeting = (id) => {
+    async function fetchMeeting(id) {
         console.log("Fetch one meeting from server");
 
-        const data = {
-            Id: parseInt(id),
-            Secret: 'xxx'
-        }
+        const meeting = await apiService.fetchMeeting(id);
+        setMeeting(meeting);
 
-        fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_ACTION}`, {
-            mode: 'cors',
-            crossDomain: true,
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-            .then(respone => respone.json())
-            .then(result => this.setMeeting(result))
-            .catch(error => error);
-        console.log("Finish post");
+        // const data = {
+        //     Id: parseInt(id),
+        //     Secret: 'xxx'
+        // }
+
+        // fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_ACTION}`, {
+        //     mode: 'cors',
+        //     crossDomain: true,
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(data)
+        // })
+        //     .then(respone => respone.json())
+        //     .then(result => setMeeting(result))
+        //     .catch(error => error);
+        // console.log("Finish post");
     }
 
-    saveMeeting = () => {
+    const saveMeeting = () => {
         console.log("Save meeting");
         fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, {
             mode: 'cors',
             crossDomain: true,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(this.state.meeting)
+            body: JSON.stringify(meeting)
         })
             .then(respone => respone.json())
-            .then(result => this.setMeeting(result))
+            .then(result => setMeeting(result))
             .catch(error => error);
         console.log("Finish post");
     }
 
-    updateState(event) {
+    const updateState = (event) => {
         const value = event.target.value;
         const name = event.target.name
 
-        const x = { ...this.state.meeting, [name]: value }
-        this.setState({ ...this.state, meeting: x })
+        const x = { ...meeting, [name]: value }
+        setMeeting({ x })
     }
 
-    save = () => {
-        this.saveMeeting();
+    const save = () => {
+        saveMeeting();
+    }
+
+    const close = () => {
+        history.push('/List/' + params.TreeId);
+    }
+
+
+    if (meeting == null) {
+        debugger;
+        return <div>xxx</div>
+    }
+    else {
+        debugger;
+        return (
+            <fieldset>
+                <p>Title: {meeting.subject}</p>
+                <Notes title='Subject' name='subject' notes={meeting.subject} updateState={updateState} />
+                <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
+                <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
+                <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} />
+                <Button variant="contained" color="primary" onClick={save}>Save</Button>
+                <Button variant="contained" color="primary" onClick={close}>Close</Button>
+            </fieldset>
+        )
     }
 }
 

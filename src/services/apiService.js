@@ -1,23 +1,49 @@
 import axios from 'axios'
 import * as Consts from 'Consts';
-import {config} from 'Consts';
+import { config } from 'Consts';
+import { AuthService } from '../OAuth/OAuth';
 
-async function getTree(){
-
-    const response=await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
+async function getTree() {
+    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
     return response.data;
 }
 
-async function saveMeeting(meeting){
-
-    debugger;
-    const response=await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`,meeting)
+async function saveMeeting(meeting) {
+    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, meeting)
     return response.data;
 }
 
+async function fetchMeeting(id) {
+    const data = {
+        Id: parseInt(id),
+        Secret: 'xxx'
+    }
+    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_ACTION}`, data)
+    return response.data;
+}
 
+function fetchMeetingList(treeId) {
+    let authService = new AuthService();
+
+
+    
+    authService.getUser().then(async user => {
+        if (user && user.access_token) {
+
+            const header = {
+                headers: { Authorization: `Bearer ${user.access_token}` }
+            };
+
+            const data = { Id: Number(treeId), DrillDown: false }
+            const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, data, header)
+            return response.data;
+        }
+    })
+}
 
 export {
     getTree,
-    saveMeeting
+    saveMeeting,
+    fetchMeeting,
+    fetchMeetingList
 }

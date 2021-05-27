@@ -7,7 +7,7 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import Collapse from '@material-ui/core/Collapse';
 import * as apiService from 'services/apiService'
 import { Button, Checkbox } from '@material-ui/core';
-import { Link,useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 
 function MinusSquare(props) {
@@ -80,23 +80,24 @@ const useStyles = makeStyles({
 });
 
 export default function CustomizedTreeView() {
-  const [expanded, setExpanded] = React.useState([]);
+  const [expanded, setExpanded] = React.useState();
   const classes = useStyles();
-  const [list, setList] = useState([])
+  const [list, setList] = useState([]);
   const params = useParams();
 
-  useEffect(getTreeList, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const r = await apiService.getTree();
+      console.log(r);
+      setList(r);
+    };
+
+    fetchData();
+  }, []);
 
 
-
-  async function getTreeList() {
-    const r = await apiService.getTree();
-    setList(r);
-    getNodePath(r[0],params.TreeId);
-  }
-
-  function getLabel(x){
-    let l=x.name +" [Id:"+x.id+"]";
+  function getLabel(x) { 
+    let l = x.name + " [Id:" + x.id + "]";
     return l;
   }
 
@@ -109,7 +110,7 @@ export default function CustomizedTreeView() {
             <Link to={`/List/${x.id}`}>{getLabel(x)}</Link>
             <Link to={`/New/${x.id}`}>
               <Button>+</Button>
-              <Checkbox onClick={(e)=>{e.stopPropagation(); }}></Checkbox>
+              <Checkbox onClick={(e) => { e.stopPropagation(); }}></Checkbox>
             </Link>
           </div>}>{GetNode(x.nodes)}</StyledTreeItem>
       })
@@ -130,31 +131,28 @@ export default function CustomizedTreeView() {
 
   // }
 
-  function getNodePath(node, targetId){
-    debugger;
-    if (targetId==null) return [];
-    if(node!=null){
-      if (node.id===targetId){
+  function getNodePath(node, targetId) {
+    if (targetId == null) return [];
+    if (node != null) {
+      if (node.id === targetId) {
         var result = [];
-        result=result.concat([targetId.toString()]);
+        result = result.concat([targetId.toString()]);
         return result;
-      } else{
-        for(let n of node.nodes){
-        //node.nodes.forEach(x=>{
-          var chain=getNodePath(n, targetId);
-          if(chain!=null){
-            var finalResult=chain.concat(node.id.toString());
+      } else {
+        for (let n of node.nodes) {
+          //node.nodes.forEach(x=>{
+          var chain = getNodePath(n, targetId);
+          if (chain != null) {
+            var finalResult = chain.concat(node.id.toString());
             setExpanded(finalResult)
             return finalResult;
           }
         }
       }
     }
-    else
-    {
+    else {
       return [];
     }
-    
   }
 
   // function getNodeIds(node) {
@@ -185,21 +183,23 @@ export default function CustomizedTreeView() {
   };
 
 
-
+  console.log("rendeR");
+  console.log(list);
   return (
+    <div><p>xx</p>
     <TreeView
       className={classes.root}
       expanded={expanded}
-     // expanded={getNodesIdRoot(list)}///recursive function
+      // expanded={getNodesIdRoot(list)}///recursive function
       defaultCollapseIcon={<MinusSquare />}
       defaultExpandIcon={<PlusSquare />}
       defaultEndIcon={<CloseSquare />}
       onNodeToggle={handleToggle}
     >
       {list.map(x => {
-        
         return <StyledTreeItem key={x.id} nodeId={x.id.toString()} label={getLabel(x)}>{GetNode(x.nodes)}</StyledTreeItem>
       })}
     </TreeView>
+    </div>
   );
 }
