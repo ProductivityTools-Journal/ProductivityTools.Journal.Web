@@ -96,7 +96,7 @@ export default function CustomizedTreeView() {
   }, []);
 
 
-  function getLabel(x) { 
+  function getLabel(x) {
     let l = x.name + " [Id:" + x.id + "]";
     return l;
   }
@@ -182,24 +182,21 @@ export default function CustomizedTreeView() {
     setExpanded(nodeIds);
   };
 
-
-  console.log("rendeR");
-  console.log(list);
   return (
     <div><p>xx</p>
-    <TreeView
-      className={classes.root}
-      expanded={expanded}
-      // expanded={getNodesIdRoot(list)}///recursive function
-      defaultCollapseIcon={<MinusSquare />}
-      defaultExpandIcon={<PlusSquare />}
-      defaultEndIcon={<CloseSquare />}
-      onNodeToggle={handleToggle}
-    >
-      {list.map(x => {
-        return <StyledTreeItem key={x.id} nodeId={x.id.toString()} label={getLabel(x)}>{GetNode(x.nodes)}</StyledTreeItem>
-      })}
-    </TreeView>
+      <TreeView
+        className={classes.root}
+        expanded={expanded}
+        // expanded={getNodesIdRoot(list)}///recursive function
+        defaultCollapseIcon={<MinusSquare />}
+        defaultExpandIcon={<PlusSquare />}
+        defaultEndIcon={<CloseSquare />}
+        onNodeToggle={handleToggle}
+      >
+        {list.map(x => {
+          return <StyledTreeItem key={x.id} nodeId={x.id.toString()} label={getLabel(x)}>{GetNode(x.nodes)}</StyledTreeItem>
+        })}
+      </TreeView>
     </div>
   );
 }
