@@ -20,7 +20,8 @@ export default function Home() {
         }
 
         authService.getUser().then(user => {
-
+            console.log("uu");
+            console.log(user);
             if (user == null) {
                 setUserAuthenticated(false);
             }
@@ -39,38 +40,6 @@ export default function Home() {
     const logout = () => {
         authService.logout();
     }
-
-    const loadDate = (date) => {
-        setDate( date );
-    }
-
-    // componentDidMount() {
-
-    //     console.log("calling endpoint to get current date");
-    //     var date = await apiService.getDate();
-    //     // fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DATE}`, {
-    //     //     mode: 'cors',
-    //     //     crossDomain: true,
-    //     //     method: 'POST',
-    //     //     headers: { 'Content-Type': 'application/json' }
-    //     // })
-    //     //     .then(respone => respone.json())
-    //     //     .then(result => this.loadDate(result))
-    //     //     .catch(error => error);
-    //     // console.log("Finish post");
-
-
-    //     this.authService.getUser().then(user => {
-
-    //         if (user == null) {
-    //             this.setState({ userAuthenticated: false });
-    //         }
-    //         else {
-    //             this.setState({ userAuthenticated: true });
-    //         }
-    //         console.log(user);
-    //     })
-    // }
 
 
     console.log("User");
