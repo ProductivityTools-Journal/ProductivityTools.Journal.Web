@@ -25,7 +25,6 @@ class Home extends Component {
     }
 
     loadDate = (date) => {
-
         this.setState({ date });
     }
 
@@ -56,8 +55,11 @@ class Home extends Component {
        })
     }
 
+    
 
     render() {
+        console.log("User");
+        console.log(this.authService.getUser());
         //const { isAuthenticated, login, logout } = this.props.auth;
         let mt = moment(this.state.date);
         let dtFormated = mt.format('YYYY.MM.DD hh:mm:ss')       

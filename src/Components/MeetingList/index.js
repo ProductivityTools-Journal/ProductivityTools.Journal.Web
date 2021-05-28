@@ -1,7 +1,7 @@
 import React, { useEffect,useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MeetingItem from 'Components/MeetingItem';
-import { AuthService } from '../../OAuth/OAuth';
+//import { AuthService } from '../../OAuth/OAuth';
 import Tree from 'Components/Tree'
 import * as apiService from 'services/apiService'
 
@@ -12,7 +12,7 @@ export default function MeetingList() {
     const [meetings, setMeetings] = useState([]);
     //const [treeId, setTreeId] = React.useState(-1);
     const params = useParams();
-    let authService = new AuthService();
+    //let authService = new AuthService();
     useEffect(() => {
         const fetchData = async () => {
             console.log("parameter")

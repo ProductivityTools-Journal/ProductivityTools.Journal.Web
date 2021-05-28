@@ -30,23 +30,6 @@ function EditMeeting() {
 
         const meeting = await apiService.fetchMeeting(id);
         setMeeting(meeting);
-
-        // const data = {
-        //     Id: parseInt(id),
-        //     Secret: 'xxx'
-        // }
-
-        // fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_ACTION}`, {
-        //     mode: 'cors',
-        //     crossDomain: true,
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(data)
-        // })
-        //     .then(respone => respone.json())
-        //     .then(result => setMeeting(result))
-        //     .catch(error => error);
-        // console.log("Finish post");
     }
 
     const saveMeeting = () => {
@@ -77,16 +60,16 @@ function EditMeeting() {
     }
 
     const close = () => {
-        history.push('/List/' + params.TreeId);
+        console.log("close");
+        console.log(params);
+        history.push('/List/' + params.Id);
     }
 
 
     if (meeting == null) {
-        debugger;
         return <div>xxx</div>
     }
     else {
-        debugger;
         return (
             <fieldset>
                 <p>Title: {meeting.subject}</p>

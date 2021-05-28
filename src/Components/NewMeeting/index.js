@@ -10,14 +10,6 @@ function NewMeeting() {
     const params = useParams();
     let history = useHistory();
 
-    // useEffect(() => {
-    //     console.log("useeffect");
-    //     console.log(meeting);
-    //   }, [meeting]);
-
-    console.log('pawel');
-    console.log(JSON.stringify(params));
-
     const updateState = (event) => {
         const value = event.target.value;
         const name = event.target.name;
@@ -32,21 +24,6 @@ function NewMeeting() {
         const r=await apiService.saveMeeting(meeting);
         setMeeting(r);
         return;
-        // debugger;
-        // id = params.TreeId;
-        // meeting.TreeId=Number(id);
-        // console.log("Save meeting");
-        // fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, {
-        //     mode: 'cors',
-        //     crossDomain: true,
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(meeting)
-        // })
-        //     .then(respone => respone.json())
-        //     .then(result => this.setMeeting(result))
-        //     .catch(error => error);
-        // console.log("Finish post");
     }
 
     const close=()=>{

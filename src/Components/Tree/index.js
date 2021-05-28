@@ -86,14 +86,40 @@ export default function CustomizedTreeView() {
   const params = useParams();
 
   useEffect(() => {
+
+    const getNodePath = (node, targetId)=> {
+      if (targetId == null) return [];
+      if (node != null) {
+        if (node.id === targetId) {
+          var result = [];
+          result = result.concat([targetId.toString()]);
+          return result;
+        } else {
+          for (let n of node.nodes) {
+            //node.nodes.forEach(x=>{
+            var chain = getNodePath(n, targetId);
+            if (chain != null) {
+              var finalResult = chain.concat(node.id.toString());
+              setExpanded(finalResult)
+              return finalResult;
+            }
+          }
+        }
+      }
+      else {
+        return [];
+      }
+    }
+
     const fetchData = async () => {
       const r = await apiService.getTree();
       console.log(r);
       setList(r);
+      getNodePath(r[0],params.TreeId);
     };
 
     fetchData();
-  }, []);
+  }, [params.TreeId]);
 
 
   function getLabel(x) {
@@ -118,42 +144,31 @@ export default function CustomizedTreeView() {
     }
   }
 
-  // function getNodesIdRoot(list) {
+ 
 
-  //   // return ["0", "1", "2"];
-  //   if (list.length) {
-  //     var result =getNodeIds(list[0]);
-  //     return result;
+  // function getNodePath(node, targetId) {
+  //   if (targetId == null) return [];
+  //   if (node != null) {
+  //     if (node.id === targetId) {
+  //       var result = [];
+  //       result = result.concat([targetId.toString()]);
+  //       return result;
+  //     } else {
+  //       for (let n of node.nodes) {
+  //         //node.nodes.forEach(x=>{
+  //         var chain = getNodePath(n, targetId);
+  //         if (chain != null) {
+  //           var finalResult = chain.concat(node.id.toString());
+  //           setExpanded(finalResult)
+  //           return finalResult;
+  //         }
+  //       }
+  //     }
   //   }
   //   else {
   //     return [];
   //   }
-
   // }
-
-  function getNodePath(node, targetId) {
-    if (targetId == null) return [];
-    if (node != null) {
-      if (node.id === targetId) {
-        var result = [];
-        result = result.concat([targetId.toString()]);
-        return result;
-      } else {
-        for (let n of node.nodes) {
-          //node.nodes.forEach(x=>{
-          var chain = getNodePath(n, targetId);
-          if (chain != null) {
-            var finalResult = chain.concat(node.id.toString());
-            setExpanded(finalResult)
-            return finalResult;
-          }
-        }
-      }
-    }
-    else {
-      return [];
-    }
-  }
 
   // function getNodeIds(node) {
   //   //return ["0", "1", "2"];
