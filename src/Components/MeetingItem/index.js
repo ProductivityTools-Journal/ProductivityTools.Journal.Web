@@ -18,7 +18,7 @@ class MeetingItem extends Component {
 		let mt = moment(this.props.meeting.date);
 		let dtDescription = mt.fromNow();
 		let dtFormated = mt.format('YYYY.MM.DD hh:mm')
-		const buttonStyle={textAlign:'right'}
+		const buttonStyle={textAlign:'left'}
 		return (
 			<fieldset  key={this.props.meeting.meetingId}>
 				<legend>[{this.props.meeting.meetingId}] {dtFormated} ({dtDescription}) - {this.props.meeting.subject} Treeid:{this.props.meeting.treeId}</legend>

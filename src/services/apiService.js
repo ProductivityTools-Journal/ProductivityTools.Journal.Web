@@ -22,6 +22,13 @@ async function fetchMeeting(id) {
     return response.data;
 }
 
+async function updateMeeting(meeting){
+    console.log("updating meeeting");
+    console.log(meeting);
+    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, meeting)
+    return response.data;
+}
+
 async function getDate(){
     const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DATE}`)
     return response.data;
@@ -49,6 +56,7 @@ export {
     getTree,
     saveMeeting,
     fetchMeeting,
+    updateMeeting,
     getDate,
     fetchMeetingList
 }

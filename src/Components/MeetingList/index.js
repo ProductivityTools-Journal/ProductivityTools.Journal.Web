@@ -25,67 +25,7 @@ export default function MeetingList() {
         fetchData();
     }, [params.TreeId]);
 
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         meetings: [],
-    //         treeId: -1
-    //     }
-    //     this.setMeetings = this.setMeetings.bind(this);
-    //     this.authService = new AuthService();
-    //     this.TreeId = this.props.match.params.TreeId;
-    //     this.setState({ treeId: this.props.match.params.TreeId });
-    // }
 
-    // setMeetings(meetings) {
-    //     console.log(meetings)
-    //     this.setState({ meetings });
-    // }
-
-    // componentDidMount() {
-    //     this.callService();
-    // }
-
-    // async function callService() {
-    //     console.log("Post");
-    //     var data = await apiService.fetchMeetingList(params.TreeId);
-    //     setMeetings(data);
-    //     // authService.getUser().then(async user =>  {
-    //     //     if (user && user.access_token) {
-    //     //         var data=await apiService.fetchMeetingList(params.TreeId);
-    //     //         setMeetings(data);
-    //     //         // fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, {
-    //     //         //     mode: 'cors',
-    //     //         //     crossDomain: true,
-    //     //         //     method: 'POST',
-    //     //         //     headers: {
-    //     //         //         'Content-Type': 'application/json',
-    //     //         //         Authorization: `Bearer ${user.access_token}`
-    //     //         //     },
-    //     //         //     body: JSON.stringify({ Id: Number(params.TreeId), DrillDown: false })
-
-    //     //         // })
-    //     //         //     .then(respone => respone.json())
-    //     //         //     .then(result => this.setMeetings(result))
-    //     //         //     .catch(error => error);
-    //     //         // console.log("Finish post");
-    //     //     }
-    //     // })
-    // }
-
-    // componentDidUpdate(prevProps) {
-    //     let newTreeId = this.props.match.params.TreeId;
-    //     if(newTreeId!==prevProps.match.params.TreeId){
-    //     //if (newTreeId != this.state.treeId) {
-    //         this.callService();
-    //     }
-    // }
-
-    // render() {
-    //     console.log("render");
-
-
-    //     const { meetings } = this.state;
     console.log("meetings before render");
     console.log(meetings);
         return (

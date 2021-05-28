@@ -17,7 +17,6 @@ function EditMeeting() {
     function getMeeting() {
         if (params.Id) {
             let id = params.Id;
-            console.log(id);
             fetchMeeting(id);
         }
         else {
@@ -27,24 +26,27 @@ function EditMeeting() {
 
     async function fetchMeeting(id) {
         console.log("Fetch one meeting from server");
-
         const meeting = await apiService.fetchMeeting(id);
+        console.log(meeting);
         setMeeting(meeting);
     }
 
     const saveMeeting = () => {
-        console.log("Save meeting");
-        fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, {
-            mode: 'cors',
-            crossDomain: true,
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(meeting)
-        })
-            .then(respone => respone.json())
-            .then(result => setMeeting(result))
-            .catch(error => error);
-        console.log("Finish post");
+        console.log("meeting before save");
+        console.log(meeting);
+        apiService.updateMeeting(meeting);
+        // console.log("Save meeting");
+        // fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, {
+        //     mode: 'cors',
+        //     crossDomain: true,
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(meeting)
+        // })
+        //     .then(respone => respone.json())
+        //     .then(result => setMeeting(result))
+        //     .catch(error => error);
+        // console.log("Finish post");
     }
 
     const updateState = (event) => {
@@ -52,7 +54,7 @@ function EditMeeting() {
         const name = event.target.name
 
         const x = { ...meeting, [name]: value }
-        setMeeting({ x })
+        setMeeting(x)
     }
 
     const save = () => {

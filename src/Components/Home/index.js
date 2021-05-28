@@ -44,7 +44,6 @@ export default function Home() {
 
     console.log("User");
     console.log(authService.getUser());
-    //const { isAuthenticated, login, logout } = this.props.auth;
     let mt = moment(date);
     let dtFormated = mt.format('YYYY.MM.DD hh:mm:ss')
 
