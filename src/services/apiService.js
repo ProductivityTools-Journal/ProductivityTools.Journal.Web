@@ -22,6 +22,11 @@ async function fetchMeeting(id) {
     return response.data;
 }
 
+async function getDate(){
+    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DATE}`)
+    return response.data;
+}
+
 async function fetchMeetingList(treeId) {
     let authService = new AuthService();
     
@@ -44,5 +49,6 @@ export {
     getTree,
     saveMeeting,
     fetchMeeting,
+    getDate,
     fetchMeetingList
 }
