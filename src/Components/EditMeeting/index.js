@@ -6,23 +6,18 @@ import { config } from 'Consts';
 import { useParams, useHistory } from "react-router-dom";
 import * as apiService from 'services/apiService'
 
-function EditMeeting() {
+function EditMeeting(params) {
 
     const [meeting, setMeeting] = useState();
-    const params = useParams();
+    const query = useParams();
     let history = useHistory();
 
     useEffect(getMeeting, []);
 
     function getMeeting() {
-        if (params.Id) {
-            let id = params.Id;
-            fetchMeeting(id);
-        }
-        else {
-            setMeeting({ meeting: { beforeNotes: '', duringNotes: '', afterNotes: '' } });
-        }
+        fetchMeeting(params.meetingId);
     }
+
 
     async function fetchMeeting(id) {
         console.log("Fetch one meeting from server");
@@ -59,12 +54,14 @@ function EditMeeting() {
 
     const save = () => {
         saveMeeting();
+        params.clearEditMeeting();
     }
 
     const close = () => {
         console.log("close");
         console.log(params);
-        history.push('/List/' + params.Id);
+        //history.push('/List/' + params.Id);
+        params.clearEditMeeting();
     }
 
 

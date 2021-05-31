@@ -10,6 +10,7 @@ import {
 import EditMeeting from 'Components/EditMeeting';
 import NewMeeting from 'Components/NewMeeting';
 import Home from 'Components/Home';
+import Main from 'Components/Main'
 
 
 class App extends Component {
@@ -26,8 +27,8 @@ class App extends Component {
 						<NewMeeting />
 					</Route>
 					<Route path="/Edit/:Id" render={(props) => (<EditMeeting {...props} key={this.props.Id} />)}></Route>
-					<Route path="/List/:TreeId" render={(props => <MeetingList auth={this.auth} {...props} />)}></Route>
-					<Route path="/List/" exact render={(props => <MeetingList auth={this.auth} {...props} />)}></Route>
+					<Route path="/List/:TreeId" render={(props => <Main auth={this.auth} {...props} />)}></Route>
+					<Route path="/List/" exact render={(props => <Main auth={this.auth} {...props} />)}></Route>
 					<Route path="/">
 						<Home auth={this.auth} {...this.props} />
 					</Route>
