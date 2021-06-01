@@ -18,7 +18,6 @@ function EditMeeting(params) {
         fetchMeeting(params.meetingId);
     }
 
-
     async function fetchMeeting(id) {
         console.log("Fetch one meeting from server");
         const meeting = await apiService.fetchMeeting(id);

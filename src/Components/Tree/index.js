@@ -79,7 +79,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CustomizedTreeView() {
+export default function CustomizedTreeView(props) {
   const [expanded, setExpanded] = useState([]);
   const classes = useStyles();
   const [list, setList] = useState([]);
@@ -134,10 +134,8 @@ export default function CustomizedTreeView() {
           <div>
 
             <Link to={`/List/${x.id}`}>{getLabel(x)}</Link>
-            <Link to={`/New/${x.id}`}>
-              <Button>+</Button>
+              <Button onClick={props.createNewMeeting}>+</Button>
               <Checkbox onClick={(e) => { e.stopPropagation(); }}></Checkbox>
-            </Link>
           </div>}>{GetNode(x.nodes)}</StyledTreeItem>
       })
       )
@@ -145,53 +143,6 @@ export default function CustomizedTreeView() {
   }
 
  
-
-  // function getNodePath(node, targetId) {
-  //   if (targetId == null) return [];
-  //   if (node != null) {
-  //     if (node.id === targetId) {
-  //       var result = [];
-  //       result = result.concat([targetId.toString()]);
-  //       return result;
-  //     } else {
-  //       for (let n of node.nodes) {
-  //         //node.nodes.forEach(x=>{
-  //         var chain = getNodePath(n, targetId);
-  //         if (chain != null) {
-  //           var finalResult = chain.concat(node.id.toString());
-  //           setExpanded(finalResult)
-  //           return finalResult;
-  //         }
-  //       }
-  //     }
-  //   }
-  //   else {
-  //     return [];
-  //   }
-  // }
-
-  // function getNodeIds(node) {
-  //   //return ["0", "1", "2"];
-
-  //   if (node != null) {
-  //     console.log(node);
-  //     var result = [];
-  //     result=result.concat([node.id.toString()]);
-  //     if (node.nodes != null && node.nodes.length > 0) {
-  //         node.nodes.forEach(x => {
-  //         result=result.concat(getNodeIds(x));
-  //       })
-  //     }
-  //     return result;
-
-
-  //     return ["0", "1", "2"];
-  //   }
-  //   else {
-  //     return [];
-  //   }
-
-  //}
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);

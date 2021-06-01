@@ -24,9 +24,6 @@ function Notes(props) {
 			/>
 		</div>
 	)
-
-
-
 }
 
 export default Notes;
