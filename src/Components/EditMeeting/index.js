@@ -30,26 +30,20 @@ function EditMeeting(params) {
         console.log("meeting before save");
         console.log(meeting);
         apiService.updateMeeting(meeting);
-        // console.log("Save meeting");
-        // fetch(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, {
-        //     mode: 'cors',
-        //     crossDomain: true,
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(meeting)
-        // })
-        //     .then(respone => respone.json())
-        //     .then(result => setMeeting(result))
-        //     .catch(error => error);
-        // console.log("Finish post");
     }
 
     const updateState = (event) => {
         const value = event.target.value;
         const name = event.target.name
-
-        const x = { ...meeting, [name]: value }
+        console.log("meeting from state meeting1");
+        console.log(meeting)
+        console.log(name);
+        let x = { ...meeting, [name]: value }
+        console.log(x);
         setMeeting(x)
+        console.log("meeting from state meeting2");
+        console.log(meeting)
+        setMeeting(prev => ({ ...prev, [name]: value }));
     }
 
     const save = () => {
@@ -78,6 +72,7 @@ function EditMeeting(params) {
                 <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} />
                 <Button variant="contained" color="primary" onClick={save}>Save</Button>
                 <Button variant="contained" color="primary" onClick={close}>Close</Button>
+                <div>{meeting.beforeNotes}</div>
             </fieldset>
         )
     }
