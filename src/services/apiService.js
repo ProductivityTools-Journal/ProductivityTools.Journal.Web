@@ -41,9 +41,19 @@ async function callAuthorizedEndpoint(call) {
             const header = {
                 headers: { Authorization: `Bearer ${user.access_token}` }
             };
-            
-            const result=await call(header);
-            return result;
+            try {
+                const result = await call(header);
+                return result;
+            }
+            catch (error) {
+                if (error.response.status === 401) {
+                    console.log("try to renew token");
+                    authService.renewToken().then(async renewedToken => {
+                        const result = await call(header);
+                        return result;
+                    })
+                }
+            }
         } else if (user) {
             console.log("api call2");
         }
@@ -55,7 +65,7 @@ async function callAuthorizedEndpoint(call) {
 
 async function fetchMeetingList(treeId) {
 
-    let call= async (header)=>{
+    let call = async (header) => {
         const data = { Id: Number(treeId), DrillDown: false }
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, data, header)
         console.log(response.data);
