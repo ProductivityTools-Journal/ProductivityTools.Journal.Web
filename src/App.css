@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .Meeting{
   border: 1px solid black;
   
@@ -6,4 +7,16 @@
 .NotesReadOnly{
   border: 1px solid gray;
   border-radius: 5px 5px
+=======
+
+fieldset {
+  border: dotted;
+  border-radius: 10px;
+  border-width: 1px;
+  margin: 10px
+}
+
+.notesInput{
+  margin-top: 10px;
+>>>>>>> 1a8ec8c0e1383948bc3793ae3b5e482bffca438f
 }

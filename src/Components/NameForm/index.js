@@ -31,4 +31,8 @@ class NameForm extends Component {
 	}
   }
 
+<<<<<<< HEAD
   export default NameForm
+=======
+  export default NameForm;
+>>>>>>> 1a8ec8c0e1383948bc3793ae3b5e482bffca438f
