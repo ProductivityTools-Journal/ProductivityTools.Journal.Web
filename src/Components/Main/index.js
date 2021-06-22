@@ -16,7 +16,8 @@ export default function Main() {
         setEditedMeeting(meetingId)
     }
 
-    function newMeeting() {
+    function newMeeting(treeId) {
+        setSelectedTreeNode(treeId)
         setEditedMeeting(null)
     }
 
@@ -38,7 +39,6 @@ export default function Main() {
 
     return (
         <div>
-            <button onClick={newMeeting}>dddd</button>
             <div>EditedMeeting:{editedMeeting}</div>
             <div style={{ width: '400px', float: 'left' }}><Tree setSelectedTreeNode={setSelectedTreeNode} createNewMeeting={newMeeting}></Tree></div>
             {getContentComponent()}
