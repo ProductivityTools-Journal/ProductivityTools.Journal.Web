@@ -8,7 +8,7 @@ import {
 	Link
 } from "react-router-dom";
 import EditMeeting from 'Components/EditMeeting';
-import NewMeeting from 'Components/NewMeeting';
+//import NewMeeting from 'Components/NewItem';
 import Home from 'Components/Home';
 import Main from 'Components/Main'
 
@@ -23,9 +23,9 @@ class App extends Component {
 					<Link to="/List">List</Link>
 				</div>
 				<Switch>
-					<Route path="/New/:TreeId">
+					{/* <Route path="/New/:TreeId">
 						<NewMeeting />
-					</Route>
+					</Route> */}
 					<Route path="/Edit/:Id" render={(props) => (<EditMeeting {...props} key={this.props.Id} />)}></Route>
 					<Route path="/List/:TreeId" render={(props => <Main auth={this.auth} {...props} />)}></Route>
 					<Route path="/List/" exact render={(props => <Main auth={this.auth} {...props} />)}></Route>

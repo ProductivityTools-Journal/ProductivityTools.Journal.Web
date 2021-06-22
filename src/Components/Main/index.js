@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import MeetingItem from 'Components/MeetingItem';
-//import { AuthService } from '../../OAuth/OAuth';
 import Tree from 'Components/Tree'
 import MeetingList from 'Components/MeetingList'
 import EditMeeting from 'Components/EditMeeting'
 import * as apiService from 'services/apiService'
-import NewMeeting from 'Components/NewMeeting';
+import NewJournalItem from 'Components/NewJournalItem';
 
 export default function Main() {
 
@@ -29,7 +28,7 @@ export default function Main() {
             return <EditMeeting meetingId={editedMeeting} clearEditMeeting={clearEditMeeting}></EditMeeting>
         }
         else if (editedMeeting === null) {
-            return <NewMeeting clearEditMeeting={clearEditMeeting}></NewMeeting>
+            return <NewJournalItem clearEditMeeting={clearEditMeeting}></NewJournalItem>
         }
         else {
             return <MeetingList onMeetingEdit={setEditMeeting}></MeetingList>
