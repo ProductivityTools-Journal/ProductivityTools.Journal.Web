@@ -1,0 +1,18 @@
+.context-menu {
+    position: fixed;
+    border: 1px solid black;
+    background-color: wheat;
+}
+
+.context-menu .context-menuItem {
+    padding: 4px;
+}
+
+.context-menu .context-menuItem:not("first-child") {
+    border-top: 1px solid black;
+}
+
+.context-menu .context-menuItem:hover {
+    background-color: blue;
+    cursor: pointer;
+}

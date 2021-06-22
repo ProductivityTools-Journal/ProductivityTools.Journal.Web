@@ -46,9 +46,12 @@ async function callAuthorizedEndpoint(call) {
                 return result;
             }
             catch (error) {
-                if (error.response.status === 401) {
+                if (error.response !=null && error.response.status === 401) {
                     console.log("try to renew token");
                     authService.renewToken().then(async renewedToken => {
+                        const header = {
+                            headers: { Authorization: `Bearer ${renewedToken.access_token}` }
+                        };
                         const result = await call(header);
                         return result;
                     })

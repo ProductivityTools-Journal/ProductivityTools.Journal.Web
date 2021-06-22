@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
@@ -8,6 +8,8 @@ import Collapse from '@material-ui/core/Collapse';
 import * as apiService from 'services/apiService'
 import { Button, Checkbox } from '@material-ui/core';
 import { Link, useParams } from "react-router-dom";
+import ContextMenu from '../ContextMenu'
+import './index.css'
 
 
 function MinusSquare(props) {
@@ -85,9 +87,11 @@ export default function CustomizedTreeView(props) {
   const [list, setList] = useState([]);
   const params = useParams();
 
+  const containerRef = useRef(null);
+
   useEffect(() => {
 
-    const getNodePath = (node, targetId)=> {
+    const getNodePath = (node, targetId) => {
       if (targetId == null) return [];
       if (node != null) {
         if (node.id === targetId) {
@@ -115,7 +119,7 @@ export default function CustomizedTreeView(props) {
       const r = await apiService.getTree();
       console.log(r);
       setList(r);
-      getNodePath(r[0],params.TreeId);
+      getNodePath(r[0], params.TreeId);
     };
 
     fetchData();
@@ -130,26 +134,38 @@ export default function CustomizedTreeView(props) {
   function GetNode(nodes) {
     if (nodes !== undefined) {
       return (nodes.map(x => {
-        return <StyledTreeItem nodeId={x.id.toString()} key={x.id} label={
+        return <StyledTreeItem nodeId={x.id.toString()} contextmenuid={x.id} key={x.id} label={
           <div>
 
             <Link to={`/List/${x.id}`}>{getLabel(x)}</Link>
-              <Button onClick={props.createNewMeeting}>+</Button>
-              <Checkbox onClick={(e) => { e.stopPropagation(); }}></Checkbox>
+            <Button onClick={props.createNewMeeting}>+</Button>
+            <Checkbox onClick={(e) => { e.stopPropagation(); }}></Checkbox>
           </div>}>{GetNode(x.nodes)}</StyledTreeItem>
       })
       )
     }
   }
 
- 
+
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
   };
 
+  const menuItems = [
+    {
+      text: 'Add new journal item',
+      onclick: (id) => { console.log(`Item one from container  ${id} clicked`); }
+    },
+    {
+      text: 'Add new tree item',
+      onclick: (id) => { console.log(`Item two from container ${id} clicked`); }
+    }
+  ];
+
   return (
-    <div><p>xx</p>
+    <div className='conainer' ref={containerRef}>
+      <p>pawel</p>
       <TreeView
         className={classes.root}
         expanded={expanded}
@@ -160,9 +176,11 @@ export default function CustomizedTreeView(props) {
         onNodeToggle={handleToggle}
       >
         {list.map(x => {
-          return <StyledTreeItem key={x.id} nodeId={x.id.toString()} label={getLabel(x)}>{GetNode(x.nodes)}</StyledTreeItem>
+          return <StyledTreeItem key={x.id} contextmenuid={x.id} nodeId={x.id.toString()} label={getLabel(x)}>{GetNode(x.nodes)}</StyledTreeItem>
         })}
       </TreeView>
+      <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu>
+
     </div>
   );
 }
