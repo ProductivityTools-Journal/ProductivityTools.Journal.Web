@@ -13,11 +13,12 @@ export default function MeetingList(props) {
     const params = useParams();
     useEffect(() => {
         const fetchData = async () => {
-            const data = await apiService.fetchMeetingList(params.TreeId);
+            const data = await apiService.fetchMeetingList(props.selectedTreeNode);
             setMeetings(data);
         }
         fetchData();
-    }, [params.TreeId]);
+        console.log("fetching data");
+    }, [props.selectedTreeNode]);
 
 
     return (

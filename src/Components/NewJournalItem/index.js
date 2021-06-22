@@ -4,10 +4,9 @@ import Button from '@material-ui/core/Button'
 import { useParams, useHistory } from 'react-router-dom'
 import * as apiService from 'services/apiService'
 
-function NewMeeting(props) {
+function NewJournalItem(props) {
 
     const [meeting, setMeeting] = useState({ subject: 'InitialMeetingName', beforeNotes: null, duringNotes: null, afterNotes: null });
-    const params = useParams();
     let history = useHistory();
 
     const updateState = (event) => {
@@ -19,7 +18,7 @@ function NewMeeting(props) {
     }
 
     const save = async () => {
-        let id = params.TreeId;
+        let id = props.TreeId;
         meeting.TreeId = Number(id);
         const r = await apiService.saveMeeting(meeting);
         setMeeting(r);
@@ -44,4 +43,4 @@ function NewMeeting(props) {
 
 }
 
-export default NewMeeting;
+export default NewJournalItem;

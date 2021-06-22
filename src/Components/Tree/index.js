@@ -131,13 +131,17 @@ export default function CustomizedTreeView(props) {
     return l;
   }
 
+  const treeClick = (e, treeId) => {
+    e.stopPropagation();
+    props.setSelectedTreeNode(treeId);
+  }
+
   function GetNode(nodes) {
     if (nodes !== undefined) {
       return (nodes.map(x => {
         return <StyledTreeItem nodeId={x.id.toString()} contextmenuid={x.id} key={x.id} label={
           <div>
-
-            <Link to={`/List/${x.id}`}>{getLabel(x)}</Link>
+            <Link to="#" onClick={(e) => treeClick(e, x.id)}>{getLabel(x)}</Link>
             <Button onClick={props.createNewMeeting}>+</Button>
             <Checkbox onClick={(e) => { e.stopPropagation(); }}></Checkbox>
           </div>}>{GetNode(x.nodes)}</StyledTreeItem>

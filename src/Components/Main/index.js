@@ -10,6 +10,7 @@ import NewJournalItem from 'Components/NewJournalItem';
 export default function Main() {
 
     const [editedMeeting, setEditedMeeting] = useState(undefined);
+    const [selectedTreeNode,setSelectedTreeNode]=useState(1);
 
     function setEditMeeting(meetingId) {
         setEditedMeeting(meetingId)
@@ -28,10 +29,10 @@ export default function Main() {
             return <EditMeeting meetingId={editedMeeting} clearEditMeeting={clearEditMeeting}></EditMeeting>
         }
         else if (editedMeeting === null) {
-            return <NewJournalItem clearEditMeeting={clearEditMeeting}></NewJournalItem>
+            return <NewJournalItem TreeId={selectedTreeNode} clearEditMeeting={clearEditMeeting}></NewJournalItem>
         }
         else {
-            return <MeetingList onMeetingEdit={setEditMeeting}></MeetingList>
+            return <MeetingList selectedTreeNode={selectedTreeNode} onMeetingEdit={setEditMeeting}></MeetingList>
         }
     }
 
@@ -39,7 +40,7 @@ export default function Main() {
         <div>
             <button onClick={newMeeting}>dddd</button>
             <div>EditedMeeting:{editedMeeting}</div>
-            <div style={{ width: '400px', float: 'left' }}><Tree createNewMeeting={newMeeting}></Tree></div>
+            <div style={{ width: '400px', float: 'left' }}><Tree setSelectedTreeNode={setSelectedTreeNode} createNewMeeting={newMeeting}></Tree></div>
             {getContentComponent()}
         </div>
     );
