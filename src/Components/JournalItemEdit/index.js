@@ -6,7 +6,7 @@ import { config } from 'Consts';
 import { useParams, useHistory } from "react-router-dom";
 import * as apiService from 'services/apiService'
 
-function EditMeeting(params) {
+function JournalItemEdit(params) {
 
     const [meeting, setMeeting] = useState();
     const query = useParams();
@@ -77,4 +77,4 @@ function EditMeeting(params) {
     }
 }
 
-export default EditMeeting;
+export default JournalItemEdit;

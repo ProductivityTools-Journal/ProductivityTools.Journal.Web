@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import MeetingItem from 'Components/MeetingItem';
+import JournalItem from 'Components/JournalItem';
 import Tree from 'Components/Tree'
-import MeetingList from 'Components/MeetingList'
-import EditMeeting from 'Components/EditMeeting'
+import JournalList from 'Components/JournalList'
+import JournalItemEdit from 'Components/JournalItemEdit'
 import * as apiService from 'services/apiService'
-import NewJournalItem from 'Components/NewJournalItem';
+import JournalItemNew from 'Components/JournalItemNew';
 
 export default function Main() {
 
     const [editedMeeting, setEditedMeeting] = useState(undefined);
-    const [selectedTreeNode,setSelectedTreeNode]=useState(1);
+    const [selectedTreeNode, setSelectedTreeNode] = useState(1);
 
     function setEditMeeting(meetingId) {
         setEditedMeeting(meetingId)
@@ -27,13 +27,13 @@ export default function Main() {
 
     function getContentComponent() {
         if (editedMeeting) {
-            return <EditMeeting meetingId={editedMeeting} clearEditMeeting={clearEditMeeting}></EditMeeting>
+            return <JournalItemEdit meetingId={editedMeeting} clearEditMeeting={clearEditMeeting} />
         }
         else if (editedMeeting === null) {
-            return <NewJournalItem TreeId={selectedTreeNode} clearEditMeeting={clearEditMeeting}></NewJournalItem>
+            return <JournalItemNew TreeId={selectedTreeNode} clearEditMeeting={clearEditMeeting} />
         }
         else {
-            return <MeetingList selectedTreeNode={selectedTreeNode} onMeetingEdit={setEditMeeting}></MeetingList>
+            return <JournalList selectedTreeNode={selectedTreeNode} onMeetingEdit={setEditMeeting} />
         }
     }
 
