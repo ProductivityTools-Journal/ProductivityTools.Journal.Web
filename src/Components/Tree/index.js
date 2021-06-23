@@ -142,9 +142,8 @@ export default function CustomizedTreeView(props) {
         return <StyledTreeItem nodeId={x.id.toString()} contextmenuid={x.id} key={x.id} label={
           <div>
             <Link to="#" onClick={(e) => treeClick(e, x.id)}>{getLabel(x)}</Link>
-            {/* <Button onClick={props.createNewMeeting}>+</Button>
-            <Checkbox onClick={(e) => { e.stopPropagation(); }}></Checkbox> */}
-          </div>}>{GetNode(x.nodes)}</StyledTreeItem>
+          </div>}>{GetNode(x.nodes)}
+        </StyledTreeItem>
       })
       )
     }
@@ -163,7 +162,7 @@ export default function CustomizedTreeView(props) {
     },
     {
       text: 'Add new tree item',
-      onclick: (id) => { console.log(`Item two from container ${id} clicked`); }
+      onclick: (id) => { console.log(`tree item added`); }
     }
   ];
 
