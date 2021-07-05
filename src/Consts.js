@@ -13,7 +13,7 @@ export const PATH_TREE_ADDITEM='NewNode'
 //export const stsAuthority = 'http://192.168.0.51:8083/';
 
 
-export const clientScope = 'openid profile ProductivityTools.Meetings.API offline_access';
+export const clientScope = 'openid profile ProductivityTools.Meetings.API';
 
 
 const dev={
