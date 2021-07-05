@@ -87,8 +87,10 @@ export default function CustomizedTreeView(props) {
   const [list, setList] = useState([]);
   const params = useParams();
 
-  const [modalOpen, setModalOpen] = useState(true);
-  const handleModalClose = () => { setModalOpen(false); }
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleModalClose = () => {
+    setModalOpen(false);
+  }
   const handleModalOpen = () => { setModalOpen(true); }
 
   const containerRef = useRef(null);
@@ -162,11 +164,11 @@ export default function CustomizedTreeView(props) {
   const menuItems = [
     {
       text: 'Add new journal item',
-      onclick: (id) => { props.createNewMeeting(id); console.log(`Item one from container  ${id} clicked`); }
+      onclick: (treeId) => { props.setSelectedTreeNode(treeId); props.createNewMeeting(); console.log(`Item one from container  ${treeId} clicked`); }
     },
     {
       text: 'Add new tree item',
-      onclick: (id) => { handleModalOpen(); }
+      onclick: (treeId) => { props.setSelectedTreeNode(treeId); handleModalOpen(); }
     }
   ];
 
@@ -187,7 +189,7 @@ export default function CustomizedTreeView(props) {
         })}
       </TreeView>
       <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu>
-      <TreeItemNewModal open={modalOpen}  onClose={handleModalClose} />
+      <TreeItemNewModal open={modalOpen} selectedTreeNode={props.selectedTreeNode} handleModalClose={handleModalClose} />
     </div>
   );
 }

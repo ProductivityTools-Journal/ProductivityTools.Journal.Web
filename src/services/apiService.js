@@ -8,9 +8,9 @@ async function getTree() {
     return response.data;
 }
 
-async function addTreeNode(name,parent) {
+async function addTreeNode(parentId, name) {
     let call = async (header) => {
-        const data = { Name: name, Parent: parent }
+        const data = { ParentId: parentId, Name: name }
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_ADDITEM}`, data, header)
         console.log(response.data);
         return response.data;

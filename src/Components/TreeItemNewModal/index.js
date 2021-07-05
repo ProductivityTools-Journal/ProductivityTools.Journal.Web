@@ -20,20 +20,26 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TreeItemNewModal(props) {
 
+    const [treeName, setTreeeName] = useState('new');
+
     const classes = useStyles();
 
     const AddNewItem = function () {
-        apiService.addTreeNode();
+        apiService.addTreeNode(Number(props.selectedTreeNode), treeName);
+        props.handleModalClose();
+    }
+
+    const handleChange = (e) => {
+        setTreeeName(e.target.value);
     }
 
     const body = (
         <div className={classes.paper}>
             <p>New tree item name:</p>
-            <input type='text'></input>
+            <input type='text' value={treeName} onChange={handleChange} />
             <button onClick={() => AddNewItem()}>Add</button>
         </div>
     )
-
     return <Modal
         {...props} //modal open and close
     ><p>{body}</p></Modal>
