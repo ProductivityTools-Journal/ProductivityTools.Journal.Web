@@ -50,7 +50,7 @@ export default function Home() {
 
     return (
         <div>
-            <p>Welcome on home page of ProductivityTools.Meeting</p>
+            <p>Welcome on home page of ProductivityTools.Meeting :-)</p>
             <p>{date ? `Server responded with date ${dtFormated}` : "Server hasn't responded yet"}</p>
             {userAuthenticated ? (<Link to="/List">List</Link>) : <p></p>}
             <button onClick={userAuthenticated ? logout : login}>{userAuthenticated ? "Log out" : "Log in"}</button>
