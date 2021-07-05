@@ -10,7 +10,7 @@ import { Button, Checkbox } from '@material-ui/core';
 import { Link, useParams } from "react-router-dom";
 import ContextMenu from '../ContextMenu'
 import './index.css'
-
+import TreeItemNewModal from '../TreeItemNewModal'
 
 function MinusSquare(props) {
   return (
@@ -87,6 +87,10 @@ export default function CustomizedTreeView(props) {
   const [list, setList] = useState([]);
   const params = useParams();
 
+  const [modalOpen, setModalOpen] = useState(true);
+  const handleModalClose = () => { setModalOpen(false); }
+  const handleModalOpen = () => { setModalOpen(true); }
+
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -162,7 +166,7 @@ export default function CustomizedTreeView(props) {
     },
     {
       text: 'Add new tree item',
-      onclick: (id) => { console.log(`tree item added`); }
+      onclick: (id) => { handleModalOpen(); }
     }
   ];
 
@@ -183,7 +187,7 @@ export default function CustomizedTreeView(props) {
         })}
       </TreeView>
       <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu>
-
+      <TreeItemNewModal open={modalOpen}  onClose={handleModalClose} />
     </div>
   );
 }

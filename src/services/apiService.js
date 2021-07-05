@@ -8,6 +8,16 @@ async function getTree() {
     return response.data;
 }
 
+async function addTreeNode(name,parent) {
+    let call = async (header) => {
+        const data = { Name: name, Parent: parent }
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_ADDITEM}`, data, header)
+        console.log(response.data);
+        return response.data;
+    }
+    return callAuthorizedEndpoint(call);
+}
+
 async function saveMeeting(meeting) {
     const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, meeting)
     return response.data;
@@ -46,7 +56,7 @@ async function callAuthorizedEndpoint(call) {
                 return result;
             }
             catch (error) {
-                if (error.response !=null && error.response.status === 401) {
+                if (error.response != null && error.response.status === 401) {
                     console.log("try to renew token");
                     authService.renewToken().then(async renewedToken => {
                         const header = {
@@ -100,6 +110,7 @@ async function fetchMeetingList(treeId) {
 
 export {
     getTree,
+    addTreeNode,
     saveMeeting,
     fetchMeeting,
     updateMeeting,
