@@ -18,6 +18,16 @@ async function addTreeNode(parentId, name) {
     return callAuthorizedEndpoint(call);
 }
 
+async function deleteTree(treeId) {
+    let call = async (header) => {
+        const data = { TreeId: Number(treeId) }
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_DELETE}`, data, header)
+        console.log(response.data);
+        return response.data;
+    }
+    return callAuthorizedEndpoint(call);
+}
+
 async function saveMeeting(meeting) {
     const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, meeting)
     return response.data;
@@ -111,6 +121,7 @@ async function fetchMeetingList(treeId) {
 export {
     getTree,
     addTreeNode,
+    deleteTree,
     saveMeeting,
     fetchMeeting,
     updateMeeting,

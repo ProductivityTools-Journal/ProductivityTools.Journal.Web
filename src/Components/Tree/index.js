@@ -11,6 +11,7 @@ import { Link, useParams } from "react-router-dom";
 import ContextMenu from '../ContextMenu'
 import './index.css'
 import TreeItemNewModal from '../TreeItemNewModal'
+import TreeDeleteDialog from '../TreeDeleteDialog';
 
 function MinusSquare(props) {
   return (
@@ -169,8 +170,30 @@ export default function CustomizedTreeView(props) {
     {
       text: 'Add new tree item',
       onclick: (treeId) => { props.setSelectedTreeNode(treeId); handleModalOpen(); }
+    },
+    {
+      text: 'Delete',
+      onclick: (treeId) => { props.setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
     }
   ];
+
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleDeleteDialogOpen = () => {
+    setOpen(true);
+  };
+
+  const handleCloseAndProceed = async () => {
+    console.log("handleCloseAndProceed");
+    let r = await apiService.deleteTree(props.selectedTreeNode);
+    setOpen(false);
+  };
+
+  const handleClose = () => {
+    console.log("handleClose");
+    setOpen(false);
+  };
 
   return (
     <div className='conainer' ref={containerRef}>
@@ -190,6 +213,7 @@ export default function CustomizedTreeView(props) {
       </TreeView>
       <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu>
       <TreeItemNewModal open={modalOpen} selectedTreeNode={props.selectedTreeNode} handleModalClose={handleModalClose} />
+      <TreeDeleteDialog open={open} handleClose={handleClose} handleCloseAndProceed={handleCloseAndProceed}></TreeDeleteDialog>
     </div>
   );
 }
