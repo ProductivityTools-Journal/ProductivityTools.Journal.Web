@@ -8,7 +8,6 @@ import * as moment from 'moment';
 function MeetingItem(props) {
 
 	const [notes, setNotes] = useState('init');
-
 	let mt = moment(props.meeting.date);
 	let dtDescription = mt.fromNow();
 	let dtFormated = mt.format('YYYY.MM.DD hh:mm')
