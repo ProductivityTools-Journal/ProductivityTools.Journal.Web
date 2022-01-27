@@ -12,6 +12,9 @@ import JournalItemEdit from 'Components/JournalItemEdit';
 import Home from 'Components/Home';
 import Main from 'Components/Main'
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 class App extends Component {
 
@@ -34,7 +37,7 @@ class App extends Component {
 					</Route>
 
 				</Switch>
-
+				<ToastContainer />
 			</div>
 		)
 	}

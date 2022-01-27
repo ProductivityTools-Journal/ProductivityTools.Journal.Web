@@ -2,10 +2,14 @@ import axios from 'axios'
 import * as Consts from 'Consts';
 import { config } from 'Consts';
 import { AuthService } from '../OAuth/OAuth';
+import { toast } from 'react-toastify';
 
 async function getTree() {
-    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
-    return response.data;
+    let call = async (header) => {
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
+        return response.data;
+    }
+    return callAuthorizedEndpointWithToast(call,"Trying to get tree","Tree returned");
 }
 
 async function addTreeNode(parentId, name) {
@@ -52,6 +56,17 @@ async function updateMeeting(meeting) {
 async function getDate() {
     const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DATE}`)
     return response.data;
+}
+
+async function callAuthorizedEndpointWithToast(call, pendingMessage, successMessage) {
+    return toast.promise(
+        callAuthorizedEndpoint(call),
+        {
+            pending: pendingMessage ? pendingMessage : "Missing pending message",
+            success: successMessage ? successMessage : "Missing sucesss message",
+            error: 'something happned!!!!'
+        }
+    )
 }
 
 async function callAuthorizedEndpoint(call) {
