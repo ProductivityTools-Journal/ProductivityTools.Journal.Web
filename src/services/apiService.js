@@ -69,6 +69,17 @@ async function callAuthorizedEndpointWithToast(call, pendingMessage, successMess
     )
 }
 
+async function fetchMeetingList(treeId) {
+
+    let call = async (header) => {
+        const data = { Id: Number(treeId), DrillDown: true }
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, data, header)
+        console.log(response.data);
+        return response.data;
+    }
+    return callAuthorizedEndpointWithToast(call);
+}
+
 async function callAuthorizedEndpoint(call) {
     let authService = new AuthService();
     return await authService.getUser().then(async user => {
@@ -101,37 +112,7 @@ async function callAuthorizedEndpoint(call) {
     })
 }
 
-async function fetchMeetingList(treeId) {
 
-    let call = async (header) => {
-        const data = { Id: Number(treeId), DrillDown: true }
-        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, data, header)
-        console.log(response.data);
-        return response.data;
-    }
-    return callAuthorizedEndpoint(call);
-
-    // let authService = new AuthService();
-    // return await authService.getUser().then(async user => {
-    //     if (user && user.access_token) {
-    //         const header = {
-    //             headers: { Authorization: `Bearer ${user.access_token}` }
-    //         };
-    //         console.log("api call");
-    //         console.log(user);
-    //         const data = { Id: Number(treeId), DrillDown: false }
-    //         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, data, header)
-
-    //         console.log(response.data);
-    //         return response.data;
-    //     } else if (user) {
-    //         console.log("api call2");
-    //     }
-    //     else {
-    //         console.log("api cal4l");
-    //     }
-    // })
-}
 
 export {
     getTree,
