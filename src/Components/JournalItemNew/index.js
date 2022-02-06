@@ -6,18 +6,29 @@ import * as apiService from 'services/apiService'
 
 function NewJournalItem(props) {
 
-    const [meeting, setMeeting] = useState({ subject: 'InitialMeetingName', beforeNotes: null, duringNotes: null, afterNotes: null });
+    const [meeting, setMeeting] = useState({ subject: 'InitialMeetingName', notesList: [{ type: 'new', notes: 'nnn', guid: '1' }, { type: 'new2', notes: 'nnn2', guid: '2' }] });
     let history = useHistory();
 
     const updateState = (event) => {
+        debugger;
         const value = event.target.value;
         const name = event.target.name;
+        const guid = event.target.guid;
         const x = {}
         x[name] = value;
         setMeeting(prevMeeting => ({ ...prevMeeting, ...x }));
     }
 
+    const updateElementInList = (journalItemDetailsGuid, journalItemDetailNotes) => {
+        debugger;
+        let notes = meeting.notesList;
+        var editedElement = notes.find(x => x.guid == journalItemDetailsGuid);
+        editedElement.notes = journalItemDetailNotes;
+        setMeeting(prevMeeting => ({ ...prevMeeting, notesList: notes }));
+    }
+
     const save = async () => {
+        debugger;
         let id = props.TreeId;
         meeting.TreeId = Number(id);
         const r = await apiService.saveMeeting(meeting);
@@ -31,9 +42,10 @@ function NewJournalItem(props) {
     return (
         <fieldset>
             <Notes title='Subject' name='subject' notes={meeting.subject} updateState={updateState} />
-            <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
-            <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
-            <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} />
+            <hr></hr>
+            {meeting.notesList.map(n => {
+                return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} ></Notes>)
+            })}
             <Button variant="contained" color="primary" onClick={save}>Save</Button>
             <Button variant="contained" color="primary" onClick={close}>Close</Button>
         </fieldset>

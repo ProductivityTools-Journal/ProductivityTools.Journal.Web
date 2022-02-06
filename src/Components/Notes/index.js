@@ -3,18 +3,19 @@ import TextField from '@material-ui/core/TextField'
 
 function Notes(props) {
 	const onNotesChanged = (event) => {
-		this.state.updateState(event);
-		this.setState({ notes: event.target.value });
-		console.log(event.target.value);
+		console.log(`guid: ${props.guid}`);
+		console.log(`update value: ${event.target.value}`);
+		props.updateState(props.guid, event.target.value);
 	}
 
 	return (
 		<div>
 			<TextField
-				label={props.title}
+				label={`type: ${props.title}`}
 				name={props.name}
+				guid={props.guid}
 				value={props.notes}
-				onChange={props.updateState}
+				onChange={onNotesChanged}
 
 				style={{ marginTop: '10px', marginBottom: '10px' }}
 				multiline
