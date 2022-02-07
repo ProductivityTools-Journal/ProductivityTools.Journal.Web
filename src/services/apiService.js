@@ -38,7 +38,6 @@ async function saveMeeting(meeting) {
 }
 
 async function fetchMeeting(id) {
-    debugger;
     let call = async (header) => {
         const data = {
             Id: parseInt(id),
@@ -64,7 +63,6 @@ async function getDate() {
 }
 
 async function callAuthorizedEndpointWithToast(call, pendingMessage, successMessage) {
-    debugger;
     return toast.promise(
         callAuthorizedEndpoint(call),
         {

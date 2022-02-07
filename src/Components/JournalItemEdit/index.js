@@ -68,9 +68,13 @@ function JournalItemEdit(params) {
             <fieldset>
                 <p>Title: {meeting.subject}</p>
                 <Notes title='Subject' name='subject' notes={meeting.subject} updateState={updateState} />
-                <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
+                <hr></hr>
+                {meeting.notesList.map(n => {
+                    return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateState} ></Notes>)
+                })}
+                {/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
                 <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
-                <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} />
+                <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} /> */}
                 <Button variant="contained" color="primary" onClick={save}>Save</Button>
                 <Button variant="contained" color="primary" onClick={close}>Close</Button>
                 <div>{meeting.beforeNotes}</div>
