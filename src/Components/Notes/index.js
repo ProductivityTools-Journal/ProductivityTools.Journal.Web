@@ -5,7 +5,7 @@ function Notes(props) {
 	const onNotesChanged = (event) => {
 		console.log(`guid: ${props.guid}`);
 		console.log(`update value: ${event.target.value}`);
-		props.updateState(props.guid, event.target.value);
+		props.updateState(event, props.guid);
 	}
 
 	return (

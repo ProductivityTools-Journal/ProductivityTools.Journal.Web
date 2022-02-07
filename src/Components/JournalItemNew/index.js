@@ -10,17 +10,16 @@ function NewJournalItem(props) {
     let history = useHistory();
 
     const updateState = (event) => {
-        debugger;
         const value = event.target.value;
         const name = event.target.name;
-        const guid = event.target.guid;
         const x = {}
         x[name] = value;
         setMeeting(prevMeeting => ({ ...prevMeeting, ...x }));
     }
 
-    const updateElementInList = (journalItemDetailsGuid, journalItemDetailNotes) => {
-        debugger;
+    const updateElementInList = (event, journalItemDetailsGuid,) => {
+        ;
+        let journalItemDetailNotes = event.target.value;
         let notes = meeting.notesList;
         var editedElement = notes.find(x => x.guid == journalItemDetailsGuid);
         editedElement.notes = journalItemDetailNotes;
@@ -28,28 +27,29 @@ function NewJournalItem(props) {
     }
 
     const save = async () => {
-        debugger;
+
         let id = props.TreeId;
         meeting.TreeId = Number(id);
         const r = await apiService.saveMeeting(meeting);
-        setMeeting(r);
-    }
+        debugger;
+        setMeeting(prevMeeting => ({...prevMeeting, journalItemId: r}));
+}
 
-    const close = () => {
-        props.clearEditMeeting();
-    }
+const close = () => {
+    props.clearEditMeeting();
+}
 
-    return (
-        <fieldset>
-            <Notes title='Subject' name='subject' notes={meeting.subject} updateState={updateState} />
-            <hr></hr>
-            {meeting.notesList.map(n => {
-                return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} ></Notes>)
-            })}
-            <Button variant="contained" color="primary" onClick={save}>Save</Button>
-            <Button variant="contained" color="primary" onClick={close}>Close</Button>
-        </fieldset>
-    )
+return (
+    <fieldset>
+        <Notes title='Subject' name='subject' notes={meeting.subject} updateState={updateState} />
+        <hr></hr>
+        {meeting.notesList.map(n => {
+            return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} ></Notes>)
+        })}
+        <Button variant="contained" color="primary" onClick={save}>Save</Button>
+        <Button variant="contained" color="primary" onClick={close}>Close</Button>
+    </fieldset>
+)
 
 
 
