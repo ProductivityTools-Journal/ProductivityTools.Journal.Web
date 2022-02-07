@@ -15,10 +15,12 @@ function JournalItemEdit(params) {
     useEffect(getMeeting, []);
 
     function getMeeting() {
-        fetchMeeting(params.meetingId);
+        debugger;
+        fetchMeeting(params.journalItemId);
     }
 
     async function fetchMeeting(id) {
+        debugger;
         console.log("Fetch one meeting from server");
         const meeting = await apiService.fetchMeeting(id);
         console.log(meeting);

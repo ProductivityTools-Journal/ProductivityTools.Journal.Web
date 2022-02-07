@@ -18,14 +18,14 @@ function MeetingItem(props) {
 
 	return (
 		<fieldset key={props.meeting.meetingId}>
-			<legend>[{props.meeting.meetingId}] {dtFormated} ({dtDescription}) - {props.meeting.subject} Treeid:{props.meeting.treeId}</legend>
+			<legend>[{props.meeting.journalItemId}] {dtFormated} ({dtDescription}) - {props.meeting.subject} Treeid:{props.meeting.treeId}</legend>
 			{props.meeting.notesList?.map(n => {
 				return (<NotesLabel title={n.type} notes={n.notes} />)
 			})}
 			{/*<Button  variant="contained"  color="primary" onClick={()=>this.edit()}>Edit</Button>*/}
 			<p style={buttonStyle}>
 				{/*<Link to={`/Edit/${props.meeting.meetingId}`}>*/}
-				<Button variant="contained" color="primary" onClick={() => props.onMeetingEdit(props.meeting.meetingId)}>Edit</Button>
+				<Button variant="contained" color="primary" onClick={() => props.onMeetingEdit(props.meeting.journalItemId)}>Edit</Button>
 				{/*</Link>*/}
 			</p>
 		</fieldset>

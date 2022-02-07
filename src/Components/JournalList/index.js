@@ -23,7 +23,7 @@ export default function MeetingList(props) {
         <div className="App" style={{ color: 'blue', marginLeft: '400px', width: '1200px' }} >
             {meetings && meetings.length > 0 && meetings.map(function (item) {
                 return (
-                    <JournalItem meeting={item} onMeetingEdit={props.onMeetingEdit} key={item.meetingId} />
+                    <JournalItem meeting={item} onMeetingEdit={props.onMeetingEdit} key={item.journalItemId} />
                 );
             })}
 

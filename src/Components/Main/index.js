@@ -12,9 +12,9 @@ export default function Main() {
     const [editedMeeting, setEditedMeeting] = useState(undefined);
     const [selectedTreeNode, setSelectedTreeNode] = useState(1);
 
-    function setEditMeeting(meetingId) {
+    function setEditMeeting(journalItemId) {
         debugger;
-        setEditedMeeting(meetingId)
+        setEditedMeeting(journalItemId)
     }
 
     function newMeeting() {
@@ -27,7 +27,7 @@ export default function Main() {
 
     function getContentComponent() {
         if (editedMeeting) {
-            return <JournalItemEdit meetingId={editedMeeting} clearEditMeeting={clearEditMeeting} />
+            return <JournalItemEdit journalItemId={editedMeeting} clearEditMeeting={clearEditMeeting} />
         }
         else if (editedMeeting === null) {
             return <JournalItemNew TreeId={selectedTreeNode} clearEditMeeting={clearEditMeeting} />

@@ -9,7 +9,7 @@ async function getTree() {
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
         return response.data;
     }
-    return callAuthorizedEndpointWithToast(call,"Trying to get tree","Tree returned");
+    return callAuthorizedEndpointWithToast(call, "Trying to get tree", "Tree returned");
 }
 
 async function addTreeNode(parentId, name) {
@@ -38,12 +38,17 @@ async function saveMeeting(meeting) {
 }
 
 async function fetchMeeting(id) {
-    const data = {
-        Id: parseInt(id),
-        Secret: 'xxx'
+    debugger;
+    let call = async (header) => {
+        const data = {
+            Id: parseInt(id),
+        }
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_ACTION}`, data, header)
+        return response.data;
     }
-    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_ACTION}`, data)
-    return response.data;
+
+    return callAuthorizedEndpointWithToast(call, "Trying to get Journal details", "Journal details returned");
+
 }
 
 async function updateMeeting(meeting) {
@@ -59,6 +64,7 @@ async function getDate() {
 }
 
 async function callAuthorizedEndpointWithToast(call, pendingMessage, successMessage) {
+    debugger;
     return toast.promise(
         callAuthorizedEndpoint(call),
         {
@@ -77,7 +83,7 @@ async function fetchMeetingList(treeId) {
         console.log(response.data);
         return response.data;
     }
-    return callAuthorizedEndpointWithToast(call);
+    return callAuthorizedEndpointWithToast(call, "Trying to meeting list", "Meeting list returned");
 }
 
 async function callAuthorizedEndpoint(call) {
