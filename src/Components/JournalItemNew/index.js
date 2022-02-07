@@ -31,7 +31,6 @@ function NewJournalItem(props) {
         let id = props.TreeId;
         meeting.TreeId = Number(id);
         const r = await apiService.saveMeeting(meeting);
-        debugger;
         setMeeting(prevMeeting => ({...prevMeeting, journalItemId: r}));
 }
 

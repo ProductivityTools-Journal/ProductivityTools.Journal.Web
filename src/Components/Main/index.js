@@ -13,6 +13,7 @@ export default function Main() {
     const [selectedTreeNode, setSelectedTreeNode] = useState(1);
 
     function setEditMeeting(meetingId) {
+        debugger;
         setEditedMeeting(meetingId)
     }
 
