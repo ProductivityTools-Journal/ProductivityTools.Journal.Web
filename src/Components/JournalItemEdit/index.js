@@ -5,6 +5,7 @@ import * as Consts from 'Consts';
 import { config } from 'Consts';
 import { useParams, useHistory } from "react-router-dom";
 import * as apiService from 'services/apiService'
+import { v4 as uuid } from 'uuid';
 
 function JournalItemEdit(params) {
 
@@ -24,7 +25,14 @@ function JournalItemEdit(params) {
         console.log("Fetch one meeting from server");
         const meeting = await apiService.fetchMeeting(id);
         console.log(meeting);
+
+        let notesListWitGuid = meeting.notesList;
+        meeting.notesList.forEach(element => {
+            element.guid = uuid()
+        });
+
         setMeeting(meeting);
+
     }
 
     const saveMeeting = () => {
@@ -45,6 +53,15 @@ function JournalItemEdit(params) {
         console.log("meeting from state meeting2");
         console.log(meeting)
         setMeeting(prev => ({ ...prev, [name]: value }));
+    }
+
+    const updateElementInList = (event, journalItemDetailsGuid) => {
+
+        let journalItemDetailNotes = event.target.value;
+        let notes = meeting.notesList;
+        var editedElement = notes.find(x => x.guid == journalItemDetailsGuid);
+        editedElement.notes = journalItemDetailNotes;
+        setMeeting(prevMeeting => ({ ...prevMeeting, notesList: notes }));
     }
 
     const save = () => {
@@ -70,7 +87,7 @@ function JournalItemEdit(params) {
                 <Notes title='Subject' name='subject' notes={meeting.subject} updateState={updateState} />
                 <hr></hr>
                 {meeting.notesList.map(n => {
-                    return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateState} ></Notes>)
+                    return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} ></Notes>)
                 })}
                 {/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
                 <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
