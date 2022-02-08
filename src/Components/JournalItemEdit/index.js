@@ -16,12 +16,10 @@ function JournalItemEdit(params) {
     useEffect(getMeeting, []);
 
     function getMeeting() {
-        debugger;
         fetchMeeting(params.journalItemId);
     }
 
     async function fetchMeeting(id) {
-        debugger;
         console.log("Fetch one meeting from server");
         const meeting = await apiService.fetchMeeting(id);
         console.log(meeting);
@@ -76,6 +74,11 @@ function JournalItemEdit(params) {
         params.clearEditMeeting();
     }
 
+    const newJournalItemDetails = () => {
+        //let newNotesList = meeting.notesList;
+        let newNotesList = [...meeting.notesList, { type: 'new', notes: 'nnn', guid: uuid() }]
+        setMeeting(prevMeeting => ({ ...prevMeeting, notesList: newNotesList }));
+    }
 
     if (meeting == null) {
         return <div>xxx</div>
@@ -92,6 +95,7 @@ function JournalItemEdit(params) {
                 {/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
                 <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
                 <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} /> */}
+                <Button variant="contained" color="primary" onClick={newJournalItemDetails}>Add details</Button>
                 <Button variant="contained" color="primary" onClick={save}>Save</Button>
                 <Button variant="contained" color="primary" onClick={close}>Close</Button>
                 <div>{meeting.beforeNotes}</div>
