@@ -22,7 +22,7 @@ class App extends Component {
 		return (
 			<div>
 				<div>
-					<Link to="/">Home</Link>
+					<Link to="/">Home1</Link>
 					<Link to="/List">List</Link>
 				</div>
 				<Switch>
