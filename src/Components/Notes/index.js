@@ -4,9 +4,15 @@ import TextField from '@material-ui/core/TextField'
 function Notes(props) {
 
 	const onNotesChanged = (event) => {
-		console.log(`guid: ${props.guid}`);
-		console.log(`update value: ${event.target.value}`);
-		props.updateState(event.target.value, props.guid, 'notes');
+		if (props.guid) {
+			console.log(`guid: ${props.guid}`);
+			console.log(`update value: ${event.target.value}`);
+			props.updateState(event.target.value, props.guid, 'notes');
+		}
+		else
+		{
+			props.updateState(event);
+		}
 	}
 
 	const deleteNotes = (event) => {
