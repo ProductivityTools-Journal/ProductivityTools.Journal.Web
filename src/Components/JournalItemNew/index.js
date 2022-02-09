@@ -19,12 +19,12 @@ function NewJournalItem(props) {
         setMeeting(prevMeeting => ({ ...prevMeeting, ...x }));
     }
 
-    const updateElementInList = (event, journalItemDetailsGuid) => {
+    const updateElementInList = (event, journalItemDetailsGuid, field) => {
 
         let journalItemDetailNotes = event.target.value;
         let notes = meeting.notesList;
         var editedElement = notes.find(x => x.guid == journalItemDetailsGuid);
-        editedElement.notes = journalItemDetailNotes;
+        editedElement[field] = journalItemDetailNotes;
         setMeeting(prevMeeting => ({ ...prevMeeting, notesList: notes }));
     }
 
