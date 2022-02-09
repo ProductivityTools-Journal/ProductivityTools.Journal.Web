@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 
 function NewJournalItem(props) {
 
-    const [meeting, setMeeting] = useState({ subject: 'InitialMeetingName', notesList: [{ type: 'new', notes: 'nnn', guid: uuid() }, { type: 'new2', notes: 'nnn2', guid: uuid() }] });
+    const [meeting, setMeeting] = useState({ subject: 'InitialMeetingName', notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] });
     let history = useHistory();
     const unique_id = uuid();
 
@@ -42,7 +42,7 @@ function NewJournalItem(props) {
 
     const newJournalItemDetails = () => {
         //let newNotesList = meeting.notesList;
-        let newNotesList = [...meeting.notesList, { type: 'new', notes: 'nnn', guid: uuid() }]
+        let newNotesList = [...meeting.notesList, { type: 'new', notes: 'Add notes here', guid: uuid(), status: 'New' }]
         setMeeting(prevMeeting => ({ ...prevMeeting, notesList: newNotesList }));
     }
 

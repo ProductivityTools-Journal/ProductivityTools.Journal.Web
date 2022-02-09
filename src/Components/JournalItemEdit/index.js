@@ -53,12 +53,12 @@ function JournalItemEdit(params) {
         setMeeting(prev => ({ ...prev, [name]: value }));
     }
 
-    const updateElementInList = (event, journalItemDetailsGuid) => {
-
-        let journalItemDetailNotes = event.target.value;
+    const updateElementInList = (value, journalItemDetailsGuid,field) => {
+        debugger;
+        let journalItemDetailNotes = value;
         let notes = meeting.notesList;
         var editedElement = notes.find(x => x.guid == journalItemDetailsGuid);
-        editedElement.notes = journalItemDetailNotes;
+        editedElement[field] = journalItemDetailNotes;
         setMeeting(prevMeeting => ({ ...prevMeeting, notesList: notes }));
     }
 
@@ -76,7 +76,7 @@ function JournalItemEdit(params) {
 
     const newJournalItemDetails = () => {
         //let newNotesList = meeting.notesList;
-        let newNotesList = [...meeting.notesList, { type: 'new', notes: 'nnn', guid: uuid() }]
+        let newNotesList = [...meeting.notesList, { type: 'new', notes: 'Add notes here', guid: uuid(), status: 'New' }]
         setMeeting(prevMeeting => ({ ...prevMeeting, notesList: newNotesList }));
     }
 
@@ -90,7 +90,7 @@ function JournalItemEdit(params) {
                 <Notes title='Subject' name='subject' notes={meeting.subject} updateState={updateState} />
                 <hr></hr>
                 {meeting.notesList.map(n => {
-                    return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} ></Notes>)
+                    return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList}></Notes>)
                 })}
                 {/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
                 <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />

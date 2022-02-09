@@ -2,10 +2,17 @@ import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField'
 
 function Notes(props) {
+
 	const onNotesChanged = (event) => {
 		console.log(`guid: ${props.guid}`);
 		console.log(`update value: ${event.target.value}`);
-		props.updateState(event, props.guid);
+		props.updateState(event.target.value, props.guid, 'notes');
+	}
+
+	const deleteNotes = (event) => {
+		console.log(`guid: ${props.guid}`);
+		console.log(`update value: ${event.target.value}`);
+		props.updateState('Deleted', props.guid, 'status');
 	}
 
 	return (
@@ -23,6 +30,7 @@ function Notes(props) {
 				variant="outlined"
 
 			/>
+			<button onClick={deleteNotes}>Delete</button>
 		</div>
 	)
 }

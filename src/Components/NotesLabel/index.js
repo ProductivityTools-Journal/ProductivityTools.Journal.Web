@@ -24,7 +24,6 @@ function NotesLabel(props) {
                 id="outlined-start-adornment"
                 className={clsx(classes.margin, classes.textField)}
                 />
-
         </div>
     )
 }
