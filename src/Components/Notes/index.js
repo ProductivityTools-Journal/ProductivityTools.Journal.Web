@@ -9,8 +9,7 @@ function Notes(props) {
 			console.log(`update value: ${event.target.value}`);
 			props.updateState(event.target.value, props.guid, 'notes');
 		}
-		else
-		{
+		else {
 			props.updateState(event);
 		}
 	}
