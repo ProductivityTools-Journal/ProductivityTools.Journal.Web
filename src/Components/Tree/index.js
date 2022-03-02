@@ -5,6 +5,8 @@ import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Collapse from '@material-ui/core/Collapse';
+import Box from '@mui/material/Box';
+
 import * as apiService from 'services/apiService'
 import { Button, Checkbox } from '@material-ui/core';
 import { Link, useParams } from "react-router-dom";
@@ -12,6 +14,8 @@ import ContextMenu from '../ContextMenu'
 import './index.css'
 import TreeItemNewModal from '../TreeItemNewModal'
 import TreeDeleteDialog from '../TreeDeleteDialog';
+
+import { useDrag, useDrop } from 'react-dnd'
 
 function MinusSquare(props) {
   return (
@@ -60,18 +64,47 @@ TransitionComponent.propTypes = {
   in: PropTypes.bool,
 };
 
-const StyledTreeItem = withStyles((theme) => ({
-  iconContainer: {
-    '& .close': {
-      opacity: 0.3,
+const StyledTreeItem = (props) => {
+
+  const { changeParent, node, ...rest } = props;
+debugger;
+  const treeClick = (e, treeId) => {
+    e.stopPropagation();
+    props.setSelectedTreeNode(treeId);
+  }
+
+  function getLabel(x) {
+    let l = x.name + " [Id:" + x.id + "]";
+    return l;
+  }
+
+  const [{ isDragging }, dragRef] = useDrag({
+    type: 'pet',
+    item: node,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging()
+    })
+  })
+
+  const [{ isOver }, dropRef] = useDrop({
+    accept: 'pet',
+    drop: (item) => {
+      console.log(item);
+      changeParent(item, node.elementId);
     },
-  },
-  group: {
-    marginLeft: 7,
-    paddingLeft: 18,
-    borderLeft: `1px dashed ${fade(theme.palette.text.primary, 0.4)}`,
-  },
-}))((props) => <TreeItem {...props} TransitionComponent={TransitionComponent} />);
+    collect: (monitor) => ({
+      isOver: monitor.isOver()
+    })
+  })
+
+  return (<TreeItem ref={dragRef} {...rest} TransitionComponent={TransitionComponent} label={
+    <Box ref={dropRef}>
+      <Link to="#" onClick={(e) => treeClick(e, node.id)}>{getLabel(node)}</Link>
+      <span>{isDragging && '😱'}</span>
+      <span> {isOver && <span>Drop Here!</span>}</span>
+    </Box>}>
+  </TreeItem>)
+}
 
 const useStyles = makeStyles({
   root: {
@@ -133,24 +166,16 @@ export default function CustomizedTreeView(props) {
   }, [params.TreeId]);
 
 
-  function getLabel(x) {
-    let l = x.name + " [Id:" + x.id + "]";
-    return l;
-  }
 
-  const treeClick = (e, treeId) => {
-    e.stopPropagation();
-    props.setSelectedTreeNode(treeId);
-  }
 
   function GetNode(nodes) {
     if (nodes !== undefined) {
       return (nodes.map(x => {
-        return <StyledTreeItem nodeId={x.id.toString()} contextmenuid={x.id} key={x.id} label={
-          <div>
-            <Link to="#" onClick={(e) => treeClick(e, x.id)}>{getLabel(x)}</Link>
-          </div>}>{GetNode(x.nodes)}
-        </StyledTreeItem>
+        debugger;
+        return (
+          <StyledTreeItem nodeId={x.id.toString()} setSelectedTreeNode={props.setSelectedTreeNode} node={x} contextmenuid={x.id} key={x.id} >
+            {GetNode(x.nodes)}
+          </StyledTreeItem >)
       })
       )
     }
@@ -208,7 +233,7 @@ export default function CustomizedTreeView(props) {
         onNodeToggle={handleToggle}
       >
         {list.map(x => {
-          return <StyledTreeItem key={x.id} contextmenuid={x.id} nodeId={x.id.toString()} label={getLabel(x)}>{GetNode(x.nodes)}</StyledTreeItem>
+          return <StyledTreeItem key={x.id} node={x} contextmenuid={x.id} nodeId={x.id.toString()}>{GetNode(x.nodes)}</StyledTreeItem>
         })}
       </TreeView>
       <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu>

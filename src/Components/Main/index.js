@@ -6,6 +6,10 @@ import JournalList from 'Components/JournalList'
 import JournalItemEdit from 'Components/JournalItemEdit'
 import * as apiService from 'services/apiService'
 import JournalItemNew from 'Components/JournalItemNew';
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+
+
 
 export default function Main() {
 
@@ -40,7 +44,10 @@ export default function Main() {
         <div>
             <div>EditedMeeting:{editedMeeting}</div>
             <div style={{ width: '400px', float: 'left' }}>
-                <Tree setSelectedTreeNode={setSelectedTreeNode} selectedTreeNode={selectedTreeNode} createNewMeeting={newMeeting} />
+                <DndProvider backend={HTML5Backend}> {/* drag and drop */}
+                    <Tree setSelectedTreeNode={setSelectedTreeNode} selectedTreeNode={selectedTreeNode} createNewMeeting={newMeeting} />
+                </DndProvider>
+
             </div>
             {getContentComponent()}
         </div>
