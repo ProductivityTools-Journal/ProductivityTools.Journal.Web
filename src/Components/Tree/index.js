@@ -16,6 +16,7 @@ import TreeItemNewModal from '../TreeItemNewModal'
 import TreeDeleteDialog from '../TreeDeleteDialog';
 
 import { useDrag, useDrop } from 'react-dnd'
+import { moveTreeNode } from '../../services/apiService'
 
 function MinusSquare(props) {
   return (
@@ -67,10 +68,14 @@ TransitionComponent.propTypes = {
 const StyledTreeItem = (props) => {
 
   const { changeParent, node, ...rest } = props;
-debugger;
   const treeClick = (e, treeId) => {
     e.stopPropagation();
     props.setSelectedTreeNode(treeId);
+  }
+
+  const changeParent2 = (sourceId, targetParentId) => {
+    moveTreeNode(sourceId, targetParentId)
+    changeParent(sourceId,targetParentId);
   }
 
   function getLabel(x) {
@@ -90,7 +95,7 @@ debugger;
     accept: 'pet',
     drop: (item) => {
       console.log(item);
-      changeParent(item, node.elementId);
+      changeParent2(item.id, node.id);
     },
     collect: (monitor) => ({
       isOver: monitor.isOver()
@@ -165,15 +170,17 @@ export default function CustomizedTreeView(props) {
     fetchData();
   }, [params.TreeId]);
 
+  function changeParent=()=>{
 
-
+  }
+  
 
   function GetNode(nodes) {
     if (nodes !== undefined) {
       return (nodes.map(x => {
-        debugger;
+        
         return (
-          <StyledTreeItem nodeId={x.id.toString()} setSelectedTreeNode={props.setSelectedTreeNode} node={x} contextmenuid={x.id} key={x.id} >
+          <StyledTreeItem nodeId={x.id.toString()} changeParent={changeParent} setSelectedTreeNode={props.setSelectedTreeNode} node={x} contextmenuid={x.id} key={x.id} >
             {GetNode(x.nodes)}
           </StyledTreeItem >)
       })

@@ -9,6 +9,7 @@ export const PATH_MEETING_NEW_MEETING= 'New';
 export const PATH_TREE_CONTROLER = 'Tree';
 export const PATH_TREE_GET= 'Get';
 export const PATH_TREE_ADDITEM='NewNode'
+export const PATH_TREE_MOVEITEM='Move'
 export const PATH_TREE_DELETE='Delete'
 
 //export const stsAuthority = 'http://192.168.0.51:8083/';

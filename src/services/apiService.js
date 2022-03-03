@@ -22,6 +22,16 @@ async function addTreeNode(parentId, name) {
     return callAuthorizedEndpoint(call);
 }
 
+async function moveTreeNode(sourceId, targetParentId) {
+    let call = async (header) => {
+        const data = { SourceId: sourceId, ParentTargetId: targetParentId }
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_MOVEITEM}`, data, header);
+        console.group(response.data);
+        return response.data;
+    }
+    return callAuthorizedEndpointWithToast(call, "Moving tree element", "Tree element moed")
+}
+
 async function deleteTree(treeId) {
     let call = async (header) => {
         const data = { TreeId: Number(treeId) }
@@ -122,6 +132,7 @@ export {
     getTree,
     addTreeNode,
     deleteTree,
+    moveTreeNode,
     saveMeeting,
     fetchMeeting,
     updateMeeting,
