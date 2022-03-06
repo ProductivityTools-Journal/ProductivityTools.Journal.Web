@@ -73,9 +73,9 @@ const StyledTreeItem = (props) => {
     props.setSelectedTreeNode(treeId);
   }
 
-  const changeParent2 = (sourceId, targetParentId) => {
-    moveTreeNode(sourceId, targetParentId)
-    changeParent(sourceId,targetParentId);
+  const changeParent2 = (source, targetParentId) => {
+    //  moveTreeNode(source.id, targetParentId)
+    changeParent(source, targetParentId);
   }
 
   function getLabel(x) {
@@ -95,7 +95,7 @@ const StyledTreeItem = (props) => {
     accept: 'pet',
     drop: (item) => {
       console.log(item);
-      changeParent2(item.id, node.id);
+      changeParent2(item, node.id);
     },
     collect: (monitor) => ({
       isOver: monitor.isOver()
@@ -170,15 +170,50 @@ export default function CustomizedTreeView(props) {
     fetchData();
   }, [params.TreeId]);
 
-  function changeParent=()=>{
+  const findElement = (candidateElement, nodeId) => {
+    var candidateElementId = candidateElement.id.toString();
+    //console.log(candidateElement.elementId);
+    // console.log(candidateElementId);
+    if (candidateElementId == nodeId) {
+      return candidateElement;
+    } else {
+      for (var i = 0; i < candidateElement.nodes.length; i += 1) {
+        var newCandidateElement = candidateElement.nodes[i];
+        var result = findElement(newCandidateElement, nodeId);
+        if (result != null) {
+          return result;
+        }
+      }
+    }
+  }
+
+  function updateElementInList(elementToUpdate, propertyName, propertyValue) {
+    let newList = list;
+    let newElement = findElement(newList[0], elementToUpdate.id);
+    newElement[propertyName] = propertyValue;
+    setList(newList);
+  }
+
+  const changeParent = (source, targetParentId) => {
+    console.log("change parent");
+    console.log("targetParentId", targetParentId)
+    var childObject = findElement(list[0], source.id);
+    var currentParent = findElement(list[0], source.parentId)
+    currentParent.nodes = currentParent.nodes.filter(item => item !== childObject);
+    var newParentobject = findElement(list[0], targetParentId);
+    newParentobject.nodes.push(childObject);
+    debugger;
+    console.log(currentParent.nodes.length)
+    console.log(currentParent.nodes.length)
+    updateElementInList(childObject, "parentId", targetParentId);
 
   }
-  
+
 
   function GetNode(nodes) {
     if (nodes !== undefined) {
       return (nodes.map(x => {
-        
+
         return (
           <StyledTreeItem nodeId={x.id.toString()} changeParent={changeParent} setSelectedTreeNode={props.setSelectedTreeNode} node={x} contextmenuid={x.id} key={x.id} >
             {GetNode(x.nodes)}
