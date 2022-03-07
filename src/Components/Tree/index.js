@@ -202,11 +202,8 @@ export default function CustomizedTreeView(props) {
     currentParent.nodes = currentParent.nodes.filter(item => item !== childObject);
     var newParentobject = findElement(list[0], targetParentId);
     newParentobject.nodes.push(childObject);
-    debugger;
-    console.log(currentParent.nodes.length)
-    console.log(currentParent.nodes.length)
     updateElementInList(childObject, "parentId", targetParentId);
-
+    props.setSelectedTreeNode(source.id)
   }
 
 
