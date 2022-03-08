@@ -1,8 +1,6 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { AuthService } from '../../OAuth/OAuth';
-import * as Consts from 'Consts';
-import { config } from 'Consts';
 import * as moment from 'moment';
 import * as apiService from 'services/apiService'
 
@@ -31,7 +29,7 @@ export default function Home() {
             console.log(user);
         })
         fetchData();
-    },[]);
+    },[authService]);
 
     const login = () => {
         authService.login();

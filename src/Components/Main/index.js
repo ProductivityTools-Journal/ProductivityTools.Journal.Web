@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import JournalItem from 'Components/JournalItem';
+import React, { useState } from 'react';
 import Tree from 'Components/Tree'
 import JournalList from 'Components/JournalList'
 import JournalItemEdit from 'Components/JournalItemEdit'
-import * as apiService from 'services/apiService'
 import JournalItemNew from 'Components/JournalItemNew';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'

@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles'
 import * as apiService from 'services/apiService'
-import { classExpression } from '@babel/types';
 
 const useStyles = makeStyles((theme) => ({
     paper: {

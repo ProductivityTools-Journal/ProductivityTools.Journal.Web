@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import { fade, makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
 import Collapse from '@material-ui/core/Collapse';
 import Box from '@mui/material/Box';
 
 import * as apiService from 'services/apiService'
-import { Button, Checkbox } from '@material-ui/core';
 import { Link, useParams } from "react-router-dom";
 import ContextMenu from '../ContextMenu'
 import './index.css'
@@ -16,7 +15,6 @@ import TreeItemNewModal from '../TreeItemNewModal'
 import TreeDeleteDialog from '../TreeDeleteDialog';
 
 import { useDrag, useDrop } from 'react-dnd'
-import { moveTreeNode } from '../../services/apiService'
 
 function MinusSquare(props) {
   return (
@@ -174,7 +172,7 @@ export default function CustomizedTreeView(props) {
     var candidateElementId = candidateElement.id.toString();
     //console.log(candidateElement.elementId);
     // console.log(candidateElementId);
-    if (candidateElementId == nodeId) {
+    if (candidateElementId === nodeId) {
       return candidateElement;
     } else {
       for (var i = 0; i < candidateElement.nodes.length; i += 1) {
@@ -250,7 +248,7 @@ export default function CustomizedTreeView(props) {
 
   const handleCloseAndProceed = async () => {
     console.log("handleCloseAndProceed");
-    let r = await apiService.deleteTree(props.selectedTreeNode);
+    await apiService.deleteTree(props.selectedTreeNode);
     setOpen(false);
   };
 

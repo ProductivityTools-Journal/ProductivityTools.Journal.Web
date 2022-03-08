@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
-import { Link } from "react-router-dom";
 import * as moment from 'moment';
 import NotesLabel from 'Components/NotesLabel'
 
@@ -8,7 +7,6 @@ import NotesLabel from 'Components/NotesLabel'
 
 function MeetingItem(props) {
 
-	const [notes, setNotes] = useState('init');
 	let mt = moment(props.meeting.date);
 	let dtDescription = mt.fromNow();
 	let dtFormated = mt.format('YYYY.MM.DD hh:mm')

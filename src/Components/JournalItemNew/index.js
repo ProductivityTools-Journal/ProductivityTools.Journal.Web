@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import Notes from 'Components/Notes'
 import Button from '@material-ui/core/Button'
-import { useParams, useHistory } from 'react-router-dom'
 import * as apiService from 'services/apiService'
 import { v4 as uuid } from 'uuid';
 
 function NewJournalItem(props) {
 
     const [meeting, setMeeting] = useState({ subject: 'InitialMeetingName', notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] });
-    let history = useHistory();
     const unique_id = uuid();
 
     const updateState = (event) => {
@@ -21,7 +19,7 @@ function NewJournalItem(props) {
 
     const updateElementInList = (value, journalItemDetailsGuid, field) => {
         let notes = meeting.notesList;
-        var editedElement = notes.find(x => x.guid == journalItemDetailsGuid);
+        var editedElement = notes.find(x => x.guid === journalItemDetailsGuid);
         editedElement[field] = value;
         setMeeting(prevMeeting => ({ ...prevMeeting, notesList: notes }));
     }

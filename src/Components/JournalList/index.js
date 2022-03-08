@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import JournalItem from 'Components/JournalItem';
 import * as apiService from 'services/apiService'
 
@@ -8,7 +7,7 @@ import * as apiService from 'services/apiService'
 export default function MeetingList(props) {
 
     const [meetings, setMeetings] = useState([]);
-    const params = useParams();
+   
     useEffect(() => {
         const fetchData = async () => {
             const data = await apiService.fetchMeetingList(props.selectedTreeNode);

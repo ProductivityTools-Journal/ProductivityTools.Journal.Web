@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import MeetingList from 'Components/JournalList'
 import {
 	Switch,
 	Route,

@@ -25,11 +25,11 @@ const ContextMenu = ({ parentRef, items }) => {
             setY(event.clientY);
             console.log('show');
             console.log(event.path)
-            let reversedArray = event.path.reverse();
-            let li = reversedArray.find(e => e.nodeName == 'LI');
+           // let reversedArray = event.path.reverse();
+            ///let li = reversedArray.find(e => e.nodeName === 'LI');
             //let id=li.attributes.find(e=>e.name='xxxx')
             //   console.log(event.path.find(e=>e.nodeName=='LI').getAttribute('contextmenuid'));
-            let elementId = event.path.find(e => e.nodeName == 'LI').getAttribute('contextmenuid');
+            let elementId = event.path.find(e => e.nodeName === 'LI').getAttribute('contextmenuid');
             setSelectedTreeId(elementId);
             console.log("selectet tree id")
             console.log(elementId);
