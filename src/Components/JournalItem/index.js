@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import NotesLabel from 'Components/NotesLabel'
-
+import Notes from 'Components/Notes'
+import * as apiService from 'services/apiService'
 
 
 function MeetingItem(props) {
 
+	const { meeting, ...rest } = props;
+	const [workingEvent, setWorkingEvent] = useState();
+
+	const [mode, setMode] = useState('readonly');
 	let mt = moment(props.meeting.date);
 	let dtDescription = mt.fromNow();
 	let dtFormated = mt.format('YYYY.MM.DD hh:mm')
@@ -14,21 +19,81 @@ function MeetingItem(props) {
 	console.log("meeting");
 	console.log(props.meeting);
 
-	return (
-		<fieldset key={props.meeting.meetingId}>
-			<legend>[{props.meeting.journalItemId}] {dtFormated} ({dtDescription}) - {props.meeting.subject} Treeid:{props.meeting.treeId}</legend>
-			{props.meeting.notesList?.map(n => {
-				return (<NotesLabel title={n.type} notes={n.notes} />)
-			})}
-			{/*<Button  variant="contained"  color="primary" onClick={()=>this.edit()}>Edit</Button>*/}
-			<p style={buttonStyle}>
-				{/*<Link to={`/Edit/${props.meeting.meetingId}`}>*/}
-				<Button variant="contained" color="primary" onClick={() => props.onMeetingEdit(props.meeting.journalItemId)}>Edit</Button>
-				{/*</Link>*/}
-			</p>
-		</fieldset>
+	const edit = () => {
+		setMode('edit');
+		setWorkingEvent(meeting);
+	}
 
-	)
+	const updateState = (event) => {
+		const value = event.target.value;
+        const name = event.target.name
+        // console.log("meeting from state meeting1");
+        // console.log(meeting)
+        // console.log(name);
+        // let x = { ...workingEvent, [name]: value }
+        // console.log(x);
+        // setWorkingEvent(x)
+        // console.log("meeting from state meeting2");
+        // console.log(meeting)
+        setWorkingEvent(prev => ({ ...prev, [name]: value }));
+	}
+
+	const updateElementInList = () => {
+
+	}
+
+	const newJournalItemDetails = () => {
+
+	}
+
+	const save = () => {
+		apiService.updateMeeting(workingEvent);
+	}
+
+	const close = () => {
+		setMode('readonly')
+	}
+
+	const getComponent = () => {
+		if (mode === 'readonly') {
+			return (
+
+				<fieldset key={meeting.meetingId}>
+					<p>mode: {mode}</p>
+					<legend>[{meeting.journalItemId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.treeId}</legend>
+					{meeting.notesList?.map(n => {
+						return (<NotesLabel title={n.type} notes={n.notes} />)
+					})}
+					<p style={buttonStyle}>
+						<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
+					</p>
+				</fieldset>
+			)
+		}
+		else {
+			return (<fieldset>
+				<p>mode: {mode}</p>
+				<p>Title: {meeting.subject}</p>
+				<Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} />
+				<hr></hr>
+				{meeting.notesList.map(n => {
+					return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList}></Notes>)
+				})}
+				{/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
+                <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
+                <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} /> */}
+				<Button variant="contained" color="primary" onClick={newJournalItemDetails}>Add details</Button>
+				<Button variant="contained" color="primary" onClick={save}>Save</Button>
+				<Button variant="contained" color="primary" onClick={close}>Close</Button>
+				<div>{meeting.beforeNotes}</div>
+			</fieldset>)
+		}
+	}
+
+	return <p>
+		{getComponent()}
+	</p>
 }
 
 export default MeetingItem;
+

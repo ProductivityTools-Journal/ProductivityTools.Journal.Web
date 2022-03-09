@@ -17,6 +17,9 @@ export default function MeetingList(props) {
         console.log("fetching data");
     }, [props.selectedTreeNode]);
 
+    const updateMeetingInList=(meeting)=>{
+
+    }
 
     return (
         <div className="App" style={{ color: 'blue', marginLeft: '400px', width: '1200px' }} >
