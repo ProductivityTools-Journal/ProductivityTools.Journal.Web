@@ -48,6 +48,7 @@ function MeetingItem(props) {
 
 	const save = () => {
 		apiService.updateMeeting(workingEvent);
+		props.updateMeetingInList(workingEvent);
 	}
 
 	const close = () => {

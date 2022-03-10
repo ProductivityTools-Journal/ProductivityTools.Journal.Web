@@ -25,17 +25,17 @@ export default function Main() {
         setEditedMeeting(undefined);
     }
 
-    function getContentComponent() {
-        if (editedMeeting) {
-            return <JournalItemEdit journalItemId={editedMeeting} clearEditMeeting={clearEditMeeting} />
-        }
-        else if (editedMeeting === null) {
-            return <JournalItemNew TreeId={selectedTreeNode} clearEditMeeting={clearEditMeeting} />
-        }
-        else {
-            return <JournalList selectedTreeNode={selectedTreeNode} onMeetingEdit={setEditMeeting} />
-        }
-    }
+    // function getContentComponent() {
+    //     if (editedMeeting) {
+    //         return <JournalItemEdit journalItemId={editedMeeting} clearEditMeeting={clearEditMeeting} />
+    //     }
+    //     else if (editedMeeting === null) {
+    //         return <JournalItemNew TreeId={selectedTreeNode} clearEditMeeting={clearEditMeeting} />
+    //     }
+    //     else {
+    //         return <JournalList selectedTreeNode={selectedTreeNode} onMeetingEdit={setEditMeeting} />
+    //     }
+    // }
 
     return (
         <div>
@@ -46,7 +46,7 @@ export default function Main() {
                 </DndProvider>
 
             </div>
-            {getContentComponent()}
+            <JournalList selectedTreeNode={selectedTreeNode}  />
         </div>
     );
 }
