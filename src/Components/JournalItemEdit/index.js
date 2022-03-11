@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Notes from 'Components/Notes'
 import Button from '@material-ui/core/Button'
+
+import { useParams, useHistory } from "react-router-dom";
 import * as apiService from 'services/apiService'
 import { v4 as uuid } from 'uuid';
 
 function JournalItemEdit(params) {
 
     const [meeting, setMeeting] = useState();
-   
+    const query = useParams();
+    let history = useHistory();
 
     useEffect(getMeeting, []);
 
@@ -20,6 +23,7 @@ function JournalItemEdit(params) {
         const meeting = await apiService.fetchMeeting(id);
         console.log(meeting);
 
+        let notesListWitGuid = meeting.notesList;
         meeting.notesList.forEach(element => {
             element.guid = uuid()
         });
@@ -52,7 +56,7 @@ function JournalItemEdit(params) {
         debugger;
         let journalItemDetailNotes = value;
         let notes = meeting.notesList;
-        var editedElement = notes.find(x => x.guid === journalItemDetailsGuid);
+        var editedElement = notes.find(x => x.guid == journalItemDetailsGuid);
         editedElement[field] = journalItemDetailNotes;
         setMeeting(prevMeeting => ({ ...prevMeeting, notesList: notes }));
     }

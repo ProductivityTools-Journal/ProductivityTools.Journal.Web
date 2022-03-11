@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import NotesLabel from 'Components/NotesLabel'
 import Notes from 'Components/Notes'
 import * as apiService from 'services/apiService'
+import { v4 as uuid } from 'uuid';
 
 
 function MeetingItem(props) {
@@ -21,27 +22,33 @@ function MeetingItem(props) {
 
 	const edit = () => {
 		setMode('edit');
+		meeting.notesList.forEach(element => {
+            element.guid = uuid()
+        });
 		setWorkingEvent(meeting);
 	}
 
 	const updateState = (event) => {
 		const value = event.target.value;
-        const name = event.target.name
-        // console.log("meeting from state meeting1");
-        // console.log(meeting)
-        // console.log(name);
-        // let x = { ...workingEvent, [name]: value }
-        // console.log(x);
-        // setWorkingEvent(x)
-        // console.log("meeting from state meeting2");
-        // console.log(meeting)
-        setWorkingEvent(prev => ({ ...prev, [name]: value }));
+		const name = event.target.name
+		// console.log("meeting from state meeting1");
+		// console.log(meeting)
+		// console.log(name);
+		// let x = { ...workingEvent, [name]: value }
+		// console.log(x);
+		// setWorkingEvent(x)
+		// console.log("meeting from state meeting2");
+		// console.log(meeting)
+		setWorkingEvent(prev => ({ ...prev, [name]: value }));
 	}
 
-	const updateElementInList = () => {
-
+	const updateElementInList = (value, journalItemDetailsGuid, field) => {
+		let journalItemDetailNotes = value;
+		let notes = workingEvent.notesList;
+		var editedElement = notes.find(x => x.guid === journalItemDetailsGuid);
+		editedElement[field] = journalItemDetailNotes;
+		setWorkingEvent(prevMeeting => ({ ...prevMeeting, notesList: notes }));
 	}
-
 	const newJournalItemDetails = () => {
 
 	}
@@ -77,7 +84,7 @@ function MeetingItem(props) {
 				<p>Title: {meeting.subject}</p>
 				<Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} />
 				<hr></hr>
-				{meeting.notesList.map(n => {
+				{workingEvent.notesList.map(n => {
 					return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList}></Notes>)
 				})}
 				{/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
