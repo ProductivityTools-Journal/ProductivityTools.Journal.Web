@@ -50,8 +50,10 @@ function MeetingItem(props) {
 		setWorkingEvent(prevMeeting => ({ ...prevMeeting, notesList: notes }));
 	}
 	const newJournalItemDetails = () => {
-
-	}
+        //let newNotesList = meeting.notesList;
+        let newNotesList = [...workingEvent.notesList, { type: 'new', notes: 'Add notes here', guid: uuid(), status: 'New' }]
+        setWorkingEvent(prevWorkingEvent => ({ ...prevWorkingEvent, notesList: newNotesList }));
+    }
 
 	const save = () => {
 		apiService.updateMeeting(workingEvent);

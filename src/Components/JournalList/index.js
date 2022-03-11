@@ -24,6 +24,7 @@ export default function MeetingList(props) {
         debugger;
         let xx = meetings.find(x => x.journalItemId === meeting.journalItemId);
         xx.subject = meeting.subject;
+        xx.notesList=meeting.notesList;
         setMeetings(meetings);
     }
 
