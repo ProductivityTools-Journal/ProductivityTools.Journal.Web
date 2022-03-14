@@ -15,6 +15,7 @@ function Notes(props) {
 	}
 
 	const deleteNotes = (event) => {
+		debugger;
 		console.log(`guid: ${props.guid}`);
 		console.log(`update value: ${event.target.value}`);
 		props.updateState('Deleted', props.guid, 'status');

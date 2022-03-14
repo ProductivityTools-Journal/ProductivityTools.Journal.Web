@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import JournalItem from 'Components/JournalItem';
 import * as apiService from 'services/apiService'
+import Button from '@material-ui/core/Button';
+
 
 
 
@@ -24,12 +26,21 @@ export default function MeetingList(props) {
         debugger;
         let xx = meetings.find(x => x.journalItemId === meeting.journalItemId);
         xx.subject = meeting.subject;
-        xx.notesList=meeting.notesList;
+        xx.notesList = meeting.notesList;
         setMeetings(meetings);
+    }
+
+    const newEvent = () => {
+
+        console.log('new event');
+        debugger;
+        let newPage = [{ subject: 'InitialMeetingName', notesList: [{ type: 'new', notes: 'Add notes here' }] }]
+        setMeetings([...newPage, ...meetings]);
     }
 
     return (
         <div className="App" style={{ color: 'blue', marginLeft: '400px', width: '1200px' }} >
+            <Button onClick={newEvent} >Add New</Button>
             {meetings && meetings.length > 0 && meetings.map(function (item) {
                 return (
                     <JournalItem meeting={item} updateMeetingInList={updateMeetingInList} key={item.journalItemId} />

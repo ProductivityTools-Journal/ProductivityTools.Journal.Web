@@ -23,8 +23,8 @@ function MeetingItem(props) {
 	const edit = () => {
 		setMode('edit');
 		meeting.notesList.forEach(element => {
-            element.guid = uuid()
-        });
+			element.guid = uuid()
+		});
 		setWorkingEvent(meeting);
 	}
 
@@ -50,13 +50,17 @@ function MeetingItem(props) {
 		setWorkingEvent(prevMeeting => ({ ...prevMeeting, notesList: notes }));
 	}
 	const newJournalItemDetails = () => {
-        //let newNotesList = meeting.notesList;
-        let newNotesList = [...workingEvent.notesList, { type: 'new', notes: 'Add notes here', guid: uuid(), status: 'New' }]
-        setWorkingEvent(prevWorkingEvent => ({ ...prevWorkingEvent, notesList: newNotesList }));
-    }
+		//let newNotesList = meeting.notesList;
+		let newNotesList = [...workingEvent.notesList, { type: 'new', notes: 'Add notes here', guid: uuid(), status: 'New' }]
+		setWorkingEvent(prevWorkingEvent => ({ ...prevWorkingEvent, notesList: newNotesList }));
+	}
 
 	const save = () => {
 		apiService.updateMeeting(workingEvent);
+		workingEvent.notesList = workingEvent.notesList.filter((value, index, arr) => {
+			return value.status != 'Deleted';
+		})
+
 		props.updateMeetingInList(workingEvent);
 	}
 
@@ -86,7 +90,7 @@ function MeetingItem(props) {
 				<p>Title: {meeting.subject}</p>
 				<Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} />
 				<hr></hr>
-				{workingEvent.notesList.map(n => {
+				{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
 					return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList}></Notes>)
 				})}
 				{/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
