@@ -21,11 +21,13 @@ function MeetingItem(props) {
 	console.log(props.meeting);
 
 	const edit = () => {
-		setMode('edit');
+
+		//setMode('edit');
 		meeting.notesList.forEach(element => {
 			element.guid = uuid()
 		});
-		setWorkingEvent(meeting);
+		//setWorkingEvent(meeting);
+		setWorkingEvent({ ...meeting, mode: 'edit' });
 	}
 
 	const updateState = (event) => {
@@ -65,11 +67,13 @@ function MeetingItem(props) {
 	}
 
 	const close = () => {
-		setMode('readonly')
+		setWorkingEvent({ ...workingEvent, mode: 'readonly' });
+				//setMode('readonly')
 	}
 
 	const getComponent = () => {
-		if (mode === 'readonly') {
+		debugger;
+		if (workingEvent == null || workingEvent.mode == null || workingEvent.mode === 'readonly') {
 			return (
 
 				<fieldset key={meeting.meetingId}>
