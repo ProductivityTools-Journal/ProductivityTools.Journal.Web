@@ -34,7 +34,7 @@ export default function MeetingList(props) {
 
         console.log('new event');
         debugger;
-        let newPage = [{ subject: 'InitialMeetingName',  notesList: [{ type: 'new', notes: 'Add notes here' }] }]
+        let newPage = [{  mode: 'edit', subject: 'InitialMeetingName',  notesList: [{ type: 'new', notes: 'Add notes here' }] }]
         setMeetings([...newPage, ...meetings]);
     }
 
