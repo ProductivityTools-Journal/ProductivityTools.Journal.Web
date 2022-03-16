@@ -62,11 +62,17 @@ function MeetingItem(props) {
 		setWorkingEvent(prevWorkingEvent => ({ ...prevWorkingEvent, notesList: newNotesList }));
 	}
 
-	const save = () => {
-		apiService.updateMeeting(workingEvent);
-		workingEvent.notesList = workingEvent.notesList.filter((value, index, arr) => {
-			return value.status != 'Deleted';
-		})
+	const save = async () => {
+
+		if (workingEvent.meetingId == null) {
+			const r = await apiService.saveMeeting(workingEvent);
+			setWorkingEvent(prevMeeting => ({ ...prevMeeting, journalItemId: r }));
+		} else {
+			apiService.updateMeeting(workingEvent);
+			workingEvent.notesList = workingEvent.notesList.filter((value, index, arr) => {
+				return value.status != 'Deleted';
+			})
+		}
 
 		props.updateMeetingInList(workingEvent);
 	}

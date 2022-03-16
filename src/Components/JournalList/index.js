@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import JournalItem from 'Components/JournalItem';
 import * as apiService from 'services/apiService'
 import Button from '@material-ui/core/Button';
-
-
-
+import { v4 as uuid } from 'uuid';
 
 export default function MeetingList(props) {
 
@@ -34,7 +32,7 @@ export default function MeetingList(props) {
 
         console.log('new event');
         debugger;
-        let newPage = [{  mode: 'edit', subject: 'InitialMeetingName',  notesList: [{ type: 'new', notes: 'Add notes here' }] }]
+        let newPage = [{ mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here',guid: uuid() }] }]
         setMeetings([...newPage, ...meetings]);
     }
 
