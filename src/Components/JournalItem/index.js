@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import * as moment from 'moment';
 import NotesLabel from 'Components/NotesLabel'
@@ -11,6 +11,11 @@ function MeetingItem(props) {
 
 	const { meeting, ...rest } = props;
 	const [workingEvent, setWorkingEvent] = useState();
+
+
+	useEffect(() => {
+		setWorkingEvent({ ...meeting });
+	}, []);
 
 	const [mode, setMode] = useState('readonly');
 	let mt = moment(props.meeting.date);
@@ -68,43 +73,45 @@ function MeetingItem(props) {
 
 	const close = () => {
 		setWorkingEvent({ ...workingEvent, mode: 'readonly' });
-				//setMode('readonly')
+		//setMode('readonly')
 	}
 
 	const getComponent = () => {
-		debugger;
-		if (workingEvent == null || workingEvent.mode == null || workingEvent.mode === 'readonly') {
-			return (
-
-				<fieldset key={meeting.meetingId}>
+		console.log("working event");
+		console.log(workingEvent);
+		if (workingEvent != null) {
+			if (workingEvent.mode == null || workingEvent.mode === 'readonly') {
+				return (
+					<fieldset key={workingEvent.meetingId}>
+						<p>mode: {mode}</p>
+						<legend>[{meeting.journalItemId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.treeId}</legend>
+						{meeting.notesList?.map(n => {
+							return (<NotesLabel title={n.type} notes={n.notes} />)
+						})}
+						<p style={buttonStyle}>
+							<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
+						</p>
+					</fieldset>
+				)
+			}
+			else {
+				return (<fieldset>
 					<p>mode: {mode}</p>
-					<legend>[{meeting.journalItemId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.treeId}</legend>
-					{meeting.notesList?.map(n => {
-						return (<NotesLabel title={n.type} notes={n.notes} />)
+					<p>Title: {meeting.subject}</p>
+					<Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} />
+					<hr></hr>
+					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
+						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList}></Notes>)
 					})}
-					<p style={buttonStyle}>
-						<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
-					</p>
-				</fieldset>
-			)
-		}
-		else {
-			return (<fieldset>
-				<p>mode: {mode}</p>
-				<p>Title: {meeting.subject}</p>
-				<Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} />
-				<hr></hr>
-				{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
-					return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList}></Notes>)
-				})}
-				{/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
+					{/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
                 <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
                 <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} /> */}
-				<Button variant="contained" color="primary" onClick={newJournalItemDetails}>Add details</Button>
-				<Button variant="contained" color="primary" onClick={save}>Save</Button>
-				<Button variant="contained" color="primary" onClick={close}>Close</Button>
-				<div>{meeting.beforeNotes}</div>
-			</fieldset>)
+					<Button variant="contained" color="primary" onClick={newJournalItemDetails}>Add details</Button>
+					<Button variant="contained" color="primary" onClick={save}>Save</Button>
+					<Button variant="contained" color="primary" onClick={close}>Close</Button>
+					<div>{meeting.beforeNotes}</div>
+				</fieldset>)
+			}
 		}
 	}
 
