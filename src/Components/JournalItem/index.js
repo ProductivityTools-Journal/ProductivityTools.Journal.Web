@@ -64,7 +64,7 @@ function MeetingItem(props) {
 
 	const save = async () => {
 
-		if (workingEvent.meetingId == null) {
+		if (workingEvent.journalItemId == null) {
 			const r = await apiService.saveMeeting(workingEvent);
 			setWorkingEvent(prevMeeting => ({ ...prevMeeting, journalItemId: r }));
 		} else {
@@ -121,9 +121,9 @@ function MeetingItem(props) {
 		}
 	}
 
-	return <p>
+	return <div>
 		{getComponent()}
-	</p>
+	</div>
 }
 
 export default MeetingItem;
