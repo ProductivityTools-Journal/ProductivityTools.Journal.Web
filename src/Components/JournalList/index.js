@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import JournalItem from 'Components/JournalItem';
 import * as apiService from 'services/apiService'
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { v4 as uuid } from 'uuid';
 
 export default function MeetingList(props) {

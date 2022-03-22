@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Notes from 'Components/Notes'
-import Button from '@material-ui/core/Button'
+import Button from '@mui/material/Button'
 
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import * as apiService from 'services/apiService'
 import { v4 as uuid } from 'uuid';
 
@@ -10,7 +10,7 @@ function JournalItemEdit(params) {
 
     const [meeting, setMeeting] = useState();
     const query = useParams();
-    let history = useHistory();
+
 
     useEffect(getMeeting, []);
 

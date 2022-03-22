@@ -1,6 +1,6 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
 import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Notes from 'Components/Notes'
-import Button from '@material-ui/core/Button'
+import Button from '@mui/material/Button'
 import * as apiService from 'services/apiService'
 import { v4 as uuid } from 'uuid';
 

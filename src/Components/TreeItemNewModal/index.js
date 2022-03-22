@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import Modal from '@material-ui/core/Modal';
-import { makeStyles } from '@material-ui/core/styles'
+import Modal from '@mui/material/Modal';
+import { makeStyles } from '@mui/material/styles'
 import * as apiService from 'services/apiService'
 
 const useStyles = makeStyles((theme) => ({
