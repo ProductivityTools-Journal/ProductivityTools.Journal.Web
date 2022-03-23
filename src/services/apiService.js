@@ -5,7 +5,12 @@ import { AuthService } from '../OAuth/OAuth';
 import { toast } from 'react-toastify';
 
 async function getTree() {
+    debugger;
+    var x = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
+    return x.data;
+    
     let call = async (header) => {
+        debugger;
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
         return response.data;
     }

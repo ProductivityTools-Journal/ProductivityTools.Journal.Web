@@ -258,7 +258,7 @@ export default function CustomizedTreeView(props) {
         defaultEndIcon={<CloseSquare />}
         onNodeToggle={handleToggle}
       >
-        {list.map(x => {
+        {list && list.length>0 && list.map(x => {
           return <StyledTreeItem key={x.id} node={x} contextmenuid={x.id} nodeId={x.id.toString()}>{GetNode(x.nodes)}</StyledTreeItem>
         })}
       </TreeView>

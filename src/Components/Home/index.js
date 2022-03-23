@@ -52,6 +52,7 @@ export default function Home() {
             <p>{date ? `Server responded with date ${dtFormated}` : "Server hasn't responded yet"}</p>
             {userAuthenticated ? (<Link to="/List">List</Link>) : <p></p>}
             <button onClick={userAuthenticated ? logout : login}>{userAuthenticated ? "Log out" : "Log in"}</button>
+            <Link to="/List">List</Link>
         </div >
     )
 }

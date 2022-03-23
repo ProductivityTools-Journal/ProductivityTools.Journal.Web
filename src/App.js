@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
 // //import NewMeeting from 'Components/NewItem';
 import Home from 'Components/Home';
 import Main from 'Components/Main'
+import Login from 'Session/Login'
 
 //import { ToastContainer } from 'react-toastify';
 //import 'react-toastify/dist/ReactToastify.css';
@@ -16,7 +17,8 @@ function App() {
 		<div className="App">
 			<BrowserRouter>
 				<Routes>
-					<Route path='/' element={<Home />} />
+					<Route path='/' element={<Login />} />
+					<Route path='/Home' element={<Home />} />
 					<Route path='/List' element={<Main />} />
 				</Routes>
 			</BrowserRouter>
