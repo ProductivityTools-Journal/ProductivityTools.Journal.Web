@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import SvgIcon from '@mui/material/SvgIcon';
-import { makeStyles } from '@mui/material/styles';
 import TreeView from '@mui/lab/TreeView';
 import TreeItem from '@mui/lab/TreeItem';
 import Collapse from '@mui/material/Collapse';
@@ -109,18 +108,9 @@ const StyledTreeItem = (props) => {
   </TreeItem>)
 }
 
-const useStyles = makeStyles({
-  root: {
-    height: 264,
-    flexGrow: 1,
-    maxWidth: 400,
-
-  },
-});
 
 export default function CustomizedTreeView(props) {
   const [expanded, setExpanded] = useState([]);
-  const classes = useStyles();
   const [list, setList] = useState([]);
   const params = useParams();
 
@@ -261,7 +251,6 @@ export default function CustomizedTreeView(props) {
     <div className='conainer' ref={containerRef}>
       <p>pawel</p>
       <TreeView
-        className={classes.root}
         expanded={expanded}
         // expanded={getNodesIdRoot(list)}///recursive function
         defaultCollapseIcon={<MinusSquare />}

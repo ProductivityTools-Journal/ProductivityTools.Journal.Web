@@ -1,27 +1,10 @@
 import React, { useState } from 'react'
 import Modal from '@mui/material/Modal';
-import { makeStyles } from '@mui/material/styles'
 import * as apiService from 'services/apiService'
-
-const useStyles = makeStyles((theme) => ({
-    paper: {
-        position: 'absolute',
-        width: 400,
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        top: `50%`,
-        left: `50%`,
-        transform: `translate(-50%,-50%)`
-    },
-}));
 
 export default function TreeItemNewModal(props) {
 
     const [treeName, setTreeeName] = useState('new');
-
-    const classes = useStyles();
 
     const AddNewItem = function () {
         apiService.addTreeNode(Number(props.selectedTreeNode), treeName);
@@ -33,7 +16,7 @@ export default function TreeItemNewModal(props) {
     }
 
     const body = (
-        <div className={classes.paper}>
+        <div>
             <p>New tree item name:</p>
             <input type='text' value={treeName} onChange={handleChange} />
             <button onClick={() => AddNewItem()}>Add</button>
