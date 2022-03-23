@@ -3,12 +3,14 @@ import * as Consts from 'Consts';
 import { config } from 'Consts';
 import { AuthService } from '../OAuth/OAuth';
 import { toast } from 'react-toastify';
+import { auth } from '../Session/firebase'
 
 async function getTree() {
-    debugger;
-    var x = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
-    return x.data;
-    
+     debugger;
+     console.log(auth);
+    // var x = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
+    // return x.data;
+
     let call = async (header) => {
         debugger;
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
@@ -100,35 +102,58 @@ async function fetchMeetingList(treeId) {
 }
 
 async function callAuthorizedEndpoint(call) {
-    let authService = new AuthService();
-    return await authService.getUser().then(async user => {
-        if (user && user.access_token) {
-            const header = {
-                headers: { Authorization: `Bearer ${user.access_token}` }
-            };
-            try {
-                const result = await call(header);
-                return result;
-            }
-            catch (error) {
-                if (error.response != null && error.response.status === 401) {
-                    console.log("try to renew token");
-                    authService.renewToken().then(async renewedToken => {
-                        const header = {
-                            headers: { Authorization: `Bearer ${renewedToken.access_token}` }
-                        };
-                        const result = await call(header);
-                        return result;
-                    })
-                }
-            }
-        } else if (user) {
-            console.log("api call2");
+    debugger;
+    console.log(auth);
+    console.log(auth.currentUser);
+    console.log(auth.currentUser.accessToken);
+    debugger;
+    console.log(auth);
+    debugger;
+    if (auth && auth.currentUser && auth.currentUser.accessToken) {
+        const header = {
+            headers: { Authorization: `Bearer ${auth.currentUser.accessToken}` }
+        };
+        debugger;
+        try {
+            const result = await call(header);
+            return result;
         }
-        else {
-            console.log("api cal4l");
+        catch (error) {
+            console.log(error)
         }
-    })
+    }
+
+    else {
+        console.log("User not authenticated")
+    }
+    // return await authService.getUser().then(async user => {
+    //     if (user && user.access_token) {
+    //         const header = {
+    //             headers: { Authorization: `Bearer ${user.access_token}` }
+    //         };
+    //         try {
+    //             const result = await call(header);
+    //             return result;
+    //         }
+    //         catch (error) {
+    //             if (error.response != null && error.response.status === 401) {
+    //                 console.log("try to renew token");
+    //                 authService.renewToken().then(async renewedToken => {
+    //                     const header = {
+    //                         headers: { Authorization: `Bearer ${renewedToken.access_token}` }
+    //                     };
+    //                     const result = await call(header);
+    //                     return result;
+    //                 })
+    //             }
+    //         }
+    //     } else if (user) {
+    //         console.log("api call2");
+    //     }
+    //     else {
+    //         console.log("api cal4l");
+    //     }
+    // })
 }
 
 
