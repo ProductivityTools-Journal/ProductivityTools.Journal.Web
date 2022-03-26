@@ -6,13 +6,13 @@ import { toast } from 'react-toastify';
 import { auth } from '../Session/firebase'
 
 async function getTree() {
-     debugger;
+     
      console.log(auth);
     // var x = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
     // return x.data;
 
     let call = async (header) => {
-        debugger;
+        
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
         return response.data;
     }
@@ -80,6 +80,7 @@ async function getDate() {
 }
 
 async function callAuthorizedEndpointWithToast(call, pendingMessage, successMessage) {
+    //return callAuthorizedEndpoint(call);
     return toast.promise(
         callAuthorizedEndpoint(call),
         {
@@ -102,18 +103,12 @@ async function fetchMeetingList(treeId) {
 }
 
 async function callAuthorizedEndpoint(call) {
-    debugger;
-    console.log(auth);
-    console.log(auth.currentUser);
-    console.log(auth.currentUser.accessToken);
-    debugger;
-    console.log(auth);
-    debugger;
+    console.log("auth", auth);
+    console.log("current user", auth.currentUser)
     if (auth && auth.currentUser && auth.currentUser.accessToken) {
         const header = {
             headers: { Authorization: `Bearer ${auth.currentUser.accessToken}` }
         };
-        debugger;
         try {
             const result = await call(header);
             return result;

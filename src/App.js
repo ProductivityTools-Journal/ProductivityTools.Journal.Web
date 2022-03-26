@@ -8,8 +8,8 @@ import Home from 'Components/Home';
 import Main from 'Components/Main'
 import Login from 'Session/Login'
 
-//import { ToastContainer } from 'react-toastify';
-//import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
@@ -17,12 +17,13 @@ function App() {
 		<div className="App">
 			<BrowserRouter>
 				<Routes>
-					<Route path='/' element={<Login />} />
+					<Route path='/Login' element={<Login />} />
+					<Route path='/' element={<Home />} />
 					<Route path='/Home' element={<Home />} />
 					<Route path='/List' element={<Main />} />
 				</Routes>
 			</BrowserRouter>
-
+			<ToastContainer />
 		</div>)
 	// <div>
 	// 	<div>
