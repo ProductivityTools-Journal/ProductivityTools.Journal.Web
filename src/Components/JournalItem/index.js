@@ -92,7 +92,8 @@ function MeetingItem(props) {
 						<p>mode: {mode}</p>
 						<legend>[{meeting.journalItemId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.treeId}</legend>
 						{meeting.notesList?.map(n => {
-							let notes = { detailsType: '', details: n.Notes, name: n.type }
+							let notes = { detailsType: '', details: n.notes, name: n.type }
+							debugger;
 							return (<NotesLabel title={n.type} notes={n.notes} selectedElement={notes} />)
 						})}
 						<p style={buttonStyle}>

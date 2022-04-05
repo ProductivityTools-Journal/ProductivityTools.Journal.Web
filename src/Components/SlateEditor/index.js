@@ -114,7 +114,7 @@ export default function SlateEditor(props) {
         let detailsType = props.selectedElement?.detailsType;
         let title = props.selectedElement.name;
 
-
+        debugger;
         let newValue = ''
         if (detailsType == 'Slate') {
             let detailsObject = JSON.parse(rawDetails);
