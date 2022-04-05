@@ -8,7 +8,7 @@ function NotesLabel(props) {
     return (
         <div>
             {/* <SlateEditor selectedElement={props.selectedElement} detailsChanged={detailsChanged} titleChanged={updateTitle}></SlateEditor> */}
-            <SlateEditor selectedElement={props.selectedElement}></SlateEditor>
+            <SlateEditor selectedElement={props.selectedElement} readOnly={props.readOnly}></SlateEditor>
 
             <TextField
                 label={props.title}

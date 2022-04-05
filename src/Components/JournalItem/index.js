@@ -94,7 +94,7 @@ function MeetingItem(props) {
 						{meeting.notesList?.map(n => {
 							let notes = { detailsType: '', details: n.notes, name: n.type }
 							debugger;
-							return (<NotesLabel title={n.type} notes={n.notes} selectedElement={notes} />)
+							return (<NotesLabel title={n.type} notes={n.notes} selectedElement={notes} readOnly={true} />)
 						})}
 						<p style={buttonStyle}>
 							<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
@@ -111,9 +111,6 @@ function MeetingItem(props) {
 					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
 						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList}></Notes>)
 					})}
-					{/* <Notes title='Before notes' name='beforeNotes' notes={meeting.beforeNotes} updateState={updateState} />
-                <Notes title='During notes' name='duringNotes' notes={meeting.duringNotes} updateState={updateState} />
-                <Notes title='After notes' name='afterNotes' notes={meeting.afterNotes} updateState={updateState} /> */}
 					<Button variant="contained" color="primary" onClick={newJournalItemDetails}>Add details</Button>
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>
 					<Button variant="contained" color="primary" onClick={close}>Close</Button>

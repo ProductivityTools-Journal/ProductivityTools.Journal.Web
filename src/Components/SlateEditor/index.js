@@ -195,29 +195,42 @@ export default function SlateEditor(props) {
     const editorChanged = (newValue) => {
         if (editor.changingContent) return;
         setValue(newValue);
-       // props.detailsChanged(newValue)
+        // props.detailsChanged(newValue)
         let title = editor.children[0].children[0].text;
         setTitle(title);
         //props.titleChanged(title);
     }
 
+    if (props.readOnly) {
+        return ( <Slate editor={editor} value={value} onChange={editorChanged}>
 
-    return (
-        <div>
-            <div style={{ width: '95%', margin: '0 auto' }}>
-                <Slate editor={editor} value={value} onChange={editorChanged}>
-                    <Toolbar />
-
-                    <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
-                        <Editable
-                            placeholder='Write something'
-                            renderElement={renderElement}
-                            renderLeaf={renderLeaf}
-                        />
-                    </div>
-                </Slate>
+            <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
+                <Editable readOnly
+                    placeholder='Write something'
+                    renderElement={renderElement}
+                    // renderLeaf={renderLeaf}
+                />
             </div>
-            <div>{title}</div>
-        </div>
-    )
+        </Slate>)
+    }
+    else {
+        return (
+            <div>
+                <div style={{ width: '95%', margin: '0 auto' }}>
+                    <Slate editor={editor} value={value} onChange={editorChanged}>
+                        <Toolbar />
+
+                        <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
+                            <Editable
+                                placeholder='Write something'
+                                renderElement={renderElement}
+                                renderLeaf={renderLeaf}
+                            />
+                        </div>
+                    </Slate>
+                </div>
+                <div>{title}</div>
+            </div>
+        )
+    }
 }
