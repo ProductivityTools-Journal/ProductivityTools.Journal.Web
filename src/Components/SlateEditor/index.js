@@ -195,10 +195,10 @@ export default function SlateEditor(props) {
     const editorChanged = (newValue) => {
         if (editor.changingContent) return;
         setValue(newValue);
-        props.detailsChanged(newValue)
+       // props.detailsChanged(newValue)
         let title = editor.children[0].children[0].text;
         setTitle(title);
-        props.titleChanged(title);
+        //props.titleChanged(title);
     }
 
 

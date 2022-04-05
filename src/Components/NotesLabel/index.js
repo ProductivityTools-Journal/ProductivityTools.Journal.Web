@@ -1,12 +1,15 @@
 import React from 'react'
 import TextField from '@mui/material/TextField';
 import clsx from 'clsx';
+import SlateEditor from 'Components/SlateEditor';
 
 
 function NotesLabel(props) {
     return (
         <div>
-            f
+            {/* <SlateEditor selectedElement={props.selectedElement} detailsChanged={detailsChanged} titleChanged={updateTitle}></SlateEditor> */}
+            <SlateEditor selectedElement={props.selectedElement}></SlateEditor>
+
             <TextField
                 label={props.title}
                 value={props.notes}
