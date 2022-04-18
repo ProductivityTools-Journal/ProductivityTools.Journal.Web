@@ -1,5 +1,7 @@
 import React from 'react';
 import TextField from '@mui/material/TextField'
+import SlateEditor from 'Components/SlateEditor';
+
 
 function Notes(props) {
 
@@ -23,6 +25,8 @@ function Notes(props) {
 
 	return (
 		<div>
+		 	<SlateEditor selectedElement={props.selectedElement} readOnly={props.readOnly}></SlateEditor>
+
 			<TextField
 				label={`type: ${props.title}`}
 				name={props.name}

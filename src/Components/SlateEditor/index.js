@@ -80,9 +80,13 @@ export default function SlateEditor(props) {
     },])
     const [title, setTitle] = useState('nothing');
 
-    useEffect(() => {
-        changeContent();
-    }, [props.selectedElement.elementId])
+    // useEffect(() => {
+    //     console.log(props)
+    //     console.log(props.selectedElement)
+    //     console.log(props.selectedElement?.elementId)
+
+    //     //changeContent();
+    // }, [props.selectedElement])
 
 
     const getSlateStructureFromRawDetails = (rawDetails, title) => {
@@ -202,13 +206,13 @@ export default function SlateEditor(props) {
     }
 
     if (props.readOnly) {
-        return ( <Slate editor={editor} value={value} onChange={editorChanged}>
+        return (<Slate editor={editor} value={props.selectedElement.details} onChange={editorChanged}>
 
             <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
                 <Editable readOnly
                     placeholder='Write something'
                     renderElement={renderElement}
-                    // renderLeaf={renderLeaf}
+                // renderLeaf={renderLeaf}
                 />
             </div>
         </Slate>)

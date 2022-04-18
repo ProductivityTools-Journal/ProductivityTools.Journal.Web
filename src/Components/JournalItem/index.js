@@ -27,6 +27,7 @@ function MeetingItem(props) {
 
 	const edit = () => {
 
+		console.log()
 		//setMode('edit');
 		meeting.notesList.forEach(element => {
 			element.guid = uuid()
@@ -82,6 +83,18 @@ function MeetingItem(props) {
 		//setMode('readonly')
 	}
 
+	const getSlateStructureFromRawDetails = (rawDetails, title) => {
+        let template = [{
+            type: 'title',
+            children: [{ text: title || "Title" }],
+        }, {
+            type: 'paragraph',
+            children: [{ text: rawDetails || "No data" }],
+        },]
+        return template;
+    }
+
+
 	const getComponent = () => {
 		console.log("working event");
 		console.log(workingEvent);
@@ -92,8 +105,7 @@ function MeetingItem(props) {
 						<p>mode: {mode}</p>
 						<legend>[{meeting.journalItemId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.treeId}</legend>
 						{meeting.notesList?.map(n => {
-							let notes = { detailsType: '', details: n.notes, name: n.type }
-							debugger;
+							let notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes,"fdsa"), name: n.type }
 							return (<NotesLabel title={n.type} notes={n.notes} selectedElement={notes} readOnly={true} />)
 						})}
 						<p style={buttonStyle}>
@@ -106,10 +118,12 @@ function MeetingItem(props) {
 				return (<fieldset>
 					<p>mode: {mode}</p>
 					<p>Title: {meeting.subject}</p>
-					<Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} />
+					{/* <Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} /> */}
 					<hr></hr>
 					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
-						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList}></Notes>)
+						let notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes,"fdsa"), name: n.type, elementId: "fdsa" }
+						console.log("notes", notes);
+						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={true}></Notes>)
 					})}
 					<Button variant="contained" color="primary" onClick={newJournalItemDetails}>Add details</Button>
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>

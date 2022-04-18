@@ -6,13 +6,14 @@ import { toast } from 'react-toastify';
 import { auth } from '../Session/firebase'
 
 async function getTree() {
-     
-     console.log(auth);
+
+    console.log("GetTreeInvoked")
+    console.log(auth);
     // var x = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
     // return x.data;
 
     let call = async (header) => {
-        
+
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
         return response.data;
     }
@@ -41,6 +42,7 @@ async function moveTreeNode(sourceId, targetParentId) {
 
 async function deleteTree(treeId) {
     let call = async (header) => {
+
         const data = { TreeId: Number(treeId) }
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_DELETE}`, data, header)
         console.log(response.data);
