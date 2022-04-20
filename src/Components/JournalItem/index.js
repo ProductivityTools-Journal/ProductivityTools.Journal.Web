@@ -64,7 +64,7 @@ function MeetingItem(props) {
 	}
 
 	const save = async () => {
-
+		debugger;
 		if (workingEvent.journalItemId == null) {
 			const r = await apiService.saveMeeting(workingEvent);
 			setWorkingEvent(prevMeeting => ({ ...prevMeeting, journalItemId: r }));
@@ -123,7 +123,7 @@ function MeetingItem(props) {
 					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
 						let notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes,"fdsa"), name: n.type, elementId: "fdsa" }
 						console.log("notes", notes);
-						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={true}></Notes>)
+						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
 					})}
 					<Button variant="contained" color="primary" onClick={newJournalItemDetails}>Add details</Button>
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>

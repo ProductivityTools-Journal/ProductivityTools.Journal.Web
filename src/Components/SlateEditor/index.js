@@ -29,7 +29,7 @@ const withLayout = editor => {
     const { normalizeNode } = editor
     editor.normalizeNode = ([node, path]) => {
         if (editor.changingContent == true) return;
-        debugger;
+        //debugger;
         if (path.length === 0) {
             if (editor.children.length < 1) {
                 const title = {
@@ -199,7 +199,7 @@ export default function SlateEditor(props) {
     const editorChanged = (newValue) => {
         if (editor.changingContent) return;
         setValue(newValue);
-        // props.detailsChanged(newValue)
+        props.detailsChanged(newValue)
         let title = editor.children[0].children[0].text;
         setTitle(title);
         //props.titleChanged(title);
@@ -233,7 +233,8 @@ export default function SlateEditor(props) {
                         </div>
                     </Slate>
                 </div>
-                <div>{title}</div>
+                <div>slate title: {title}</div>
+                <div><textarea value={JSON.stringify(value)}></textarea></div>
             </div>
         )
     }

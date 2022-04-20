@@ -16,6 +16,16 @@ function Notes(props) {
 		}
 	}
 
+	const onSlateChanged = (newValue) => {
+		if (props.guid) {
+			props.updateState(newValue, props.guid, 'notes');
+			console.log("onSlateChagne");
+		}
+		else {
+			console.log("something is missing here");
+		}
+	}
+
 	const deleteNotes = (event) => {
 		debugger;
 		console.log(`guid: ${props.guid}`);
@@ -25,7 +35,7 @@ function Notes(props) {
 
 	return (
 		<div>
-		 	<SlateEditor selectedElement={props.selectedElement} readOnly={props.readOnly}></SlateEditor>
+			<SlateEditor selectedElement={props.selectedElement} readOnly={props.readOnly} detailsChanged={onSlateChanged}></SlateEditor>
 
 			<TextField
 				label={`type: ${props.title}`}
