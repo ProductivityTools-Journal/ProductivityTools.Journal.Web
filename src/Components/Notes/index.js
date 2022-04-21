@@ -18,7 +18,8 @@ function Notes(props) {
 
 	const onSlateChanged = (newValue) => {
 		if (props.guid) {
-			props.updateState(newValue, props.guid, 'notes');
+			let newValueJsoned = JSON.stringify(newValue)
+			props.updateState(newValueJsoned, props.guid, 'notes');
 			console.log("onSlateChagne");
 		}
 		else {
