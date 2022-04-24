@@ -65,6 +65,7 @@ function MeetingItem(props) {
 
 	const save = async () => {
 		debugger;
+		workingEvent.notesList.forEach(x => x.notesType = 'Slate');
 		if (workingEvent.journalItemId == null) {
 			const r = await apiService.saveMeeting(workingEvent);
 			setWorkingEvent(prevMeeting => ({ ...prevMeeting, journalItemId: r }));
@@ -84,15 +85,15 @@ function MeetingItem(props) {
 	}
 
 	const getSlateStructureFromRawDetails = (rawDetails, title) => {
-        let template = [{
-            type: 'title',
-            children: [{ text: title || "Title" }],
-        }, {
-            type: 'paragraph',
-            children: [{ text: rawDetails || "No data" }],
-        },]
-        return template;
-    }
+		let template = [{
+			type: 'title',
+			children: [{ text: title || "Title" }],
+		}, {
+			type: 'paragraph',
+			children: [{ text: rawDetails || "No data" }],
+		},]
+		return template;
+	}
 
 
 	const getComponent = () => {
@@ -105,7 +106,15 @@ function MeetingItem(props) {
 						<p>mode: {mode}</p>
 						<legend>[{meeting.journalItemId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.treeId}</legend>
 						{meeting.notesList?.map(n => {
-							let notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes,"fdsa"), name: n.type }
+							
+							let notes = null;
+							if (n.notesType == 'Slate') {
+								debugger;
+								notes = { detailsType: '', details: JSON.parse(n.notes), name: n.type, elementId: "fdsa" }
+							}
+							else {
+								notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "fdsa"), name: n.type, elementId: "fdsa" }
+							}
 							return (<NotesLabel title={n.type} notes={n.notes} selectedElement={notes} readOnly={true} />)
 						})}
 						<p style={buttonStyle}>
@@ -121,7 +130,13 @@ function MeetingItem(props) {
 					{/* <Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} /> */}
 					<hr></hr>
 					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
-						let notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes,"fdsa"), name: n.type, elementId: "fdsa" }
+						let notes = null;
+						if (n.notesType == 'Slate') {
+							notes = { detailsType: '', details: JSON.parse(n.notes), name: n.type, elementId: "fdsa" }
+						}
+						else {
+							notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "fdsa"), name: n.type, elementId: "fdsa" }
+						}
 						console.log("notes", notes);
 						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
 					})}
