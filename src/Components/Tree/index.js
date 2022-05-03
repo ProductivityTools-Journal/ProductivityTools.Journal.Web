@@ -151,8 +151,10 @@ export default function CustomizedTreeView(props) {
     const fetchData = async () => {
       const r = await apiService.getTree();
       console.log(r);
-      setList(r);
-      getNodePath(r[0], params.TreeId);
+      if (r != null) {
+        setList(r);
+        getNodePath(r[0], params.TreeId);
+      }
     };
 
     fetchData();
@@ -258,7 +260,7 @@ export default function CustomizedTreeView(props) {
         defaultEndIcon={<CloseSquare />}
         onNodeToggle={handleToggle}
       >
-        {list && list.length>0 && list.map(x => {
+        {list && list.length > 0 && list.map(x => {
           return <StyledTreeItem key={x.id} node={x} contextmenuid={x.id} nodeId={x.id.toString()}>{GetNode(x.nodes)}</StyledTreeItem>
         })}
       </TreeView>

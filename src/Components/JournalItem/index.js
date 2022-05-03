@@ -39,14 +39,6 @@ function MeetingItem(props) {
 	const updateState = (event) => {
 		const value = event.target.value;
 		const name = event.target.name
-		// console.log("meeting from state meeting1");
-		// console.log(meeting)
-		// console.log(name);
-		// let x = { ...workingEvent, [name]: value }
-		// console.log(x);
-		// setWorkingEvent(x)
-		// console.log("meeting from state meeting2");
-		// console.log(meeting)
 		setWorkingEvent(prev => ({ ...prev, [name]: value }));
 	}
 
@@ -58,7 +50,6 @@ function MeetingItem(props) {
 		setWorkingEvent(prevMeeting => ({ ...prevMeeting, notesList: notes }));
 	}
 	const newJournalItemDetails = () => {
-		//let newNotesList = meeting.notesList;
 		let newNotesList = [...workingEvent.notesList, { type: 'new', notes: 'Add notes here', guid: uuid(), status: 'New' }]
 		setWorkingEvent(prevWorkingEvent => ({ ...prevWorkingEvent, notesList: newNotesList }));
 	}
@@ -81,7 +72,6 @@ function MeetingItem(props) {
 
 	const close = () => {
 		setWorkingEvent({ ...workingEvent, mode: 'readonly' });
-		//setMode('readonly')
 	}
 
 	const getSlateStructureFromRawDetails = (rawDetails, title) => {

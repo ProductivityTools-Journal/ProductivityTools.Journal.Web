@@ -5,6 +5,7 @@ import JournalItemEdit from 'Components/JournalItemEdit'
 import JournalItemNew from 'Components/JournalItemNew';
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import { Link, useNavigate } from 'react-router-dom';
 
 
 
@@ -40,6 +41,8 @@ export default function Main() {
     return (
         <div>
             <div>EditedMeeting:{editedMeeting}</div>
+            <Link to="/">Home</Link>
+
             <div style={{ width: '400px', float: 'left' }}>
                 <DndProvider backend={HTML5Backend}> {/* drag and drop */}
                     <Tree setSelectedTreeNode={setSelectedTreeNode} selectedTreeNode={selectedTreeNode} createNewMeeting={newMeeting} />

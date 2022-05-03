@@ -14,7 +14,7 @@ async function getTree() {
 
     let call = async (header) => {
 
-        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`, {}, header)
         return response.data;
     }
     return callAuthorizedEndpointWithToast(call, "Trying to get tree", "Tree returned");
@@ -97,6 +97,7 @@ async function fetchMeetingList(treeId) {
 
     let call = async (header) => {
         const data = { Id: Number(treeId), DrillDown: true }
+        debugger;
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, data, header)
         console.log(response.data);
         return response.data;
