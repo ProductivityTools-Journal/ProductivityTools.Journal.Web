@@ -71,7 +71,8 @@ const StyledTreeItem = (props) => {
   }
 
   const changeParent2 = (source, targetParentId) => {
-    //  moveTreeNode(source.id, targetParentId)
+    debugger;
+    apiService.moveTreeNode(source.id, targetParentId)
     changeParent(source, targetParentId);
   }
 
@@ -92,6 +93,7 @@ const StyledTreeItem = (props) => {
     accept: 'pet',
     drop: (item) => {
       console.log(item);
+      debugger;
       changeParent2(item, node.id);
     },
     collect: (monitor) => ({
@@ -161,7 +163,7 @@ export default function CustomizedTreeView(props) {
   }, [params.TreeId]);
 
   const findElement = (candidateElement, nodeId) => {
-    var candidateElementId = candidateElement.id.toString();
+    var candidateElementId = candidateElement.id;
     //console.log(candidateElement.elementId);
     // console.log(candidateElementId);
     if (candidateElementId === nodeId) {
