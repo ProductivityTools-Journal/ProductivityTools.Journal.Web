@@ -32,7 +32,7 @@ export default function Home() {
 
     return (
         <div>
-            <p>Welcome on home page of ProductivityTools.Meeting :-)</p>
+            <p>Welcome on home page of ProductivityTools.Journal</p>
             <p>{date ? `Server responded with date ${dtFormated}` : "Server hasn't responded yet"}</p>
             <p>{auth?.currentUser?.displayName}</p>
             <p>{auth?.currentUser?.email} </p>
