@@ -6,14 +6,15 @@ import {
     signInWithPopup,
     signOut,
 } from "firebase/auth";
+import { useState } from "react";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyD1llzZnvhtKeb-O7GVbILicQPSENW9cJs",
-    authDomain: "ptlearning-95d51.firebaseapp.com",
-    projectId: "ptlearning-95d51",
-    storageBucket: "ptlearning-95d51.appspot.com",
-    messagingSenderId: "337424818554",
-    appId: "1:337424818554:web:1699a98eedb7ce46a776c3"
+    apiKey: "AIzaSyCPfDq6Cnxz2OaeumfrCW5BzbhqCmmXeHk",
+    authDomain: "ptjournal-b53b0.firebaseapp.com",
+    projectId: "ptjournal-b53b0",
+    storageBucket: "ptjournal-b53b0.appspot.com",
+    messagingSenderId: "126962328042",
+    appId: "1:126962328042:web:43a4816cd5644d65ce5293"
 };
 
 // Initialize Firebase
@@ -24,6 +25,7 @@ const googleProvider = new GoogleAuthProvider();
 const signInWithGoogle = async () => {
     try {
         debugger;
+        Doit();
         const res = await signInWithPopup(auth, googleProvider);
         console.log(res);
     } catch (err) {
@@ -32,9 +34,17 @@ const signInWithGoogle = async () => {
     }
 };
 
+const Doit = () => {
+    setInterval(async () => {
+        const user = auth.currentUser;
+        if (user) await user.getIdToken(true);
+        console.log("refresh token")
+        console.log(user);
+    }, 10 * 60 * 1000);
+}
+
 const logout = () => {
     signOut(auth);
-    
 };
 
 

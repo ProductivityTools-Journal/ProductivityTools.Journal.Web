@@ -3,10 +3,15 @@ import JournalItem from 'Components/JournalItem';
 import * as apiService from 'services/apiService'
 import Button from '@mui/material/Button';
 import { v4 as uuid } from 'uuid';
+import { useAuth } from '../../Session/AuthContext'
+
 
 export default function MeetingList(props) {
 
     const [meetings, setMeetings] = useState([]);
+
+    
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,7 +26,6 @@ export default function MeetingList(props) {
         console.log(meeting);
         console.log("updateMeetingInList");
         console.log(meetings);
-        debugger;
         let xx = meetings.find(x => x.journalItemId === meeting.journalItemId);
         xx.subject = meeting.subject;
         xx.notesList = meeting.notesList;
@@ -31,7 +35,6 @@ export default function MeetingList(props) {
     const newEvent = () => {
 
         console.log('new event');
-        debugger;
         let newPage = [{ mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here',guid: uuid() }] }]
         setMeetings([...newPage, ...meetings]);
     }

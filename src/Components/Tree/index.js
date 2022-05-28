@@ -220,10 +220,6 @@ export default function CustomizedTreeView(props) {
 
   const menuItems = [
     {
-      text: 'Add new journal item',
-      onclick: (treeId) => { props.setSelectedTreeNode(treeId); props.createNewMeeting(); console.log(`Item one from container  ${treeId} clicked`); }
-    },
-    {
       text: 'Add new tree item',
       onclick: (treeId) => { props.setSelectedTreeNode(treeId); handleModalOpen(); }
     },

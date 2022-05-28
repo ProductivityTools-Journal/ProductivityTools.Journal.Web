@@ -14,17 +14,18 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 	return (
-		<div className="App">
-			<BrowserRouter>
-				<Routes>
-					<Route path='/Login' element={<Login />} />
-					<Route path='/' element={<Home />} />
-					<Route path='/Home' element={<Home />} />
-					<Route path='/List' element={<Main />} />
-				</Routes>
-			</BrowserRouter>
-			<ToastContainer />
-		</div>)
+
+			<div className="App">
+				<BrowserRouter>
+					<Routes>
+						<Route path='/Login' element={<Login />} />
+						<Route path='/' element={<Home />} />
+						<Route path='/Home' element={<Home />} />
+						<Route path='/List' element={<Main />} />
+					</Routes>
+				</BrowserRouter>
+				<ToastContainer />
+			</div>)
 	// <div>
 	// 	<div>
 	// 		<Link to="/">Home1</Link>
