@@ -115,7 +115,6 @@ function MeetingItem(props) {
 			}
 			else {
 				return (<fieldset>
-					<p>mode: {mode}</p>
 					<p>Title: {meeting.subject}</p>
 					{/* <Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} /> */}
 					<hr></hr>
@@ -133,7 +132,7 @@ function MeetingItem(props) {
 					<Button variant="contained" color="primary" onClick={newJournalItemDetails}>Add details</Button>
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>
 					<Button variant="contained" color="primary" onClick={close}>Close</Button>
-					<div>{meeting.beforeNotes}</div>
+					{/* <div>{meeting.beforeNotes}</div> */}
 				</fieldset>)
 			}
 		}

@@ -233,8 +233,8 @@ export default function SlateEditor(props) {
                         </div>
                     </Slate>
                 </div>
-                <div>slate title: {title}</div>
-                <div><textarea value={JSON.stringify(value)}></textarea></div>
+                {/* <div>slate title: {title}</div>
+                <div><textarea value={JSON.stringify(value)}></textarea></div> */}
             </div>
         )
     }

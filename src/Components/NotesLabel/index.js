@@ -10,7 +10,7 @@ function NotesLabel(props) {
             {/* <SlateEditor selectedElement={props.selectedElement} detailsChanged={detailsChanged} titleChanged={updateTitle}></SlateEditor> */}
             <SlateEditor selectedElement={props.selectedElement} readOnly={props.readOnly}></SlateEditor>
 
-            <TextField
+            {/* <TextField
                 label={props.title}
                 value={props.notes}
                 multiline
@@ -19,7 +19,7 @@ function NotesLabel(props) {
                 readOnly
 
                 id="outlined-start-adornment"
-            />
+            /> */}
         </div>
     )
 }

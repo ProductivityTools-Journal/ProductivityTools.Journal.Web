@@ -38,7 +38,7 @@ function Notes(props) {
 		<div>
 			<SlateEditor selectedElement={props.selectedElement} readOnly={props.readOnly} detailsChanged={onSlateChanged}></SlateEditor>
 
-			<TextField
+			{/* <TextField
 				label={`type: ${props.title}`}
 				name={props.name}
 				guid={props.guid}
@@ -50,7 +50,7 @@ function Notes(props) {
 				fullWidth
 				variant="outlined"
 
-			/>
+			/> */}
 			<button onClick={deleteNotes}>Delete</button>
 		</div>
 	)
