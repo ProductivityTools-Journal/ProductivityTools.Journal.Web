@@ -99,11 +99,10 @@ function MeetingItem(props) {
 							
 							let notes = null;
 							if (n.notesType == 'Slate') {
-								debugger;
-								notes = { detailsType: '', details: JSON.parse(n.notes), name: n.type, elementId: "fdsa" }
+								notes = { detailsType: '', details: JSON.parse(n.notes), name: n.type, elementId: "qwerty4" }
 							}
 							else {
-								notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "fdsa"), name: n.type, elementId: "fdsa" }
+								notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)"), name: n.type, elementId: "qwerty6" }
 							}
 							return (<NotesLabel title={n.type} notes={n.notes} selectedElement={notes} readOnly={true} />)
 						})}
@@ -121,10 +120,10 @@ function MeetingItem(props) {
 					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
 						let notes = null;
 						if (n.notesType == 'Slate') {
-							notes = { detailsType: '', details: JSON.parse(n.notes), name: n.type, elementId: "fdsa" }
+							notes = { detailsType: '', details: JSON.parse(n.notes), name: n.type, elementId: "qwerty1" }
 						}
 						else {
-							notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "fdsa"), name: n.type, elementId: "fdsa" }
+							notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)."), name: n.type, elementId: "qwerty2" }
 						}
 						console.log("notes", notes);
 						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
