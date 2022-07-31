@@ -5,6 +5,7 @@ export const PATH_MEETINGS_DATE = 'Date';
 export const PATH_MEETING_ACTION = 'Meeting';
 export const PATH_MEETING_UPDATE_MEETING= 'Update';
 export const PATH_MEETING_NEW_MEETING= 'New';
+export const PATH_MEETINGS_DELETE="Delete";
 
 export const PATH_TREE_CONTROLER = 'Tree';
 export const PATH_TREE_GET= 'Get';

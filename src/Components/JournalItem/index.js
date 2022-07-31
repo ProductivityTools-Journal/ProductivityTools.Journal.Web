@@ -85,6 +85,12 @@ function MeetingItem(props) {
 		return template;
 	}
 
+	const deleteWholeJournalItem=()=>{
+		console.log("delete whole journal item")
+		console.log(workingEvent);
+		apiService.deleteMeeting(workingEvent.journalItemId);
+	}
+
 
 	const getComponent = () => {
 		console.log("working event");
@@ -128,9 +134,11 @@ function MeetingItem(props) {
 						console.log("notes", notes);
 						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
 					})}
-					<Button variant="contained" color="primary" onClick={newJournalItemDetails}>Add details</Button>
+					
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>
 					<Button variant="contained" color="primary" onClick={close}>Close</Button>
+					<Button variant="outlined" color="primary" onClick={newJournalItemDetails}>Add details</Button>
+					<Button variant="outlined" color="primary" onClick={deleteWholeJournalItem}>Delete whole Joural Item</Button>
 					{/* <div>{meeting.beforeNotes}</div> */}
 				</fieldset>)
 			}

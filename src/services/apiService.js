@@ -81,6 +81,13 @@ async function getDate() {
     return response.data;
 }
 
+async function deleteMeeting(meetingId) {
+    console.log(meetingId);
+    // const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DELETE}`, data, header)
+   // return response.data;
+}
+
+
 async function callAuthorizedEndpointWithToast(call, pendingMessage, successMessage) {
     //return callAuthorizedEndpoint(call);
     return toast.promise(
@@ -163,6 +170,7 @@ export {
     moveTreeNode,
     saveMeeting,
     fetchMeeting,
+    deleteMeeting,
     updateMeeting,
     getDate,
     fetchMeetingList
