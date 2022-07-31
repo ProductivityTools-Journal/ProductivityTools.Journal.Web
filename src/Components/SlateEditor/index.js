@@ -220,7 +220,7 @@ export default function SlateEditor(props) {
     else {
         return (
             <div>
-                <div style={{ width: '95%', margin: '0 auto' }}>
+                <div style={{ width: '100%', margin: '0 auto' }}>
                     <Slate editor={editor} value={props.selectedElement.details} onChange={editorChanged}>
                         <Toolbar />
 
