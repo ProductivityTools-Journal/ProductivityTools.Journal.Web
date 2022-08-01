@@ -83,8 +83,9 @@ async function getDate() {
 
 async function deleteMeeting(meetingId) {
     console.log(meetingId);
-    // const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DELETE}`, data, header)
-   // return response.data;
+    const data = { meetingId: meetinId }
+    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DELETE}`, data, header)
+    return response.data;
 }
 
 
