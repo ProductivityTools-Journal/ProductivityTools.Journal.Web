@@ -85,7 +85,7 @@ function MeetingItem(props) {
 		return template;
 	}
 
-	const deleteWholeJournalItem=()=>{
+	const deleteWholeJournalItem = () => {
 		console.log("delete whole journal item")
 		console.log(workingEvent);
 		apiService.deleteMeeting(workingEvent.journalItemId);
@@ -102,10 +102,17 @@ function MeetingItem(props) {
 						<p>mode: {mode}</p>
 						<legend>[{meeting.journalItemId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.treeId}</legend>
 						{meeting.notesList?.map(n => {
-							
+
 							let notes = null;
 							if (n.notesType == 'Slate') {
-								notes = { detailsType: '', details: JSON.parse(n.notes), name: n.type, elementId: "qwerty4" }
+								let dt = n.notes;
+								try {
+									dt = JSON.parse(n.notes)
+									notes = { detailsType: '', details: dt, name: n.type, elementId: "qwerty4" }
+								} catch (error) {
+									notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)"), name: n.type, elementId: "qwerty6" }
+
+								}
 							}
 							else {
 								notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)"), name: n.type, elementId: "qwerty6" }
@@ -126,7 +133,15 @@ function MeetingItem(props) {
 					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
 						let notes = null;
 						if (n.notesType == 'Slate') {
-							notes = { detailsType: '', details: JSON.parse(n.notes), name: n.type, elementId: "qwerty1" }
+							let dt = n.notes;
+							try {
+								dt = JSON.parse(n.notes)
+								notes = { detailsType: '', details: dt, name: n.type, elementId: "qwerty1" }
+
+							} catch (error) {
+								notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)"), name: n.type, elementId: "qwerty6" }
+
+							}
 						}
 						else {
 							notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)."), name: n.type, elementId: "qwerty2" }
@@ -134,7 +149,7 @@ function MeetingItem(props) {
 						console.log("notes", notes);
 						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
 					})}
-					
+
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>
 					<Button variant="contained" color="primary" onClick={close}>Close</Button>
 					<Button variant="outlined" color="primary" onClick={newJournalItemDetails}>Add details</Button>
