@@ -6514,6 +6514,18 @@ jszip@^3.6.0:
     readable-stream "~2.3.6"
     set-immediate-shim "~1.0.1"
 
+jwt-check-expiration@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/jwt-check-expiration/-/jwt-check-expiration-1.0.5.tgz#4161c3090831b5279f8f0d7cb44ecb08ad852991"
+  integrity sha512-Ov2A7f/zwiZ8wvi6KG+Jeb6am1pvwgcms+HytB4GMPzrCf5UfytnlBVRh9a39Hi2v91H3aETtXHZreB8BTdbUQ==
+  dependencies:
+    jwt-decode "^2.2.0"
+
+jwt-decode@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-2.2.0.tgz#7d86bd56679f58ce6a84704a657dd392bba81a79"
+  integrity sha512-86GgN2vzfUu7m9Wcj63iUkuDzFNYFVmjeDm2GzWpUk+opB0pEpMsw6ePCMrhYkumz2C1ihqtZzOMAg7FiXcNoQ==
+
 kind-of@^6.0.2:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"

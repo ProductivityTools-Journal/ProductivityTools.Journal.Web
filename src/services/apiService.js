@@ -9,15 +9,12 @@ async function getTree() {
 
     console.log("GetTreeInvoked")
     console.log(auth);
-    // var x = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`)
-    // return x.data;
-
     let call = async (header) => {
 
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`, {}, header)
         return response.data;
     }
-    return callAuthorizedEndpointWithToast(call, "Trying to get tree", "Tree returned");
+    return invokeCallWithToast(call, "Trying to get tree", "Tree returned");
 }
 
 async function addTreeNode(parentId, name) {
@@ -37,7 +34,7 @@ async function moveTreeNode(sourceId, targetParentId) {
         console.group(response.data);
         return response.data;
     }
-    return callAuthorizedEndpointWithToast(call, "Moving tree element", "Tree element moed")
+    return invokeCallWithToast(call, "Moving tree element", "Tree element moved")
 }
 
 async function deleteTree(treeId) {
@@ -52,8 +49,12 @@ async function deleteTree(treeId) {
 }
 
 async function saveMeeting(meeting) {
-    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, meeting)
-    return response.data;
+    let call = async (header) => {
+        console.log("saveMeeting");
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, meeting)
+        return response.data;
+    }
+    return invokeCallWithToast(call,"Creating new Jounral Item", "New Journal Item created")
 }
 
 async function fetchMeeting(id) {
@@ -65,7 +66,7 @@ async function fetchMeeting(id) {
         return response.data;
     }
 
-    return callAuthorizedEndpointWithToast(call, "Trying to get Journal details", "Journal details returned");
+    return invokeCallWithToast(call, "Trying to get Journal details", "Journal details returned");
 
 }
 
@@ -83,34 +84,38 @@ async function getDate() {
 
 async function deleteMeeting(meetingId) {
     console.log(meetingId);
-    const data = { meetingId: meetinId }
-    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DELETE}`, data, header)
+    const data = { meetingId: meetingId }
+    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DELETE}`, data)
     return response.data;
 }
 
 
-async function callAuthorizedEndpointWithToast(call, pendingMessage, successMessage) {
-    //return callAuthorizedEndpoint(call);
+async function invokeCallWithToast(call, pendingMessage, successMessage) {
     return toast.promise(
-        callAuthorizedEndpoint(call),
+        invokeCall(call),
         {
             pending: pendingMessage ? pendingMessage : "Missing pending message",
             success: successMessage ? successMessage : "Missing sucesss message",
-            error: 'something happned!!!!'
+            error: {
+                render({ data }) {
+                    console.log(data);
+                    return <p>{data.message} [{data.response.data.message}]</p>
+                }
+            }
         }
     )
 }
+
 
 async function fetchMeetingList(treeId) {
 
     let call = async (header) => {
         const data = { Id: Number(treeId), DrillDown: true }
-        debugger;
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`, data, header)
         console.log(response.data);
         return response.data;
     }
-    return callAuthorizedEndpointWithToast(call, "Trying to meeting list", "Meeting list returned");
+    return invokeCallWithToast(call, "Trying to meeting list", "Meeting list returned");
 }
 
 async function callAuthorizedEndpoint(call) {
@@ -132,35 +137,20 @@ async function callAuthorizedEndpoint(call) {
     else {
         console.log("User not authenticated")
     }
-    // return await authService.getUser().then(async user => {
-    //     if (user && user.access_token) {
-    //         const header = {
-    //             headers: { Authorization: `Bearer ${user.access_token}` }
-    //         };
-    //         try {
-    //             const result = await call(header);
-    //             return result;
-    //         }
-    //         catch (error) {
-    //             if (error.response != null && error.response.status === 401) {
-    //                 console.log("try to renew token");
-    //                 authService.renewToken().then(async renewedToken => {
-    //                     const header = {
-    //                         headers: { Authorization: `Bearer ${renewedToken.access_token}` }
-    //                     };
-    //                     const result = await call(header);
-    //                     return result;
-    //                 })
-    //             }
-    //         }
-    //     } else if (user) {
-    //         console.log("api call2");
-    //     }
-    //     else {
-    //         console.log("api cal4l");
-    //     }
-    // })
 }
+
+async function invokeCall(call) {
+    let token = localStorage.getItem('token')
+    console.log("token from localstorage", token)
+    const header = { headers: { Authorization: `Bearer ${token}` } }
+    try {
+        const response = call(header);
+        return response;
+    } catch (error) {
+        console.log("Call endpoint");
+        console.log(error);
+    }
+} 
 
 
 
