@@ -85,7 +85,7 @@ function MeetingItem(props) {
 		return template;
 	}
 
-	const deleteWholeJournalItem = () => {
+q	const deleteWholeJournalItem = () => {
 		console.log("delete whole journal item")
 		console.log(workingEvent);
 		apiService.deleteMeeting(workingEvent.journalItemId);
