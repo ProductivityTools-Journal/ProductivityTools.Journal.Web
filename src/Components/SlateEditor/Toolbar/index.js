@@ -69,6 +69,22 @@ const Toolbar = () => {
             </Button>
         );
     };
+
+    const ClickButton = ({ format }) => {
+        return (
+            <Button
+                active={isMarkActive(editor, format)}
+                format={format}
+                onMouseDown={(e) => {
+                    e.preventDefault();
+                    toggleMark(editor, format);
+                }}
+            >
+                <Icon icon={format} />
+            </Button>
+        );
+    };
+
     const Dropdown = ({ format, options }) => {
         return (
             <select
@@ -84,6 +100,7 @@ const Toolbar = () => {
         );
     };
     const changeMarkData = (event, format) => {
+        debugger;
         event.preventDefault();
         const value = event.target.value;
         addMarkData(editor, { format, value });
@@ -128,6 +145,8 @@ const Toolbar = () => {
                             );
                         case "table":
                             return <Table key={element.id} editor={editor} />;
+                        case "increaseIndent":
+                            return <ClickButton key={element.id} {...element} />;
                         case "inTable":
                             return isTable ? (
                                 <InTable key={element.id} editor={editor} />

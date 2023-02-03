@@ -64,6 +64,7 @@ export const addMarkData = (editor, data) => {
   Editor.addMark(editor, data.format, data.value);
 };
 export const toggleMark = (editor, format) => {
+  debugger;
   const isActive = isMarkActive(editor, format);
 
   if (isActive) {

@@ -146,6 +146,13 @@ const toolbarGroups = [
         id: 24,
         type: "inTable"
       }
+    ],
+    [
+      {
+        id: 25,
+        format: "video",
+        type: "increaseIndent"
+      }
     ]
   ];
   
