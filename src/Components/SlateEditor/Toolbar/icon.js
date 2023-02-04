@@ -1,5 +1,5 @@
 import React from 'react';
-import { MdFormatBold, MdFormatItalic, MdStrikethroughS, MdFormatUnderlined, MdFormatQuote, MdFormatAlignLeft, MdFormatAlignCenter, MdFormatAlignRight, MdFormatListNumbered, MdFormatListBulleted,MdInsertLink,MdVideoLibrary,MdImage,MdAdd} from 'react-icons/md'
+import { MdFormatBold, MdFormatItalic, MdStrikethroughS, MdFormatUnderlined, MdFormatQuote, MdFormatAlignLeft, MdFormatAlignCenter, MdFormatAlignRight, MdFormatListNumbered, MdFormatListBulleted,MdInsertLink,MdVideoLibrary,MdImage,MdAdd,MdFormatIndentIncrease} from 'react-icons/md'
 import { BsTypeH1, BsTypeH2, BsTypeH3 } from 'react-icons/bs'
 import { FaSuperscript,FaSubscript } from 'react-icons/fa'
 import { AiOutlineTable, AiOutlineInsertRowBelow, AiOutlineInsertRowRight,AiOutlineDelete } from 'react-icons/ai'
@@ -23,6 +23,7 @@ const iconList={
     link:<MdInsertLink size={20}/>,
     image:<MdImage size={20}/>,
     video:<MdVideoLibrary size={20}/>,
+    increaseIndent:<MdFormatIndentIncrease size={20}/>,
     add:<MdAdd size={20}/>,
     table:<AiOutlineTable size={20}/>,
     row:<AiOutlineInsertRowBelow size={20}/>,

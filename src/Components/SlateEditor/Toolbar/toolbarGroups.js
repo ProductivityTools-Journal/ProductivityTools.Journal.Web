@@ -150,8 +150,8 @@ const toolbarGroups = [
     [
       {
         id: 25,
-        format: "video",
-        type: "increaseIndent"
+        format: "increaseIndent",
+        type: "block"
       }
     ]
   ];

@@ -6,7 +6,9 @@ import Video from '../Elements/Video/Video'
 export const Element = (props) =>{
 
     const {attributes, children, element} = props;
-    
+    console.log(props);
+    console.log("props");
+    console.log(element.type);
     switch(element.type){
         case 'title':
             return <h1 {...attributes}>{children}</h1>
@@ -30,9 +32,10 @@ export const Element = (props) =>{
             return <ol type='1' {...attributes}>{children}</ol>
         case 'unorderedList':
             return <ul {...attributes}>{children}</ul>
+        case 'increaseIndent':
+            return <ul {...attributes}><li>{children}</li></ul>
         case 'link':
             return <Link {...props}/>
-       
         case 'table':
             return <table>
                 <tbody {...attributes}>{children}</tbody>
