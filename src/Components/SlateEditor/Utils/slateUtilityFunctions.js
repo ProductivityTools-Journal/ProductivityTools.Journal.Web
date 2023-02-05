@@ -38,6 +38,7 @@ export const toggleBlock = (editor, format) => {
 
   /* Wraping the nodes for alignment, to allow it to co-exist with other block level operations*/
   if (isIndent) {
+    console.log("isIndent wrapnodes")
     Transforms.wrapNodes(editor, {
       type: format,
       children: []

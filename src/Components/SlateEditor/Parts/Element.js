@@ -1,13 +1,14 @@
 import Link from'../Elements/Link/Link'
 import Image from '../Elements/Image/Image'
 import Video from '../Elements/Video/Video'
+import Indent from '../Elements/Indent/Indent'
 
 
 export const Element = (props) =>{
 
     const {attributes, children, element} = props;
-    console.log(props);
     console.log("props");
+    console.log(props);
     console.log(element.type);
     switch(element.type){
         case 'title':
@@ -33,7 +34,8 @@ export const Element = (props) =>{
         case 'unorderedList':
             return <ul {...attributes}>{children}</ul>
         case 'increaseIndent':
-            return <ul {...attributes}><li>{children}</li></ul>
+           // return <ul {...attributes}><li>{children}</li></ul>
+           return <Indent {...props}/>
         case 'link':
             return <Link {...props}/>
         case 'table':
