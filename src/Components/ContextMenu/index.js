@@ -29,7 +29,7 @@ const ContextMenu = ({ parentRef, items }) => {
             ///let li = reversedArray.find(e => e.nodeName === 'LI');
             //let id=li.attributes.find(e=>e.name='xxxx')
             //   console.log(event.path.find(e=>e.nodeName=='LI').getAttribute('contextmenuid'));
-            let elementId = event.path.find(e => e.nodeName === 'LI').getAttribute('contextmenuid');
+            let elementId = event.composedPath().find(e => e.nodeName === 'LI').getAttribute('contextmenuid');
             setSelectedTreeId(elementId);
             console.log("selectet tree id")
             console.log(elementId);
