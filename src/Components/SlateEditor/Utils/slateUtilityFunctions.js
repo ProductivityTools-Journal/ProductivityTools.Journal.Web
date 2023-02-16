@@ -1,7 +1,7 @@
 import { Editor, Transforms, Element as SlateElement } from "slate";
 import { ReactEditor } from "slate-react";
 
-const alignment = ["alignLeft", "alignRight", "alignCenter"];
+const alignment = ["alignLeft", "alignRight", "alignCenter","increaseIndent"];
 const list_types = ["orderedList", "unorderedList"];
 export const sizeMap = {
   small: "0.75em",
@@ -22,6 +22,8 @@ export const toggleBlock = (editor, format) => {
     isBlockActive(editor, alignmentType)
   );
 
+  console.log("isAligned", isAligned, "isIndend", isIndent)
+  console.log("isActive", isActive, "isList", isList)
   /*If the node is already aligned and change in indent is called we should unwrap it first and split the node to prevent
     messy, nested DOM structure and bugs due to that.*/
   if (isAligned && isIndent) {
@@ -36,6 +38,7 @@ export const toggleBlock = (editor, format) => {
 
   /* Wraping the nodes for alignment, to allow it to co-exist with other block level operations*/
   if (isIndent) {
+    console.log("isIndent wrapnodes")
     Transforms.wrapNodes(editor, {
       type: format,
       children: []
@@ -53,6 +56,7 @@ export const toggleBlock = (editor, format) => {
   Transforms.setNodes(editor, {
     type: isActive ? "paragraph" : isList ? "list-item" : format
   });
+  console.log("SetNodes",format);
   if (isList && !isActive) {
     Transforms.wrapNodes(editor, {
       type: format,
@@ -64,8 +68,9 @@ export const addMarkData = (editor, data) => {
   Editor.addMark(editor, data.format, data.value);
 };
 export const toggleMark = (editor, format) => {
-  const isActive = isMarkActive(editor, format);
 
+  const isActive = isMarkActive(editor, format);
+  console.log("remove Mark", format);
   if (isActive) {
     Editor.removeMark(editor, format);
   } else {
