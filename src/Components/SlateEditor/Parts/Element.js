@@ -1,7 +1,6 @@
 import Link from'../Elements/Link/Link'
 import Image from '../Elements/Image/Image'
 import Video from '../Elements/Video/Video'
-import Indent from '../Elements/Indent/Indent'
 
 
 export const Element = (props) =>{
@@ -33,9 +32,6 @@ export const Element = (props) =>{
             return <ol type='1' {...attributes}>{children}</ol>
         case 'unorderedList':
             return <ul {...attributes}>{children}</ul>
-        case 'increaseIndent':
-           // return <ul {...attributes}><li>{children}</li></ul>
-           return <Indent {...props}/>
         case 'link':
             return <Link {...props}/>
         case 'table':
