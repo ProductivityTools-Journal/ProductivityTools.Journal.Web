@@ -8,6 +8,7 @@
     "@mui/lab": "^5.0.0-alpha.71",
     "@mui/material": "^5.4.4",
     "@mui/styled-engine-sc": "^5.4.2",
+    "@prezly/slate-lists": "^0.79.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
