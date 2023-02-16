@@ -54,7 +54,7 @@ async function saveMeeting(meeting) {
         const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, meeting)
         return response.data;
     }
-    return invokeCallWithToast(call,"Creating new Jounral Item", "New Journal Item created")
+    return invokeCallWithToast(call, "Creating new Jounral Item", "New Journal Item created")
 }
 
 async function fetchMeeting(id) {
@@ -70,12 +70,17 @@ async function fetchMeeting(id) {
 
 }
 
-async function updateMeeting(meeting) {
-    console.log("updating meeeting");
-    console.log(meeting);
-    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, meeting)
-    return response.data;
+async function updateJournal(meeting) {
+    let call = async (header) => {
+        console.log("updating meeeting");
+        console.log(meeting);
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_UPDATE_MEETING}`, meeting, header)
+        return response.data;
+    }
+    return invokeCallWithToast(call, "Updating Jounral Item", "Journal Item Updated")
+
 }
+
 
 async function getDate() {
     const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DATE}`)
@@ -150,7 +155,7 @@ async function invokeCall(call) {
         console.log("Call endpoint");
         console.log(error);
     }
-} 
+}
 
 
 
@@ -162,7 +167,7 @@ export {
     saveMeeting,
     fetchMeeting,
     deleteMeeting,
-    updateMeeting,
+    updateJournal,
     getDate,
     fetchMeetingList
 }

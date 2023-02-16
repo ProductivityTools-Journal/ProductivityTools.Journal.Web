@@ -61,7 +61,7 @@ function MeetingItem(props) {
 			const r = await apiService.saveMeeting(workingEvent);
 			setWorkingEvent(prevMeeting => ({ ...prevMeeting, journalItemId: r }));
 		} else {
-			apiService.updateMeeting(workingEvent);
+			apiService.updateJournal(workingEvent);
 			workingEvent.notesList = workingEvent.notesList.filter((value, index, arr) => {
 				return value.status != 'Deleted';
 			})
