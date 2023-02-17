@@ -54,20 +54,29 @@ function MeetingItem(props) {
 		setWorkingEvent(prevWorkingEvent => ({ ...prevWorkingEvent, notesList: newNotesList }));
 	}
 
+
 	const save = async () => {
-		debugger;
+		let eventSum = undefined;//we need it to keep mode=edit, which is not returned from server
 		workingEvent.notesList.forEach(x => x.notesType = 'Slate');
 		if (workingEvent.journalItemId == null) {
-			const r = await apiService.saveMeeting(workingEvent);
-			setWorkingEvent(prevMeeting => ({ ...prevMeeting, journalItemId: r }));
+			let savedEvent = await apiService.saveMeeting(workingEvent);
+			eventSum = { ...workingEvent, ...savedEvent }
+			setWorkingEvent(eventSum);
 		} else {
 			apiService.updateJournal(workingEvent);
-			workingEvent.notesList = workingEvent.notesList.filter((value, index, arr) => {
+			debugger;
+			//check if this loop is needed
+			let notesListRemoved = workingEvent.notesList.filter((value, index, arr) => {
 				return value.status != 'Deleted';
 			})
+			eventSum = { ...workingEvent, notesList: notesListRemoved }
+
 		}
 
-		props.updateMeetingInList(workingEvent);
+
+		props.updateMeetingInList(eventSum);
+
+
 	}
 
 	const close = () => {
