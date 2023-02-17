@@ -27,8 +27,8 @@
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
     "react-toastify": "^8.2.0",
-    "slate": "^0.76.1",
-    "slate-react": "^0.76.1",
+    "slate": "^0.82.1",
+    "slate-react": "^0.82.1",
     "uuid": "^8.3.2"
   },
   "scripts": {
