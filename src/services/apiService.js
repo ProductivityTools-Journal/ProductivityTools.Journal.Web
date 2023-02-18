@@ -87,11 +87,14 @@ async function getDate() {
     return response.data;
 }
 
-async function deleteMeeting(meetingId) {
-    console.log(meetingId);
-    const data = { meetingId: meetingId }
-    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DELETE}`, data)
-    return response.data;
+async function deleteMeeting(journalId) {
+    let call = async (header) => {
+        console.log(journalId);
+        const data = { Id: journalId }
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_DELETE}`, data, header)
+        return response.data;
+    }
+    return invokeCallWithToast(call, "Deleting Journal Item", "Journal Item deleted")
 }
 
 

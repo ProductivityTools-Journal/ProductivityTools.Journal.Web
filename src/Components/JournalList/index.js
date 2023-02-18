@@ -24,21 +24,26 @@ export default function MeetingList(props) {
     }, [props.selectedTreeNode]);
 
     const updateMeetingInList = (meeting) => {
-        
+
         console.log(meeting);
         console.log("updateMeetingInList");
         console.log(meetings);
-        debugger;
         let updatedList = meetings.map(item => {
             if (item.frontendId === meeting.frontendId) {
-                let r= { ...item, ...meeting }
-                debugger;
-                return r;
+                if (meeting.Deleted == true) {
+                    //do nothing
+
+                }
+                else {
+                    let r = { ...item, ...meeting }
+                    return r;
+                }
             }
             else {
                 return item;
             }
-        })
+        }).filter(item => item != undefined);
+        debugger;
         setMeetings(updatedList);
     }
 
@@ -55,7 +60,9 @@ export default function MeetingList(props) {
         <div className="App" style={{ color: 'blue', marginLeft: '400px', width: '1200px' }} >
             <Button onClick={newEvent} >Add New</Button>
             <Button onClick={checkState} >CheckSatate</Button>
+            <p>Pages:</p>
             {meetings && meetings.length > 0 && meetings.map(function (item) {
+                debugger;
                 return (
                     <JournalItem meeting={item} updateMeetingInList={updateMeetingInList} key={item.journalItemId} />
                 );

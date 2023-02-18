@@ -72,11 +72,7 @@ function MeetingItem(props) {
 			eventSum = { ...workingEvent, notesList: notesListRemoved }
 
 		}
-
-
 		props.updateMeetingInList(eventSum);
-
-
 	}
 
 	const close = () => {
@@ -94,10 +90,12 @@ function MeetingItem(props) {
 		return template;
 	}
 
-	const deleteWholeJournalItem = () => {
+	const deletePage = () => {
 		console.log("delete whole journal item")
 		console.log(workingEvent);
 		apiService.deleteMeeting(workingEvent.journalItemId);
+		workingEvent.Deleted=true;
+		props.updateMeetingInList(workingEvent);
 	}
 
 
@@ -162,7 +160,7 @@ function MeetingItem(props) {
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>
 					<Button variant="contained" color="primary" onClick={close}>Close</Button>
 					<Button variant="outlined" color="primary" onClick={newJournalItemDetails}>Add details</Button>
-					<Button variant="outlined" color="primary" onClick={deleteWholeJournalItem}>Delete whole Joural Item</Button>
+					<Button variant="outlined" color="primary" onClick={deletePage}>Delete page</Button>
 					{/* <div>{meeting.beforeNotes}</div> */}
 				</fieldset>)
 			}
