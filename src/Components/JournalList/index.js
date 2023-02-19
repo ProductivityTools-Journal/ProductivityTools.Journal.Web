@@ -54,12 +54,11 @@ export default function MeetingList(props) {
         console.log(meetings);
     }
     return (
-        <div className="App" style={{ color: 'blue', marginLeft: '400px', width: '1200px' }} >
+        <div className="App" style={{ color: '#3b3d3b', marginLeft: '400px', width: '1200px' }} >
             <Button onClick={newEvent} >Add New</Button>
             <Button onClick={checkState} >CheckSatate</Button>
             <p>Pages:</p>
             {meetings && meetings.length > 0 && meetings.map(function (item) {
-                debugger;
                 return (
                     <JournalItem meeting={item} updateMeetingInList={updateMeetingInList} key={item.journalItemId} />
                 );

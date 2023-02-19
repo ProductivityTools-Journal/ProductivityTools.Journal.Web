@@ -124,16 +124,14 @@ const StyledTreeItem = (props) => {
 }
 
 
-export default function CustomizedTreeView(props) {
+export default function CustomizedTreeView({setSelectedTreeNode,selectedTreeNode}) {
   const [expanded, setExpanded] = useState([]);
   const [list, setList] = useState([]);
   const params = useParams();
 
   const [modalOpen, setModalOpen] = useState(false);
-  const handleModalClose = () => {
-    setModalOpen(false);
-  }
-  const handleModalOpen = () => { setModalOpen(true); }
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
 
   const containerRef = useRef(null);
 
@@ -167,6 +165,7 @@ export default function CustomizedTreeView(props) {
       const r = await apiService.getTree();
       console.log(r);
       if (r != null) {
+        debugger;
         setList(r);
         getNodePath(r[0], params.TreeId);
       }
@@ -208,7 +207,7 @@ export default function CustomizedTreeView(props) {
     var newParentobject = findElement(list[0], targetParentId);
     newParentobject.nodes.push(childObject);
     updateElementInList(childObject, "parentId", targetParentId);
-    props.setSelectedTreeNode(source.id)
+    setSelectedTreeNode(source.id)
   }
 
 
@@ -217,7 +216,7 @@ export default function CustomizedTreeView(props) {
       return (nodes.map(x => {
 
         return (
-          <StyledTreeItem nodeId={x.id.toString()} changeParent={changeParent} setSelectedTreeNode={props.setSelectedTreeNode} node={x} contextmenuid={x.id} key={x.id} >
+          <StyledTreeItem nodeId={x.id.toString()} changeParent={changeParent} setSelectedTreeNode={setSelectedTreeNode} node={x} contextmenuid={x.id} key={x.id} >
             {GetNode(x.nodes)}
           </StyledTreeItem >)
       })
@@ -232,30 +231,37 @@ export default function CustomizedTreeView(props) {
   const menuItems = [
     {
       text: 'Add new tree item',
-      onclick: (treeId) => { props.setSelectedTreeNode(treeId); handleModalOpen(); }
+      onclick: (treeId) => { setSelectedTreeNode(treeId); handleModalOpen(); }
     },
     {
       text: 'Delete',
-      onclick: (treeId) => { props.setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
+      onclick: (treeId) => { setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
+    },
+    {
+      text: 'Rename',
+      onclick: (treeId) => { setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
     }
   ];
 
 
-  const [open, setOpen] = React.useState(false);
+  const handleModalClose = () => {
+    setModalOpen(false);
+  }
+  const handleModalOpen = () => { setModalOpen(true); }
 
   const handleDeleteDialogOpen = () => {
-    setOpen(true);
+    setDeleteModalOpen(true);
   };
 
   const handleCloseAndProceed = async () => {
     console.log("handleCloseAndProceed");
-    await apiService.deleteTree(props.selectedTreeNode);
-    setOpen(false);
+    await apiService.deleteTree(selectedTreeNode);
+    setDeleteModalOpen(false);
   };
 
   const handleClose = () => {
     console.log("handleClose");
-    setOpen(false);
+    setDeleteModalOpen(false);
   };
 
   return (
@@ -274,8 +280,8 @@ export default function CustomizedTreeView(props) {
         })}
       </TreeView>
       <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu>
-      <TreeItemNewModal open={modalOpen} selectedTreeNode={props.selectedTreeNode} handleModalClose={handleModalClose} />
-      <TreeDeleteDialog open={open} handleClose={handleClose} handleCloseAndProceed={handleCloseAndProceed}></TreeDeleteDialog>
+      <TreeItemNewModal open={modalOpen} selectedTreeNode={selectedTreeNode} handleModalClose={handleModalClose} />
+      <TreeDeleteDialog open={deleteModalOpen} handleClose={handleClose} handleCloseAndProceed={handleCloseAndProceed}></TreeDeleteDialog>
     </div>
   );
 }
