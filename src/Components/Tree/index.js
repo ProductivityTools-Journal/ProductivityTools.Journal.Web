@@ -82,7 +82,7 @@ const StyledTreeItem = (props) => {
   }
 
   const [{ isDragging }, dragRef] = useDrag({
-    type: 'pet',
+    type: 'tree',
     item: node,
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
@@ -90,11 +90,22 @@ const StyledTreeItem = (props) => {
   })
 
   const [{ isOver }, dropRef] = useDrop({
-    accept: 'pet',
-    drop: (item) => {
+    accept: ['tree', 'page'],
+    drop: (item, monitor) => {
       console.log(item);
-      debugger;
-      changeParent2(item, node.id);
+      console.log(monitor.getItemType())
+      let type = monitor.getItemType();
+      if (type == 'tree') {
+        changeParent2(item, node.id);
+      }
+      if (type == 'page') {
+        debugger;
+        let page=item.page;
+        let pageWithNewParent = { ...page, treeId: node.id }
+        apiService.updateJournal(pageWithNewParent);
+        let removePageFromList=item.removePageFromList;
+        removePageFromList(page);
+      }
     },
     collect: (monitor) => ({
       isOver: monitor.isOver()
@@ -106,7 +117,9 @@ const StyledTreeItem = (props) => {
       <Link to="#" onClick={(e) => treeClick(e, node.id)}>{getLabel(node)}</Link>
       <span>{isDragging && '😱'}</span>
       <span> {isOver && <span>Drop Here!</span>}</span>
+
     </Box>}>
+
   </TreeItem>)
 }
 
@@ -211,8 +224,6 @@ export default function CustomizedTreeView(props) {
       )
     }
   }
-
-
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);

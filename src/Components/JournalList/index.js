@@ -10,7 +10,6 @@ export default function MeetingList(props) {
 
     const [meetings, setMeetings] = useState([]);
 
-
     useEffect(() => {
         const fetchData = async () => {
             const data = await apiService.fetchMeetingList(props.selectedTreeNode);
@@ -24,7 +23,6 @@ export default function MeetingList(props) {
     }, [props.selectedTreeNode]);
 
     const updateMeetingInList = (meeting) => {
-
         console.log(meeting);
         console.log("updateMeetingInList");
         console.log(meetings);
@@ -32,7 +30,6 @@ export default function MeetingList(props) {
             if (item.frontendId === meeting.frontendId) {
                 if (meeting.Deleted == true) {
                     //do nothing
-
                 }
                 else {
                     let r = { ...item, ...meeting }

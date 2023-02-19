@@ -42,14 +42,12 @@ export default function Main() {
         <div>
             <div>EditedMeeting:{editedMeeting}</div>
             <Link to="/">Home</Link>
-
-            <div style={{ width: '400px', float: 'left' }}>
-                <DndProvider backend={HTML5Backend}> {/* drag and drop */}
+            <DndProvider backend={HTML5Backend}> {/* drag and drop */}
+                <div style={{ width: '400px', float: 'left' }}>
                     <Tree setSelectedTreeNode={setSelectedTreeNode} selectedTreeNode={selectedTreeNode} createNewMeeting={newMeeting} />
-                </DndProvider>
-
-            </div>
-            <JournalList selectedTreeNode={selectedTreeNode}  />
+                </div>
+                <JournalList selectedTreeNode={selectedTreeNode} />
+            </DndProvider>
         </div>
     );
 }

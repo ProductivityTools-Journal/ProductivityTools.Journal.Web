@@ -5,6 +5,7 @@ import NotesLabel from 'Components/NotesLabel'
 import Notes from 'Components/Notes'
 import * as apiService from 'services/apiService'
 import { v4 as uuid } from 'uuid';
+import { useDrag } from 'react-dnd'
 
 
 function MeetingItem(props) {
@@ -94,10 +95,21 @@ function MeetingItem(props) {
 		console.log("delete whole journal item")
 		console.log(workingEvent);
 		apiService.deleteMeeting(workingEvent.journalItemId);
-		workingEvent.Deleted=true;
-		props.updateMeetingInList(workingEvent);
+		removePageFromList(workingEvent);
 	}
 
+	const removePageFromList = (page) => {
+		page.Deleted = true;
+		props.updateMeetingInList(page);
+	}
+
+	const [{ isDragging }, drag] = useDrag(() => ({
+		type: 'page',
+		item: { page: meeting, removePageFromList: removePageFromList },
+		collect: monitor => ({
+			isDragging: !!monitor.isDragging(),
+		})
+	}))
 
 	const getComponent = () => {
 		console.log("working event");
@@ -105,8 +117,8 @@ function MeetingItem(props) {
 		if (workingEvent != null) {
 			if (workingEvent.mode == null || workingEvent.mode === 'readonly') {
 				return (
-					<fieldset key={workingEvent.meetingId}>
-						<p>mode: {mode}</p>
+					<fieldset key={workingEvent.meetingId} ref={drag}>
+						<p>mode: {mode}  <span>{isDragging && '😱'}</span></p>
 						<legend>[{meeting.journalItemId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.treeId}</legend>
 						{meeting.notesList?.map(n => {
 
