@@ -23,6 +23,9 @@ export default function PageList(props) {
     }, [props.selectedTreeNode]);
 
     const updateMeetingInList = (meeting) => {
+
+        //page refactor, I am not sure if this is needed
+        return
         console.log(meeting);
         console.log("updateMeetingInList");
         console.log(pages);
@@ -60,7 +63,7 @@ export default function PageList(props) {
             <p>Pages:</p>
             {pages && pages.length > 0 && pages.map(function (item) {
                 return (
-                    <Page meeting={item} updateMeetingInList={updateMeetingInList} key={item.PageId} />
+                    <Page page={item} updateMeetingInList={updateMeetingInList} key={item.PageId} />
                 );
             })}
 

@@ -115,7 +115,7 @@ const withLayout = editor => {
     return editor
 }
 
-export default function SlateEditor(props) {
+export default function SlateEditor({selectedElement,readOnly,detailsChanged}) {
 
     const editor = useMemo(() => withLayout(withListsReact(withListsPlugin(withReact(createEditor())))), [])
     //const editor = useMemo(() => withReact(createEditor()), [])
@@ -159,9 +159,9 @@ export default function SlateEditor(props) {
     const changeContent = () => {
 
         editor.changingContent = true;
-        let rawDetails = props.selectedElement?.details;
-        let detailsType = props.selectedElement?.detailsType;
-        let title = props.selectedElement.name;
+        let rawDetails = selectedElement?.details;
+        let detailsType = selectedElement?.detailsType;
+        let title = selectedElement.name;
 
         debugger;
         let newValue = ''
@@ -244,14 +244,15 @@ export default function SlateEditor(props) {
     const editorChanged = (newValue) => {
         if (editor.changingContent) return;
         setValue(newValue);
-        props.detailsChanged(newValue)
+        detailsChanged(newValue)
         let title = editor.children[0].children[0].text;
         setTitle(title);
         //props.titleChanged(title);
     }
-
-    if (props.readOnly) {
-        return (<Slate editor={editor} value={props.selectedElement.details} onChange={editorChanged}>
+    console.log("XXXXXXXXXXXXXXXXXXXXX")
+    console.log(selectedElement.details)
+    if (readOnly) {
+        return (<Slate editor={editor} value={selectedElement.details} onChange={editorChanged}>
 
             <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
                 <Editable readOnly
@@ -266,7 +267,7 @@ export default function SlateEditor(props) {
         return (
             <div>
                 <div style={{ width: '100%', margin: '0 auto' }}>
-                    <Slate editor={editor} value={props.selectedElement.details} onChange={editorChanged}>
+                    <Slate editor={editor} value={selectedElement.details} onChange={editorChanged}>
                         <Toolbar />
 
                         <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>

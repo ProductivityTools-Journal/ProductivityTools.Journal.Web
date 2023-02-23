@@ -8,29 +8,29 @@ import { v4 as uuid } from 'uuid';
 import { useDrag } from 'react-dnd'
 
 
-function Page(props) {
+function Page({page,updatePageInList,key}) {
 
-	const { meeting, ...rest } = props;
+	//const { meeting, ...rest } = props;
 	const [workingEvent, setWorkingEvent] = useState();
 
 
 	useEffect(() => {
-		setWorkingEvent({ ...meeting });
-	}, []);
+		setWorkingEvent({ ...page });
+	}, [page]);
 
 	const [mode, setMode] = useState('readonly');
-	let mt = moment(props.meeting.date);
+	let mt = moment(page.date);
 	let dtDescription = mt.fromNow();
 	let dtFormated = mt.format('YYYY.MM.DD hh:mm')
 	const buttonStyle = { textAlign: 'left' }
-	console.log("meeting");
-	console.log(props.meeting);
+	console.log("Pagemeeting");
+	//console.log(page);
 
 	const edit = () => {
 
 		console.log()
 		//setMode('edit');
-		setWorkingEvent({ ...meeting, mode: 'edit' });
+		setWorkingEvent({ ...page, mode: 'edit' });
 	}
 
 	const updateState = (event) => {
@@ -54,22 +54,15 @@ function Page(props) {
 
 	const save = async () => {
 		let eventSum = undefined;//we need it to keep mode=edit, which is not returned from server
-		workingEvent.notesList.forEach(x => x.notesType = 'Slate');
-		if (workingEvent.journalItemId == null) {
-			let savedEvent = await apiService.saveMeeting(workingEvent);
+		workingEvent.notesType = 'Slate';
+		if (workingEvent.pageId == null) {
+			let savedEvent = await apiService.savePage(workingEvent);
 			eventSum = { ...workingEvent, ...savedEvent }
 			setWorkingEvent(eventSum);
 		} else {
 			apiService.updateJournal(workingEvent);
-			debugger;
-			//check if this loop is needed
-			let notesListRemoved = workingEvent.notesList.filter((value, index, arr) => {
-				return value.status != 'Deleted';
-			})
-			eventSum = { ...workingEvent, notesList: notesListRemoved }
-
 		}
-		props.updateMeetingInList(eventSum);
+		updatePageInList(eventSum);
 	}
 
 	const close = () => {
@@ -96,19 +89,19 @@ function Page(props) {
 
 	const removePageFromList = (page) => {
 		page.Deleted = true;
-		props.updateMeetingInList(page);
+		updatePageInList(page);
 	}
 
 	const [{ isDragging }, drag] = useDrag(() => ({
 		type: 'page',
-		item: { page: meeting, removePageFromList: removePageFromList },
+		item: { page: page, removePageFromList: removePageFromList },
 		collect: monitor => ({
 			isDragging: !!monitor.isDragging(),
 		})
 	}))
 
 
-	const getComponent2 = () => {
+	const getComponent = () => {
 		console.log("working event");
 		console.log(workingEvent);
 		if (workingEvent != null) {
@@ -130,10 +123,10 @@ function Page(props) {
 				}
 
 				return (
-					<fieldset key={workingEvent.meetingId} ref={drag}>
+					<fieldset key={workingEvent.journalId} ref={drag}>
 						<p>mode: {mode}  <span>{isDragging && '😱'}</span></p>
-						<legend>[{meeting.pageId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.journalId}</legend>
-						<NotesLabel title={workingEvent.type} notes={workingEvent.notes} selectedElement={notes} readOnly={true} />
+						<legend>[{page.pageId}] {dtFormated} ({dtDescription}) - {page.subject} Treeid:{page.journalId}</legend>
+						<NotesLabel selectedElement={notes} readOnly={true} />
 						<p style={buttonStyle}>
 							<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
 						</p>
@@ -158,7 +151,7 @@ function Page(props) {
 				}
 				console.log("notes", notes);
 				return (<fieldset>
-					<p>Title: {meeting.subject}</p>
+					<p>Title: {page.subject}</p>
 					{/* <Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} /> */}
 					<hr></hr>
 					<Notes title={notes.type} notes={notes.notes} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
@@ -175,7 +168,7 @@ function Page(props) {
 	}
 
 	return <div>
-		{getComponent2()}
+		{getComponent()}
 	</div>
 }
 
