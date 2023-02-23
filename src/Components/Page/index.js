@@ -6,6 +6,7 @@ import Notes from 'Components/Notes'
 import * as apiService from 'services/apiService'
 import { v4 as uuid } from 'uuid';
 import { useDrag } from 'react-dnd'
+import * as Common from '../Common.js'
 
 
 function Page({page,updatePageInList,key}) {
@@ -40,13 +41,13 @@ function Page({page,updatePageInList,key}) {
 
 	const updateElementInList = (value, journalItemDetailsGuid, field) => {
 		let journalItemDetailNotes = value;
-		let notes = localPageObject.notesList;
+		let notes = localPageObject.contentList;
 		var editedElement = notes.find(x => x.guid === journalItemDetailsGuid);
 		editedElement[field] = journalItemDetailNotes;
 		setLocalPageObject(prevMeeting => ({ ...prevMeeting, notesList: notes }));
 	}
 	// const newJournalItemDetails = () => {
-	// 	let newNotesList = [...localPageObject.notesList, { type: 'new', notes: 'Add notes here', guid: uuid(), status: 'New' }]
+	// 	let newNotesList = [...localPageObject.contentList, { type: 'new', notes: 'Add notes here', guid: uuid(), status: 'New' }]
 	// 	setLocalPageObject(prevlocalPageObject => ({ ...prevlocalPageObject, notesList: newNotesList }));
 	// }
 
@@ -54,7 +55,7 @@ function Page({page,updatePageInList,key}) {
 	const save = async () => {
 		let eventSum = undefined;//we need it to keep mode=edit, which is not returned from server
 		debugger;
-		localPageObject.notesType = 'Slate';
+		localPageObject.contentType = 'Slate';
 		if (localPageObject.pageId == null) {
 			let savedEvent = await apiService.savePage(localPageObject);
 			eventSum = { ...localPageObject, ...savedEvent }
@@ -69,16 +70,7 @@ function Page({page,updatePageInList,key}) {
 		setLocalPageObject({ ...localPageObject, mode: 'readonly' });
 	}
 
-	const getSlateStructureFromRawDetails = (rawDetails, title) => {
-		let template = [{
-			type: 'title',
-			children: [{ text: title || "Title" }],
-		}, {
-			type: 'paragraph',
-			children: [{ text: rawDetails || "No data" }],
-		},]
-		return template;
-	}
+
 
 	const deletePage = () => {
 		console.log("delete whole journal item")
@@ -109,18 +101,18 @@ function Page({page,updatePageInList,key}) {
 			if (localPageObject.mode == null || localPageObject.mode === 'readonly') {
 
 				let notes = null;
-				if (localPageObject.notesType == 'Slate') {
-					let dt = localPageObject.notes;
+				if (localPageObject.contentType == 'Slate') {
+					let dt = localPageObject.content;
 					try {
-						dt = JSON.parse(localPageObject.notes)
+						dt = JSON.parse(localPageObject.content)
 						notes =  dt;
 					} catch (error) {
-						notes =  getSlateStructureFromRawDetails(localPageObject.notes, "Notes item title (before, after)");
+						notes =  Common.getSlateStructureFromRawDetails(localPageObject.content, "Notes item title (before, after)");
 
 					}
 				}
 				else {
-					notes =  getSlateStructureFromRawDetails(localPageObject.notes, "Notes item title (before, after)");
+					notes =  Common.getSlateStructureFromRawDetails(localPageObject.content, "Notes item title (before, after)");
 				}
 
 				return (
@@ -136,26 +128,26 @@ function Page({page,updatePageInList,key}) {
 			}
 			else {
 				let notes = null;
-				if (localPageObject.notesType == 'Slate') {
-					let dt = localPageObject.notes;
+				if (localPageObject.contentType == 'Slate') {
+					let dt = localPageObject.content;
 					try {
-						dt = JSON.parse(localPageObject.notes)
+						dt = JSON.parse(localPageObject.content)
 						notes =  dt;
 
 					} catch (error) {
-						notes = getSlateStructureFromRawDetails(localPageObject.notes, "Notes item title (before, after)")
+						notes = Common.getSlateStructureFromRawDetails(localPageObject.content, "Notes item title (before, after)")
 
 					}
 				}
 				else {
-					notes = getSlateStructureFromRawDetails(localPageObject.notes, "Notes item title (before, after).");
+					notes = Common.getSlateStructureFromRawDetails(localPageObject.content, "Notes item title (before, after).");
 				}
 				console.log("notes", notes);
 				return (<fieldset>
 					<p>Title: {page.subject}</p>
 					{/* <Notes title='Subject' name='subject' notes={localPageObject.subject} updateState={updateState} /> */}
 					<hr></hr>
-					<Notes title={notes.type} notes={notes.notes} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
+					<Notes title={notes.type} notes={notes.content} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
 
 
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>

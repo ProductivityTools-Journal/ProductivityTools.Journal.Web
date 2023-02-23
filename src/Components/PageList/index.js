@@ -4,6 +4,8 @@ import * as apiService from 'services/apiService'
 import Button from '@mui/material/Button';
 import { v4 as uuid } from 'uuid';
 import { useAuth } from '../../Session/AuthContext'
+import * as Common from '../Common.js'
+
 
 
 export default function PageList(props) {
@@ -49,8 +51,11 @@ export default function PageList(props) {
 
     const newEvent = () => {
         console.log('new event');
-        let newPage = [{ frontendId: uuid(), mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] }]
-        setPages([...newPage, ...pages]);
+        
+        let newPageArray=Common.getNewPageArray(props.selectedTreeNode);
+        debugger;
+        //let newPage = [{ frontendId: uuid(), mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] }]
+        setPages([...newPageArray, ...pages]);
     }
 
     const checkState = () => {

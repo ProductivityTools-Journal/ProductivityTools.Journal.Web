@@ -268,7 +268,7 @@ export default function SlateEditor({pageJsonContent,readOnly,detailsChanged}) {
         return (
             <div>
                 <div style={{ width: '100%', margin: '0 auto' }}>
-                    <Slate editor={editor} value={pageJsonContent.details} onChange={editorChanged}>
+                    <Slate editor={editor} value={pageJsonContent} onChange={editorChanged}>
                         <Toolbar />
 
                         <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
