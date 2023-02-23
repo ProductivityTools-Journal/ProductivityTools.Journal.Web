@@ -115,7 +115,7 @@ async function invokeCallWithToast(call, pendingMessage, successMessage) {
 }
 
 
-async function fetchMeetingList(treeId) {
+async function fetchPageList(treeId) {
 
     let call = async (header) => {
         const data = { Id: Number(treeId), DrillDown: true }
@@ -172,5 +172,5 @@ export {
     deleteMeeting,
     updateJournal,
     getDate,
-    fetchMeetingList
+    fetchPageList
 }

@@ -8,7 +8,7 @@ import { v4 as uuid } from 'uuid';
 import { useDrag } from 'react-dnd'
 
 
-function MeetingItem(props) {
+function Page(props) {
 
 	const { meeting, ...rest } = props;
 	const [workingEvent, setWorkingEvent] = useState();
@@ -179,10 +179,79 @@ function MeetingItem(props) {
 		}
 	}
 
+
+
+	const getComponent2 = () => {
+		console.log("working event");
+		console.log(workingEvent);
+		if (workingEvent != null) {
+			if (workingEvent.mode == null || workingEvent.mode === 'readonly') {
+
+				let notes = null;
+				if (workingEvent.notesType == 'Slate') {
+					let dt = workingEvent.notes;
+					try {
+						dt = JSON.parse(workingEvent.notes)
+						notes = { detailsType: '', details: dt, name: workingEvent.type, elementId: "qwerty4" }
+					} catch (error) {
+						notes = { detailsType: '', details: getSlateStructureFromRawDetails(workingEvent.notes, "Notes item title (before, after)"), name: workingEvent.type, elementId: "qwerty6" }
+
+					}
+				}
+				else {
+					notes = { detailsType: '', details: getSlateStructureFromRawDetails(workingEvent.notes, "Notes item title (before, after)"), name: workingEvent.type, elementId: "qwerty6" }
+				}
+
+				return (
+					<fieldset key={workingEvent.meetingId} ref={drag}>
+						<p>mode: {mode}  <span>{isDragging && '😱'}</span></p>
+						<legend>[{meeting.pageId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.journalId}</legend>
+						<NotesLabel title={workingEvent.type} notes={workingEvent.notes} selectedElement={notes} readOnly={true} />
+						<p style={buttonStyle}>
+							<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
+						</p>
+					</fieldset>
+				)
+			}
+			else {
+				return (<fieldset>
+					<p>Title: {meeting.subject}</p>
+					{/* <Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} /> */}
+					<hr></hr>
+					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
+						let notes = null;
+						if (n.notesType == 'Slate') {
+							let dt = n.notes;
+							try {
+								dt = JSON.parse(n.notes)
+								notes = { detailsType: '', details: dt, name: n.type, elementId: "qwerty1" }
+
+							} catch (error) {
+								notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)"), name: n.type, elementId: "qwerty6" }
+
+							}
+						}
+						else {
+							notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)."), name: n.type, elementId: "qwerty2" }
+						}
+						console.log("notes", notes);
+						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
+					})}
+
+					<Button variant="contained" color="primary" onClick={save}>Save</Button>
+					<Button variant="contained" color="primary" onClick={close}>Close</Button>
+					<Button variant="outlined" color="primary" onClick={newJournalItemDetails}>Add details</Button>
+					<Button variant="outlined" color="primary" onClick={deletePage}>Delete page</Button>
+					{/* <div>{meeting.beforeNotes}</div> */}
+				</fieldset>)
+			}
+		}
+	}
+
 	return <div>
-		{getComponent()}
+		{getComponent2()}
 	</div>
 }
 
-export default MeetingItem;
+export default Page;
 

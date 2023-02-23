@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import JournalItem from 'Components/JournalItem';
+import Page from 'Components/Page';
 import * as apiService from 'services/apiService'
 import Button from '@mui/material/Button';
 import { v4 as uuid } from 'uuid';
 import { useAuth } from '../../Session/AuthContext'
 
 
-export default function MeetingList(props) {
+export default function PageList(props) {
 
-    const [meetings, setMeetings] = useState([]);
+    const [pages, setPages] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const data = await apiService.fetchMeetingList(props.selectedTreeNode);
+            const data = await apiService.fetchPageList(props.selectedTreeNode);
             data.forEach(element => {
                 element.frontendId = uuid()
             });
-            setMeetings(data);
+            setPages(data);
         }
         fetchData();
         console.log("fetching data");
@@ -25,8 +25,8 @@ export default function MeetingList(props) {
     const updateMeetingInList = (meeting) => {
         console.log(meeting);
         console.log("updateMeetingInList");
-        console.log(meetings);
-        let updatedList = meetings.map(item => {
+        console.log(pages);
+        let updatedList = pages.map(item => {
             if (item.frontendId === meeting.frontendId) {
                 if (meeting.Deleted == true) {
                     //do nothing
@@ -41,26 +41,26 @@ export default function MeetingList(props) {
             }
         }).filter(item => item != undefined);
         debugger;
-        setMeetings(updatedList);
+        setPages(updatedList);
     }
 
     const newEvent = () => {
         console.log('new event');
         let newPage = [{ frontendId: uuid(), mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] }]
-        setMeetings([...newPage, ...meetings]);
+        setPages([...newPage, ...pages]);
     }
 
     const checkState = () => {
-        console.log(meetings);
+        console.log(pages);
     }
     return (
         <div className="App" style={{ color: '#3b3d3b', marginLeft: '400px', width: '1200px' }} >
             <Button onClick={newEvent} >Add New</Button>
             <Button onClick={checkState} >CheckSatate</Button>
             <p>Pages:</p>
-            {meetings && meetings.length > 0 && meetings.map(function (item) {
+            {pages && pages.length > 0 && pages.map(function (item) {
                 return (
-                    <JournalItem meeting={item} updateMeetingInList={updateMeetingInList} key={item.journalItemId} />
+                    <Page meeting={item} updateMeetingInList={updateMeetingInList} key={item.PageId} />
                 );
             })}
 
