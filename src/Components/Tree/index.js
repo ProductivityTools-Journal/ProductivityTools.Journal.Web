@@ -165,7 +165,6 @@ export default function CustomizedTreeView({setSelectedTreeNode,selectedTreeNode
       const r = await apiService.getTree();
       console.log(r);
       if (r != null) {
-        debugger;
         setList(r);
         getNodePath(r[0], params.TreeId);
       }

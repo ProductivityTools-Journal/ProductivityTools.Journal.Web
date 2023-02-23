@@ -4,12 +4,13 @@ import clsx from 'clsx';
 import SlateEditor from 'Components/SlateEditor';
 
 
-function NotesLabel({selectedElement,readOnly}) {
+function NotesLabel({pageJsonContent,readOnly}) {
+    
     return (
         <div>
-            <p>{selectedElement.details[1].children[0].text}</p>
+            {/* <p>{selectedElement.details[1].children[0].text}</p> */}
             {/* <SlateEditor selectedElement={props.selectedElement} detailsChanged={detailsChanged} titleChanged={updateTitle}></SlateEditor> */}
-            <SlateEditor selectedElement={selectedElement} readOnly={readOnly}></SlateEditor>
+            <SlateEditor pageJsonContent={pageJsonContent} readOnly={readOnly}></SlateEditor>
 
             {/* <TextField
                 label={props.title}

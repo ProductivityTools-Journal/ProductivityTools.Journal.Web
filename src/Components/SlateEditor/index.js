@@ -115,7 +115,7 @@ const withLayout = editor => {
     return editor
 }
 
-export default function SlateEditor({selectedElement,readOnly,detailsChanged}) {
+export default function SlateEditor({pageJsonContent,readOnly,detailsChanged}) {
 
     const editor = useMemo(() => withLayout(withListsReact(withListsPlugin(withReact(createEditor())))), [])
     //const editor = useMemo(() => withReact(createEditor()), [])
@@ -127,23 +127,23 @@ export default function SlateEditor({selectedElement,readOnly,detailsChanged}) {
 
     // useEffect(() => {
     //     console.log(props)
-    //     console.log(props.selectedElement)
-    //     console.log(props.selectedElement?.elementId)
+    //     console.log(props.pageJsonContent)
+    //     console.log(props.pageJsonContent?.elementId)
 
     //     //changeContent();
-    // }, [props.selectedElement])
+    // }, [props.pageJsonContent])
 
 
-    const getSlateStructureFromRawDetails = (rawDetails, title) => {
-        let template = [{
-            type: 'title',
-            children: [{ text: title || "Title" }],
-        }, {
-            type: 'paragraph',
-            children: [{ text: rawDetails || "No data" }],
-        },]
-        return template;
-    }
+    // const getSlateStructureFromRawDetails = (rawDetails, title) => {
+    //     let template = [{
+    //         type: 'title',
+    //         children: [{ text: title || "Title" }],
+    //     }, {
+    //         type: 'paragraph',
+    //         children: [{ text: rawDetails || "No data" }],
+    //     },]
+    //     return template;
+    // }
 
     const checkIfDetailsContainsTitle = (detailsObject, title) => {
         let detailsTitle = detailsObject[0].children[0].text;
@@ -159,13 +159,12 @@ export default function SlateEditor({selectedElement,readOnly,detailsChanged}) {
     const changeContent = () => {
 
         editor.changingContent = true;
-        let rawDetails = selectedElement?.details;
-        let detailsType = selectedElement?.detailsType;
-        let title = selectedElement.name;
+        let rawDetails = pageJsonContent;
+        // let detailsType = pageJsonContent?.detailsType;
+        // let title = pageJsonContent.name;
 
-        debugger;
         let newValue = ''
-        if (detailsType == 'Slate') {
+        //if (detailsType == 'Slate') {
             let detailsObject = JSON.parse(rawDetails);
             if (detailsObject && Object.keys(detailsObject).length > 0 && Object.getPrototypeOf(detailsObject) != Object.prototype) {
                 let detailsTitle = detailsObject[0].children[0].text;
@@ -178,13 +177,13 @@ export default function SlateEditor({selectedElement,readOnly,detailsChanged}) {
                 newValue = detailsObject;
 
             }
-            else {
-                newValue = getSlateStructureFromRawDetails(rawDetails, title);
-            }
-        }
-        else {
-            newValue = getSlateStructureFromRawDetails(rawDetails, title);;
-        }
+            // else {
+            //     newValue = getSlateStructureFromRawDetails(rawDetails, title);
+            // }
+        // }
+        // else {
+        //     newValue = getSlateStructureFromRawDetails(rawDetails, title);;
+        // }
         console.log("details");
         console.log(rawDetails);
         console.log("NewVAlue");
@@ -242,6 +241,8 @@ export default function SlateEditor({selectedElement,readOnly,detailsChanged}) {
     }, [])
 
     const editorChanged = (newValue) => {
+        console.log("new value");
+        console.log(newValue);
         if (editor.changingContent) return;
         setValue(newValue);
         detailsChanged(newValue)
@@ -250,9 +251,9 @@ export default function SlateEditor({selectedElement,readOnly,detailsChanged}) {
         //props.titleChanged(title);
     }
     console.log("XXXXXXXXXXXXXXXXXXXXX")
-    console.log(selectedElement.details)
+    console.log(pageJsonContent)
     if (readOnly) {
-        return (<Slate editor={editor} value={selectedElement.details} onChange={editorChanged}>
+        return (<Slate editor={editor} value={pageJsonContent} onChange={editorChanged}>
 
             <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
                 <Editable readOnly
@@ -267,7 +268,7 @@ export default function SlateEditor({selectedElement,readOnly,detailsChanged}) {
         return (
             <div>
                 <div style={{ width: '100%', margin: '0 auto' }}>
-                    <Slate editor={editor} value={selectedElement.details} onChange={editorChanged}>
+                    <Slate editor={editor} value={pageJsonContent.details} onChange={editorChanged}>
                         <Toolbar />
 
                         <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
