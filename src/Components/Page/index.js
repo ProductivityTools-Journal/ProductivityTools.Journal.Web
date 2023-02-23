@@ -30,10 +30,6 @@ function Page(props) {
 
 		console.log()
 		//setMode('edit');
-		meeting.notesList.forEach(element => {
-			element.guid = uuid()
-		});
-		//setWorkingEvent(meeting);
 		setWorkingEvent({ ...meeting, mode: 'edit' });
 	}
 
@@ -111,75 +107,6 @@ function Page(props) {
 		})
 	}))
 
-	const getComponent = () => {
-		console.log("working event");
-		console.log(workingEvent);
-		if (workingEvent != null) {
-			if (workingEvent.mode == null || workingEvent.mode === 'readonly') {
-				return (
-					<fieldset key={workingEvent.meetingId} ref={drag}>
-						<p>mode: {mode}  <span>{isDragging && '😱'}</span></p>
-						<legend>[{meeting.journalItemId}] {dtFormated} ({dtDescription}) - {meeting.subject} Treeid:{meeting.treeId}</legend>
-						{meeting.notesList?.map(n => {
-
-							let notes = null;
-							if (n.notesType == 'Slate') {
-								let dt = n.notes;
-								try {
-									dt = JSON.parse(n.notes)
-									notes = { detailsType: '', details: dt, name: n.type, elementId: "qwerty4" }
-								} catch (error) {
-									notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)"), name: n.type, elementId: "qwerty6" }
-
-								}
-							}
-							else {
-								notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)"), name: n.type, elementId: "qwerty6" }
-							}
-							return (<NotesLabel title={n.type} notes={n.notes} selectedElement={notes} readOnly={true} />)
-						})}
-						<p style={buttonStyle}>
-							<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
-						</p>
-					</fieldset>
-				)
-			}
-			else {
-				return (<fieldset>
-					<p>Title: {meeting.subject}</p>
-					{/* <Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} /> */}
-					<hr></hr>
-					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
-						let notes = null;
-						if (n.notesType == 'Slate') {
-							let dt = n.notes;
-							try {
-								dt = JSON.parse(n.notes)
-								notes = { detailsType: '', details: dt, name: n.type, elementId: "qwerty1" }
-
-							} catch (error) {
-								notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)"), name: n.type, elementId: "qwerty6" }
-
-							}
-						}
-						else {
-							notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)."), name: n.type, elementId: "qwerty2" }
-						}
-						console.log("notes", notes);
-						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
-					})}
-
-					<Button variant="contained" color="primary" onClick={save}>Save</Button>
-					<Button variant="contained" color="primary" onClick={close}>Close</Button>
-					<Button variant="outlined" color="primary" onClick={newJournalItemDetails}>Add details</Button>
-					<Button variant="outlined" color="primary" onClick={deletePage}>Delete page</Button>
-					{/* <div>{meeting.beforeNotes}</div> */}
-				</fieldset>)
-			}
-		}
-	}
-
-
 
 	const getComponent2 = () => {
 		console.log("working event");
@@ -214,29 +141,28 @@ function Page(props) {
 				)
 			}
 			else {
+				let notes = null;
+				if (workingEvent.notesType == 'Slate') {
+					let dt = workingEvent.notes;
+					try {
+						dt = JSON.parse(workingEvent.notes)
+						notes = { detailsType: '', details: dt, name: workingEvent.type, elementId: "qwerty1" }
+
+					} catch (error) {
+						notes = { detailsType: '', details: getSlateStructureFromRawDetails(workingEvent.notes, "Notes item title (before, after)"), name:workingEvent.type, elementId: "qwerty6" }
+
+					}
+				}
+				else {
+					notes = { detailsType: '', details: getSlateStructureFromRawDetails(workingEvent.notes, "Notes item title (before, after)."), name: workingEvent.type, elementId: "qwerty2" }
+				}
+				console.log("notes", notes);
 				return (<fieldset>
 					<p>Title: {meeting.subject}</p>
 					{/* <Notes title='Subject' name='subject' notes={workingEvent.subject} updateState={updateState} /> */}
 					<hr></hr>
-					{workingEvent.notesList.filter(x => x.status != 'Deleted').map(n => {
-						let notes = null;
-						if (n.notesType == 'Slate') {
-							let dt = n.notes;
-							try {
-								dt = JSON.parse(n.notes)
-								notes = { detailsType: '', details: dt, name: n.type, elementId: "qwerty1" }
+					<Notes title={notes.type} notes={notes.notes} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
 
-							} catch (error) {
-								notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)"), name: n.type, elementId: "qwerty6" }
-
-							}
-						}
-						else {
-							notes = { detailsType: '', details: getSlateStructureFromRawDetails(n.notes, "Notes item title (before, after)."), name: n.type, elementId: "qwerty2" }
-						}
-						console.log("notes", notes);
-						return (<Notes title={n.type} notes={n.notes} name='notes' guid={n.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
-					})}
 
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>
 					<Button variant="contained" color="primary" onClick={close}>Close</Button>
