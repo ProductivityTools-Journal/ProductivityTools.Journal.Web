@@ -5,10 +5,10 @@ import SlateEditor from 'Components/SlateEditor';
 
 
 function NotesLabel({pageJsonContent,readOnly}) {
-    
     return (
         <div>
-            {/* <p>{selectedElement.details[1].children[0].text}</p> */}
+            {/* <p>page2</p>
+            <p>{pageJsonContent && pageJsonContent.length>0 && pageJsonContent[0].children[0].text}</p> */}
             {/* <SlateEditor selectedElement={props.selectedElement} detailsChanged={detailsChanged} titleChanged={updateTitle}></SlateEditor> */}
             <SlateEditor pageJsonContent={pageJsonContent} readOnly={readOnly}></SlateEditor>
 

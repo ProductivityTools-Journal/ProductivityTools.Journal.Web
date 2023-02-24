@@ -9,7 +9,7 @@ import { useDrag } from 'react-dnd'
 import * as Common from '../Common.js'
 
 
-function Page({page,updatePageInList,key}) {
+function Page({ page, updatePageInList, key }) {
 
 	//const { meeting, ...rest } = props;
 	const [localPageObject, setLocalPageObject] = useState();
@@ -24,11 +24,11 @@ function Page({page,updatePageInList,key}) {
 	let dtDescription = mt.fromNow();
 	let dtFormated = mt.format('YYYY.MM.DD hh:mm')
 	const buttonStyle = { textAlign: 'left' }
-	console.log("Pagemeeting");
+	//console.log("Pagemeeting");
 	//console.log(page);
 
 	const edit = () => {
-		console.log()
+		//console.log()
 		//setMode('edit');
 		setLocalPageObject({ ...localPageObject, mode: 'edit' });
 	}
@@ -73,8 +73,8 @@ function Page({page,updatePageInList,key}) {
 
 
 	const deletePage = () => {
-		console.log("delete whole journal item")
-		console.log(localPageObject);
+		//console.log("delete whole journal item")
+		//console.log(localPageObject);
 		apiService.deleteMeeting(localPageObject.journalItemId);
 		removePageFromList(localPageObject);
 	}
@@ -94,29 +94,28 @@ function Page({page,updatePageInList,key}) {
 
 
 	const getComponent = () => {
-		console.log("working event");
-		console.log(localPageObject);
-		if (localPageObject != null) {
+		//console.log("working event");
+		//console.log(page);
+		if (page != null) {
 
-			if (localPageObject.mode == null || localPageObject.mode === 'readonly') {
+			let notes = null;
+			if (page.contentType == 'Slate') {
+				let dt = page.content;
+				try {
+					dt = JSON.parse(page.content)
+					notes = dt;
+				} catch (error) {
+					notes = Common.getStringSlateStructureFromRawDetails(page.content, "XXXX2s");
 
-				let notes = null;
-				if (localPageObject.contentType == 'Slate') {
-					let dt = localPageObject.content;
-					try {
-						dt = JSON.parse(localPageObject.content)
-						notes =  dt;
-					} catch (error) {
-						notes =  Common.getSlateStructureFromRawDetails(localPageObject.content, "Notes item title (before, after)");
-
-					}
 				}
-				else {
-					notes =  Common.getSlateStructureFromRawDetails(localPageObject.content, "Notes item title (before, after)");
-				}
+			}
+			else {
+				notes = Common.getStringSlateStructureFromRawDetails(page.content, "XXX1");
+			}
 
+			if (page.mode == null || page.mode === 'readonly') {
 				return (
-					<fieldset key={localPageObject.journalId} ref={drag}>
+					<fieldset key={page.journalId} ref={drag}>
 						<p>mode: {mode}  <span>{isDragging && '😱'}</span></p>
 						<legend>[{page.pageId}] {dtFormated} ({dtDescription}) - {page.subject} Treeid:{page.journalId}</legend>
 						<NotesLabel pageJsonContent={notes} readOnly={true} />
@@ -127,27 +126,12 @@ function Page({page,updatePageInList,key}) {
 				)
 			}
 			else {
-				let notes = null;
-				if (localPageObject.contentType == 'Slate') {
-					let dt = localPageObject.content;
-					try {
-						dt = JSON.parse(localPageObject.content)
-						notes =  dt;
-
-					} catch (error) {
-						notes = Common.getSlateStructureFromRawDetails(localPageObject.content, "Notes item title (before, after)")
-
-					}
-				}
-				else {
-					notes = Common.getSlateStructureFromRawDetails(localPageObject.content, "Notes item title (before, after).");
-				}
-				console.log("notes", notes);
+				
 				return (<fieldset>
 					<p>Title: {page.subject}</p>
 					{/* <Notes title='Subject' name='subject' notes={localPageObject.subject} updateState={updateState} /> */}
 					<hr></hr>
-					<Notes title={notes.type} notes={notes.content} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
+					<Notes notes={notes} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
 
 
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>

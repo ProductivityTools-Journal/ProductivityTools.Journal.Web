@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 
-export const getSlateStructureFromRawDetails = (rawDetails, title) => {
+export const getJsonSlateStructureFromRawDetails = (rawDetails, title) => {
     let template = [{
         type: 'title',
         children: [{ text: title || "Title" }],
@@ -11,10 +11,15 @@ export const getSlateStructureFromRawDetails = (rawDetails, title) => {
     return template;
 }
 
+export const getStringSlateStructureFromRawDetails=(rawDetails, title)=>{
+    let o=getJsonSlateStructureFromRawDetails(rawDetails,title);
+    let r=JSON.stringify(o)
+    return r;
+}
+
 export const getNewPageArray=(journalId)=>{
     let page=getNewPage(journalId);
     let result=[page];
-    debugger;
     return result;
 }
 
@@ -23,8 +28,9 @@ export const getNewPage=(journalId)=>
     let result={date: "2022-02-15T00:00:00",
         frontendId: uuid(),
         journalId: journalId,
-        notes: getSlateStructureFromRawDetails('notes','Page'),
-        notesType: 'Slate',
+        content:getStringSlateStructureFromRawDetails('dd','dd3'),
+        // content: '[{"type":"title","children":[{"text":"a3"}]},{"type":"paragraph","children":[{"text":"Add notes here"}]}]',
+        contentType: 'Slate',
         subject: "Page"}
     return result;
 }

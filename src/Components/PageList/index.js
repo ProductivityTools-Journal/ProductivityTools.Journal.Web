@@ -21,7 +21,7 @@ export default function PageList(props) {
             setPages(data);
         }
         fetchData();
-        console.log("fetching data");
+        //console.log("fetching data");
     }, [props.selectedTreeNode]);
 
     const updateMeetingInList = (meeting) => {
@@ -29,7 +29,7 @@ export default function PageList(props) {
         //page refactor, I am not sure if this is needed
         return
         console.log(meeting);
-        console.log("updateMeetingInList");
+        //onsole.log("updateMeetingInList");
         console.log(pages);
         let updatedList = pages.map(item => {
             if (item.frontendId === meeting.frontendId) {
@@ -50,12 +50,11 @@ export default function PageList(props) {
     }
 
     const newEvent = () => {
-        console.log('new event');
-        
-        let newPageArray=Common.getNewPageArray(props.selectedTreeNode);
-        debugger;
+        //console.log('new event');
+
+        let newPage = Common.getNewPage(props.selectedTreeNode);
         //let newPage = [{ frontendId: uuid(), mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] }]
-        setPages([...newPageArray, ...pages]);
+        setPages([...pages, newPage]);
     }
 
     const checkState = () => {

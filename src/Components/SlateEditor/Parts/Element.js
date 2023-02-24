@@ -6,9 +6,9 @@ import Video from '../Elements/Video/Video'
 export const Element = (props) =>{
 
     const {attributes, children, element} = props;
-    console.log("props");
-    console.log(props);
-    console.log(element.type);
+    //console.log("props");
+    //console.log(props);
+    //console.log(element.type);
     switch(element.type){
         case 'title':
             return <h1 {...attributes}>{children}</h1>
