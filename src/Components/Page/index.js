@@ -109,10 +109,8 @@ function Page({ page, updatePageInList, key }) {
 
 			let pageObjectContent = null;
 			if (localPageObject.contentType == 'Slate') {
-				let dt = localPageObject.content;
 				try {
-					dt = JSON.parse(localPageObject.content)
-					pageObjectContent = dt;
+					pageObjectContent = JSON.parse(localPageObject.content);
 				} catch (error) {
 					pageObjectContent = Common.getStringSlateStructureFromRawDetails(localPageObject.content, "XXXX2s");
 
