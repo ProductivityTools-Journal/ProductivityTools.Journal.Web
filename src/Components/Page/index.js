@@ -92,32 +92,36 @@ function Page({ page, updatePageInList, key }) {
 		})
 	}))
 
+	const checkState = () => {
+		console.log(page)
+	}
+
 
 	const getComponent = () => {
 		//console.log("working event");
 		//console.log(page);
-		if (page != null) {
+		if (localPageObject != null) {
 
 			let notes = null;
-			if (page.contentType == 'Slate') {
-				let dt = page.content;
+			if (localPageObject.contentType == 'Slate') {
+				let dt = localPageObject.content;
 				try {
-					dt = JSON.parse(page.content)
+					dt = JSON.parse(localPageObject.content)
 					notes = dt;
 				} catch (error) {
-					notes = Common.getStringSlateStructureFromRawDetails(page.content, "XXXX2s");
+					notes = Common.getStringSlateStructureFromRawDetails(localPageObject.content, "XXXX2s");
 
 				}
 			}
 			else {
-				notes = Common.getStringSlateStructureFromRawDetails(page.content, "XXX1");
+				notes = Common.getStringSlateStructureFromRawDetails(localPageObject.content, "XXX1");
 			}
 
-			if (page.mode == null || page.mode === 'readonly') {
+			if (localPageObject.mode == null || localPageObject.mode === 'readonly') {
 				return (
-					<fieldset key={page.journalId} ref={drag}>
+					<fieldset key={localPageObject.journalId} ref={drag}>
 						<p>mode: {mode}  <span>{isDragging && '😱'}</span></p>
-						<legend>[{page.pageId}] {dtFormated} ({dtDescription}) - {page.subject} Treeid:{page.journalId}</legend>
+						<legend>[{localPageObject.pageId}] {dtFormated} ({dtDescription}) - {localPageObject.subject} Treeid:{localPageObject.journalId}</legend>
 						<NotesLabel pageJsonContent={notes} readOnly={true} />
 						<p style={buttonStyle}>
 							<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
@@ -126,17 +130,18 @@ function Page({ page, updatePageInList, key }) {
 				)
 			}
 			else {
-				
+
 				return (<fieldset>
-					<p>Title: {page.subject}</p>
+					<p>Title: {localPageObject.subject}</p>
 					{/* <Notes title='Subject' name='subject' notes={localPageObject.subject} updateState={updateState} /> */}
 					<hr></hr>
-					<Notes notes={notes} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>)
-
+					{/* <Notes notes={notes} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>) */}
+					<NotesLabel pageJsonContent={notes} readOnly={false} />
 
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>
 					<Button variant="contained" color="primary" onClick={close}>Close</Button>
 					<Button variant="outlined" color="primary" onClick={deletePage}>Delete page</Button>
+					<Button variant="outlined" color="primary" onClick={checkState}>CheckState</Button>
 					{/* <div>{meeting.beforeNotes}</div> */}
 				</fieldset>)
 			}

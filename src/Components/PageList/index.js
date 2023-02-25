@@ -53,8 +53,10 @@ export default function PageList(props) {
         //console.log('new event');
 
         let newPage = Common.getNewPage(props.selectedTreeNode);
+        newPage.mode='edit';
         //let newPage = [{ frontendId: uuid(), mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] }]
-        setPages([...pages, newPage]);
+
+        setPages([newPage, ...pages]);
     }
 
     const checkState = () => {
@@ -64,12 +66,23 @@ export default function PageList(props) {
         <div className="App" style={{ color: '#3b3d3b', marginLeft: '400px', width: '1200px' }} >
             <Button onClick={newEvent} >Add New</Button>
             <Button onClick={checkState} >CheckSatate</Button>
-            <p>Pages:</p>
+
             {pages && pages.length > 0 && pages.map(function (item) {
                 return (
                     <Page page={item} updateMeetingInList={updateMeetingInList} key={item.PageId} />
                 );
             })}
+
+
+
+            {/* <p>Pages:</p>
+            {pages && pages.length > 0 && [].concat(pages)
+            .sort((a,b)=>a.Date>b.Date?1:-1)
+            .map(function (item) {
+                return (
+                    <Page page={item} updateMeetingInList={updateMeetingInList} key={item.PageId} />
+                );
+            })} */}
 
         </div>
     );

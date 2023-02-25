@@ -29,8 +29,10 @@ function Notes({pageJsonContent,readOnly}) {
 
 	return (
 		<div>
+			<p>content:</p>
 			<p>{pageJsonContent?.details[1]?.children[0]?.text}</p> 
 			<SlateEditor pageJsonContent={pageJsonContent} readOnly={readOnly} detailsChanged={onSlateChanged}></SlateEditor>
+			
 		</div>
 	)
 }

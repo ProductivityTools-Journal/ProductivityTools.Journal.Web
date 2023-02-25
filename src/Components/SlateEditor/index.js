@@ -126,11 +126,13 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
     },])
     const [title, setTitle] = useState('nothing');
 
-    // useEffect(() => {
-    //     console.log("Useffect Page Json content")
+    //slate doesn't react to change state
+    //to change value in slate we need to remove all lines and insert new ones
 
-    //    // changeContent();
-    // }, [pageJsonContent])
+    useEffect(() => {
+        console.log("Useffect Page Json content")
+        changeContent();
+    }, [pageJsonContent])
 
 
     // const getSlateStructureFromRawDetails = (rawDetails, title) => {
@@ -157,6 +159,8 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
 
     const changeContent = () => {
 
+        if (pageJsonContent == undefined) { return; }
+
         editor.changingContent = true;
         let rawDetails = pageJsonContent;
         // let detailsType = pageJsonContent?.detailsType;
@@ -167,14 +171,20 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
         console.log("pageJsonContent")
         console.log(pageJsonContent)
         let detailsObject = pageJsonContent;
+
+
         if (detailsObject && Object.keys(detailsObject).length > 0 && Object.getPrototypeOf(detailsObject) != Object.prototype) {
             let detailsTitle = detailsObject[0].children[0].text;
-            if (detailsTitle != title) {
-                detailsObject = [{
-                    type: 'title',
-                    children: [{ text: title }],
-                }].concat(detailsObject);
-            }
+            //tytul, nie jestem pewien czy to potrzebuje
+            // debugger;
+            // if (detailsTitle != title) {
+            //     detailsObject = [{
+            //         type: 'title',
+            //         children: [{ text: title }],
+            //     }].concat(detailsObject);
+            // }
+
+            //koniec tutulu
             newValue = detailsObject;
 
         }
@@ -219,7 +229,7 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
         //         at: [editor.children.length],
         //     })
         // }
-        
+
         // Add content to SlateJS
         for (const v1 of newValue) {
             Transforms.insertNodes(editor, v1, {
@@ -251,45 +261,50 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
         // setTitle(title);
         //props.titleChanged(title);
     }
-    if (readOnly) {
-        console.log("pageJsonContent")
-        console.log(pageJsonContent)
-        return (
-            <div>
-                <p>raw content:</p>
-                <p>{pageJsonContent && pageJsonContent.length>0 && pageJsonContent[0].children[0].text}</p>
-                <Slate editor={editor} value={pageJsonContent} onChange={editorChanged}>
-
-                    <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
-                        <Editable readOnly
-                            placeholder='Write something'
-                            renderElement={renderElement}
-                        // renderLeaf={renderLeaf}
-                        />
-                    </div>
-                </Slate>
-            </div>)
+    if (pageJsonContent == undefined) {
+        return (<div>waiting</div>)
     }
     else {
-        return (
-            <div>
-                <div style={{ width: '100%', margin: '0 auto' }}>
+        if (readOnly) {
+            console.log("pageJsonContent")
+            console.log(pageJsonContent)
+            return (
+                <div>
+                    <p>raw content:</p>
+                    <p>{pageJsonContent && pageJsonContent.length > 0 && pageJsonContent[0].children[0].text}</p>
                     <Slate editor={editor} value={pageJsonContent} onChange={editorChanged}>
-                        <Toolbar />
 
                         <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
-                            <Editable
-                                onKeyDown={(event) => onKeyDown(editor, event)}
+                            <Editable readOnly
                                 placeholder='Write something'
                                 renderElement={renderElement}
-                                renderLeaf={renderLeaf}
+                            // renderLeaf={renderLeaf}
                             />
                         </div>
                     </Slate>
-                </div>
-                {/* <div>slate title: {title}</div>
+                </div>)
+        }
+        else {
+            return (
+                <div>
+                    <div style={{ width: '100%', margin: '0 auto' }}>
+                        <Slate editor={editor} value={pageJsonContent} onChange={editorChanged}>
+                            <Toolbar />
+
+                            <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
+                                <Editable
+                                    onKeyDown={(event) => onKeyDown(editor, event)}
+                                    placeholder='Write something'
+                                    renderElement={renderElement}
+                                    renderLeaf={renderLeaf}
+                                />
+                            </div>
+                        </Slate>
+                    </div>
+                    {/* <div>slate title: {title}</div>
                 <div><textarea value={JSON.stringify(value)}></textarea></div> */}
-            </div>
-        )
+                </div>
+            )
+        }
     }
 }
