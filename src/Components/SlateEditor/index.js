@@ -115,7 +115,7 @@ const withLayout = editor => {
     return editor
 }
 
-export default function SlateEditor({ pageContentObject, readOnly, pageContentObjectChanged }) {
+export default function SlateEditor({ pageId, pageContentObject, readOnly, pageContentObjectChanged }) {
     // console.log("SlateEditor");
     // console.log(pageContentObject);
     const editor = useMemo(() => withLayout(withListsReact(withListsPlugin(withReact(createEditor())))), [])
@@ -131,8 +131,9 @@ export default function SlateEditor({ pageContentObject, readOnly, pageContentOb
 
     useEffect(() => {
         console.log("Useffect Page Json content")
+        console.log(pageId);
         changeContent();
-    }, [pageContentObject.pageId])
+    }, [])
 
 
     // const getSlateStructureFromRawDetails = (rawDetails, title) => {
@@ -254,7 +255,7 @@ export default function SlateEditor({ pageContentObject, readOnly, pageContentOb
     const editorChanged = (newValue) => {
         console.log("new value");
         console.log(newValue);
-         if (editor.changingContent) return;
+        if (editor.changingContent) return;
         // setValue(newValue);
         pageContentObjectChanged(newValue)
         // let title = editor.children[0].children[0].text;
@@ -265,46 +266,49 @@ export default function SlateEditor({ pageContentObject, readOnly, pageContentOb
         return (<div>waiting</div>)
     }
     else {
-        if (readOnly) {
-            console.log("pageContentObject")
-            console.log(pageContentObject)
-            return (
-                <div>
-                    <p>raw content:</p>
-                    <p>{pageContentObject && pageContentObject.length > 0 && pageContentObject[0].children[0].text}</p>
-                    <Slate editor={editor} value={pageContentObject} onChange={editorChanged}>
-
-                        <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
-                            <Editable readOnly
-                                placeholder='Write something'
-                                renderElement={renderElement}
-                            // renderLeaf={renderLeaf}
-                            />
-                        </div>
-                    </Slate>
-                </div>)
-        }
-        else {
-            return (
-                <div>
-                    <div style={{ width: '100%', margin: '0 auto' }}>
-                        <Slate editor={editor} value={pageContentObject} onChange={editorChanged}>
-                            <Toolbar />
-
-                            <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
-                                <Editable
-                                    onKeyDown={(event) => onKeyDown(editor, event)}
-                                    placeholder='Write something'
-                                    renderElement={renderElement}
-                                    renderLeaf={renderLeaf}
-                                />
-                            </div>
-                        </Slate>
+        // if (readOnly) {
+        console.log("pageContentObject")
+        console.log(pageContentObject)
+        console.log("readonly")
+        console.log(readOnly);
+        return (
+            <div>
+                <p>raw content:</p>
+                <p>{pageContentObject && pageContentObject.length > 0 && pageContentObject[0].children[0].text}</p>
+                <Slate editor={editor} value={pageContentObject} onChange={editorChanged}>
+                    {readOnly ? <span></span> : <Toolbar />}
+                    <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
+                        <Editable readOnly={readOnly}
+                            onKeyDown={(event) => onKeyDown(editor, event)}
+                            placeholder='Write something'
+                            renderElement={renderElement}
+                        // renderLeaf={renderLeaf}
+                        />
                     </div>
-                    {/* <div>slate title: {title}</div>
-                <div><textarea value={JSON.stringify(value)}></textarea></div> */}
-                </div>
-            )
-        }
+                </Slate>
+            </div>)
+        // }
+        // else {
+        //     return (
+        //         <div>
+        //             <div style={{ width: '100%', margin: '0 auto' }}>
+        //                 <Slate editor={editor} value={pageContentObject} onChange={editorChanged}>
+        //                     <Toolbar />
+
+        //                     <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
+        //                         <Editable
+        //                             onKeyDown={(event) => onKeyDown(editor, event)}
+        //                             placeholder='Write something'
+        //                             renderElement={renderElement}
+        //                             renderLeaf={renderLeaf}
+        //                         />
+        //                     </div>
+        //                 </Slate>
+        //             </div>
+        //             {/* <div>slate title: {title}</div>
+        //         <div><textarea value={JSON.stringify(value)}></textarea></div> */}
+        //         </div>
+        //     )
+        // }
     }
 }

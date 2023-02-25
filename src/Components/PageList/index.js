@@ -25,6 +25,7 @@ export default function PageList(props) {
     }, [props.selectedTreeNode]);
 
     const updatePageInList = (page) => {
+        return;
         console.log("updateMeetingInList");
         console.log(page);
         console.log(pages);
@@ -52,7 +53,6 @@ export default function PageList(props) {
         let newPage = Common.getNewPage(props.selectedTreeNode);
         newPage.mode = 'edit';
         //let newPage = [{ frontendId: uuid(), mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] }]
-
         setPages([newPage, ...pages]);
     }
 
@@ -66,7 +66,7 @@ export default function PageList(props) {
 
             {pages && pages.length > 0 && pages.map(function (item) {
                 return (
-                    <Page page={item} updatePageInList={updatePageInList} key={item.PageId} />
+                    <Page page={item} updatePageInList={updatePageInList} key={item.frontendId} />
                 );
             })}
 

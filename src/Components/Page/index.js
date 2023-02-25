@@ -7,6 +7,8 @@ import * as apiService from 'services/apiService'
 import { v4 as uuid } from 'uuid';
 import { useDrag } from 'react-dnd'
 import * as Common from '../Common.js'
+import SlateEditor from 'Components/SlateEditor';
+
 
 
 function Page({ page, updatePageInList, key }) {
@@ -16,7 +18,7 @@ function Page({ page, updatePageInList, key }) {
 
 
 	useEffect(() => {
-
+		console.log("FFFFFFFFFFF use effect")
 		let pageContentObject = null;
 		if (page.contentType == 'Slate') {
 			try {
@@ -29,11 +31,11 @@ function Page({ page, updatePageInList, key }) {
 			pageContentObject = Common.getStringSlateStructureFromRawDetails(page.content, "XXX1");
 		}
 
-		let x = { ...page, contentObject: pageContentObject }
+		let x = { ...page, contentObject: pageContentObject, mode: page.mode == undefined ? 'readonly' : page.mode }
 		setLocalPageObject(x);
-	}, [page]);
+	}, [page.pageID]);
 
-	const [mode, setMode] = useState('readonly');
+	// const [mode, setMode] = useState('readonly');
 	let mt = moment(page.date);
 	let dtDescription = mt.fromNow();
 	let dtFormated = mt.format('YYYY.MM.DD hh:mm')
@@ -73,11 +75,11 @@ function Page({ page, updatePageInList, key }) {
 
 	const save = async () => {
 		let eventSum = undefined;//we need it to keep mode=edit, which is not returned from server
-		debugger;
 		localPageObject.contentType = 'Slate';
-		localPageObject.content=JSON.stringify(localPageObject.contentObject);
+		localPageObject.content = JSON.stringify(localPageObject.contentObject);
 		if (localPageObject.pageId == null) {
 			let savedEvent = await apiService.savePage(localPageObject);
+
 			eventSum = { ...localPageObject, ...savedEvent }
 			setLocalPageObject(eventSum);
 		} else {
@@ -121,48 +123,75 @@ function Page({ page, updatePageInList, key }) {
 
 
 
-	const getComponent = () => {
-		//console.log("working event");
-		//console.log(page);
-		if (localPageObject != null) {
+	const getEditModeButtons = () => {
+		return (
+			<p style={buttonStyle}>
+				<Button variant="contained" color="primary" onClick={save} > Save</Button>
+				<Button variant="contained" color="primary" onClick={close}>Close</Button>
+				<Button variant="outlined" color="primary" onClick={deletePage}>Delete page</Button>
+				<Button variant="outlined" color="primary" onClick={checkState}>CheckState</Button>
+			</p >
+		)
+	}
 
 
+	const getReadOnlyModeButtons = () => {
+		return (
+			<p style={buttonStyle}>
+				<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
+			</p >
+		)
+	}
+	// const getComponent = () => {
+	// 	//console.log("working event");
+	// 	//console.log(page);
+	// 	if (localPageObject != null) {
+	// 		if (localPageObject.mode == null || localPageObject.mode === 'readonly') {
+	// 			return (
+	// 				<fieldset key={localPageObject.pageId} ref={drag}>
+	// 					<p>mode: {localPageObject.mode}  <span>{isDragging && '😱'}</span></p>
+	// 					<p>PageId: {localPageObject.pageId}</p>
+	// 					<legend>[{localPageObject.pageId}] {dtFormated} ({dtDescription}) - {localPageObject.subject} Treeid:{localPageObject.journalId}</legend>
+	// 					<SlateEditor pageId={localPageObject.pageId} pageContentObject={localPageObject.contentObject} readOnly={true} pageContentObjectChanged={pageContentObjectChanged}></SlateEditor>
 
-			if (localPageObject.mode == null || localPageObject.mode === 'readonly') {
-				return (
-					<fieldset key={localPageObject.pageId} ref={drag}>
-						<p>mode: {mode}  <span>{isDragging && '😱'}</span></p>
-						<legend>[{localPageObject.pageId}] {dtFormated} ({dtDescription}) - {localPageObject.subject} Treeid:{localPageObject.journalId}</legend>
-						<NotesLabel pageContentObject={localPageObject.contentObject} readOnly={true} pageContentObjectChanged={pageContentObjectChanged} />
-						<p style={buttonStyle}>
-							<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
-						</p>
-					</fieldset>
-				)
-			}
-			else {
+	// 					{getReadOnlyModeButtons()}
+	// 				</fieldset>
+	// 			)
+	// 		}
+	// 		else {
 
-				return (<fieldset>
-					<p>Title: {localPageObject.subject}</p>
+	// 			return (<fieldset>
+	// 				<p>Title: {localPageObject.subject}</p>
+	// 				<p>PageId: {localPageObject.pageId}</p>
+	// 				<hr></hr>
+	// 				<SlateEditor pageId={localPageObject.pageId} pageContentObject={localPageObject.contentObject} readOnly={false} pageContentObjectChanged={pageContentObjectChanged}></SlateEditor>
+	// 				{getEditModeButtons()}
+	// 			</fieldset>)
+	// 		}
+	// 	}
+	// }
+
+	const readonly = () => localPageObject.mode === 'readonly';
+
+	const getComponent2 = () => {
+
+		if (localPageObject != null && localPageObject.Deleted != true) {
+			console.log(localPageObject.mode)
+			return (
+				<fieldset key={localPageObject.pageId} ref={drag}>
+					<p>mode: {localPageObject.mode}  <span>{isDragging && '😱'}</span></p>
 					<p>PageId: {localPageObject.pageId}</p>
-					{/* <Notes title='Subject' name='subject' notes={localPageObject.subject} updateState={updateState} /> */}
-					<hr></hr>
-					{/* <Notes notes={notes} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>) */}
-					<NotesLabel pageContentObject={localPageObject.contentObject} readOnly={false} pageContentObjectChanged={pageContentObjectChanged} />
+					<legend>[{localPageObject.pageId}] {dtFormated} ({dtDescription}) - {localPageObject.subject} Treeid:{localPageObject.journalId}</legend>
+					<SlateEditor pageId={localPageObject.pageId} pageContentObject={localPageObject.contentObject} readOnly={readonly()} pageContentObjectChanged={pageContentObjectChanged}></SlateEditor>
 
-					<Button variant="contained" color="primary" onClick={save}>Save</Button>
-					<Button variant="contained" color="primary" onClick={close}>Close</Button>
-					<Button variant="outlined" color="primary" onClick={deletePage}>Delete page</Button>
-					<Button variant="outlined" color="primary" onClick={checkState}>CheckState</Button>
-					{/* <div>{meeting.beforeNotes}</div> */}
-				</fieldset>)
-			}
+					{readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
+				</fieldset>
+			)
 		}
-
 	}
 
 	return <div>
-		{getComponent()}
+		{getComponent2()}
 	</div>
 }
 
