@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField'
 import SlateEditor from 'Components/SlateEditor';
 
 
-function Notes({pageJsonContent,readOnly}) {
+function Notes({pageObjectContent,readOnly}) {
 
 	const onNotesChanged = (event) => {
 		// if (props.guid) {
@@ -30,8 +30,8 @@ function Notes({pageJsonContent,readOnly}) {
 	return (
 		<div>
 			<p>content:</p>
-			<p>{pageJsonContent?.details[1]?.children[0]?.text}</p> 
-			<SlateEditor pageJsonContent={pageJsonContent} readOnly={readOnly} detailsChanged={onSlateChanged}></SlateEditor>
+			<p>{pageObjectContent?.details[1]?.children[0]?.text}</p> 
+			<SlateEditor pageObjectContent={pageObjectContent} readOnly={readOnly} detailsChanged={onSlateChanged}></SlateEditor>
 			
 		</div>
 	)

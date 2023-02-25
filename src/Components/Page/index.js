@@ -24,8 +24,6 @@ function Page({ page, updatePageInList, key }) {
 	let dtDescription = mt.fromNow();
 	let dtFormated = mt.format('YYYY.MM.DD hh:mm')
 	const buttonStyle = { textAlign: 'left' }
-	//console.log("Pagemeeting");
-	//console.log(page);
 
 	const edit = () => {
 		//console.log()
@@ -75,13 +73,15 @@ function Page({ page, updatePageInList, key }) {
 	const deletePage = () => {
 		//console.log("delete whole journal item")
 		//console.log(localPageObject);
-		apiService.deleteMeeting(localPageObject.journalItemId);
-		removePageFromList(localPageObject);
+		apiService.deleteMeeting(localPageObject.pageId);
+		setLocalPageObject({ ...localPageObject, Deleted: true });
+		//removePageFromList(localPageObject);
 	}
 
 	const removePageFromList = (page) => {
 		page.Deleted = true;
 		updatePageInList(page);
+		setLocalPageObject(page);
 	}
 
 	const [{ isDragging }, drag] = useDrag(() => ({
@@ -96,33 +96,38 @@ function Page({ page, updatePageInList, key }) {
 		console.log(page)
 	}
 
+	const pageObjectContentChanged = (page) => {
+		console.log("pageObjectContentChanged");
+		console.log(page);
+
+	}
 
 	const getComponent = () => {
 		//console.log("working event");
 		//console.log(page);
 		if (localPageObject != null) {
 
-			let notes = null;
+			let pageObjectContent = null;
 			if (localPageObject.contentType == 'Slate') {
 				let dt = localPageObject.content;
 				try {
 					dt = JSON.parse(localPageObject.content)
-					notes = dt;
+					pageObjectContent = dt;
 				} catch (error) {
-					notes = Common.getStringSlateStructureFromRawDetails(localPageObject.content, "XXXX2s");
+					pageObjectContent = Common.getStringSlateStructureFromRawDetails(localPageObject.content, "XXXX2s");
 
 				}
 			}
 			else {
-				notes = Common.getStringSlateStructureFromRawDetails(localPageObject.content, "XXX1");
+				pageObjectContent = Common.getStringSlateStructureFromRawDetails(localPageObject.content, "XXX1");
 			}
 
 			if (localPageObject.mode == null || localPageObject.mode === 'readonly') {
 				return (
-					<fieldset key={localPageObject.journalId} ref={drag}>
+					<fieldset key={localPageObject.pageId} ref={drag}>
 						<p>mode: {mode}  <span>{isDragging && '😱'}</span></p>
 						<legend>[{localPageObject.pageId}] {dtFormated} ({dtDescription}) - {localPageObject.subject} Treeid:{localPageObject.journalId}</legend>
-						<NotesLabel pageJsonContent={notes} readOnly={true} />
+						<NotesLabel pageObjectContent={pageObjectContent} readOnly={true} />
 						<p style={buttonStyle}>
 							<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
 						</p>
@@ -133,10 +138,11 @@ function Page({ page, updatePageInList, key }) {
 
 				return (<fieldset>
 					<p>Title: {localPageObject.subject}</p>
+					<p>PageId: {localPageObject.pageId}</p>
 					{/* <Notes title='Subject' name='subject' notes={localPageObject.subject} updateState={updateState} /> */}
 					<hr></hr>
 					{/* <Notes notes={notes} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>) */}
-					<NotesLabel pageJsonContent={notes} readOnly={false} />
+					<NotesLabel pageObjectContent={pageObjectContent} readOnly={false} pageObjectContentChanged={pageObjectContentChanged} />
 
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>
 					<Button variant="contained" color="primary" onClick={close}>Close</Button>
@@ -146,6 +152,7 @@ function Page({ page, updatePageInList, key }) {
 				</fieldset>)
 			}
 		}
+
 	}
 
 	return <div>

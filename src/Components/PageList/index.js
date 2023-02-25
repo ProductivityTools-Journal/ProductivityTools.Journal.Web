@@ -24,20 +24,17 @@ export default function PageList(props) {
         //console.log("fetching data");
     }, [props.selectedTreeNode]);
 
-    const updateMeetingInList = (meeting) => {
-
-        //page refactor, I am not sure if this is needed
-        return
-        console.log(meeting);
-        //onsole.log("updateMeetingInList");
+    const updatePageInList = (page) => {
+        console.log("updateMeetingInList");
+        console.log(page);
         console.log(pages);
         let updatedList = pages.map(item => {
-            if (item.frontendId === meeting.frontendId) {
-                if (meeting.Deleted == true) {
+            if (item.frontendId === page.frontendId) {
+                if (page.Deleted == true) {
                     //do nothing
                 }
                 else {
-                    let r = { ...item, ...meeting }
+                    let r = { ...item, ...page }
                     return r;
                 }
             }
@@ -53,7 +50,7 @@ export default function PageList(props) {
         //console.log('new event');
 
         let newPage = Common.getNewPage(props.selectedTreeNode);
-        newPage.mode='edit';
+        newPage.mode = 'edit';
         //let newPage = [{ frontendId: uuid(), mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] }]
 
         setPages([newPage, ...pages]);
@@ -69,7 +66,7 @@ export default function PageList(props) {
 
             {pages && pages.length > 0 && pages.map(function (item) {
                 return (
-                    <Page page={item} updateMeetingInList={updateMeetingInList} key={item.PageId} />
+                    <Page page={item} updatePageInList={updatePageInList} key={item.PageId} />
                 );
             })}
 

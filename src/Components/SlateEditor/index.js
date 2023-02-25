@@ -115,15 +115,15 @@ const withLayout = editor => {
     return editor
 }
 
-export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged }) {
-    console.log("SlateEditor");
-    console.log(pageJsonContent);
+export default function SlateEditor({ pageObjectContent, readOnly, pageObjectContentChange }) {
+    // console.log("SlateEditor");
+    // console.log(pageObjectContent);
     const editor = useMemo(() => withLayout(withListsReact(withListsPlugin(withReact(createEditor())))), [])
     //const editor = useMemo(() => withReact(createEditor()), [])
-    const [value, setValue] = useState([{
-        type: 'paragraph',
-        children: [{ text: 'empty' }],
-    },])
+    // const [value, setValue] = useState([{
+    //     type: 'paragraph',
+    //     children: [{ text: 'empty' }],
+    // },])
     const [title, setTitle] = useState('nothing');
 
     //slate doesn't react to change state
@@ -132,7 +132,7 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
     useEffect(() => {
         console.log("Useffect Page Json content")
         changeContent();
-    }, [pageJsonContent])
+    }, [pageObjectContent])
 
 
     // const getSlateStructureFromRawDetails = (rawDetails, title) => {
@@ -159,18 +159,18 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
 
     const changeContent = () => {
 
-        if (pageJsonContent == undefined) { return; }
+        if (pageObjectContent == undefined) { return; }
 
         editor.changingContent = true;
-        let rawDetails = pageJsonContent;
-        // let detailsType = pageJsonContent?.detailsType;
-        // let title = pageJsonContent.name;
+        let rawDetails = pageObjectContent;
+        // let detailsType = pageObjectContent?.detailsType;
+        // let title = pageObjectContent.name;
 
         let newValue = ''
         //if (detailsType == 'Slate') {
-        console.log("pageJsonContent")
-        console.log(pageJsonContent)
-        let detailsObject = pageJsonContent;
+        console.log("pageObjectContent")
+        console.log(pageObjectContent)
+        let detailsObject = pageObjectContent;
 
 
         if (detailsObject && Object.keys(detailsObject).length > 0 && Object.getPrototypeOf(detailsObject) != Object.prototype) {
@@ -202,7 +202,7 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
         let totalNodes = editor.children.length
 
         // No saved content, don't delete anything to prevent errors
-        if (value.length <= 0) {
+        if (pageObjectContent.length <= 0) {
             editor.changingContent = false;
             return
         }
@@ -254,25 +254,25 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
     const editorChanged = (newValue) => {
         console.log("new value");
         console.log(newValue);
-        // if (editor.changingContent) return;
+         if (editor.changingContent) return;
         // setValue(newValue);
-        // detailsChanged(newValue)
+        pageObjectContentChange(pageObjectContent)
         // let title = editor.children[0].children[0].text;
         // setTitle(title);
         //props.titleChanged(title);
     }
-    if (pageJsonContent == undefined) {
+    if (pageObjectContent == undefined) {
         return (<div>waiting</div>)
     }
     else {
         if (readOnly) {
-            console.log("pageJsonContent")
-            console.log(pageJsonContent)
+            console.log("pageObjectContent")
+            console.log(pageObjectContent)
             return (
                 <div>
                     <p>raw content:</p>
-                    <p>{pageJsonContent && pageJsonContent.length > 0 && pageJsonContent[0].children[0].text}</p>
-                    <Slate editor={editor} value={pageJsonContent} onChange={editorChanged}>
+                    <p>{pageObjectContent && pageObjectContent.length > 0 && pageObjectContent[0].children[0].text}</p>
+                    <Slate editor={editor} value={pageObjectContent} onChange={editorChanged}>
 
                         <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
                             <Editable readOnly
@@ -288,7 +288,7 @@ export default function SlateEditor({ pageJsonContent, readOnly, detailsChanged 
             return (
                 <div>
                     <div style={{ width: '100%', margin: '0 auto' }}>
-                        <Slate editor={editor} value={pageJsonContent} onChange={editorChanged}>
+                        <Slate editor={editor} value={pageObjectContent} onChange={editorChanged}>
                             <Toolbar />
 
                             <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
