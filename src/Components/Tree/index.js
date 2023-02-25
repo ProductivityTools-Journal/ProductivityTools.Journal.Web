@@ -101,7 +101,7 @@ const StyledTreeItem = (props) => {
       if (type == 'page') {
         debugger;
         let page=item.page;
-        let pageWithNewParent = { ...page, treeId: node.id }
+        let pageWithNewParent = { ...page, journalId: node.id }
         apiService.updateJournal(pageWithNewParent);
         let removePageFromList=item.removePageFromList;
         removePageFromList(page);

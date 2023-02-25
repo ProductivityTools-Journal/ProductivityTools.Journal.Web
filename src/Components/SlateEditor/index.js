@@ -273,8 +273,8 @@ export default function SlateEditor({ pageId, pageContentObject, readOnly, pageC
         console.log(readOnly);
         return (
             <div>
-                <p>raw content:</p>
-                <p>{pageContentObject && pageContentObject.length > 0 && pageContentObject[0].children[0].text}</p>
+                {/* <p>raw content:</p>
+                <p>{pageContentObject && pageContentObject.length > 0 && pageContentObject[0].children[0].text}</p> */}
                 <Slate editor={editor} value={pageContentObject} onChange={editorChanged}>
                     {readOnly ? <span></span> : <Toolbar />}
                     <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>

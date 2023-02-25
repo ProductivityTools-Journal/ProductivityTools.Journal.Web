@@ -179,9 +179,9 @@ function Page({ page, updatePageInList, key }) {
 			console.log(localPageObject.mode)
 			return (
 				<fieldset key={localPageObject.pageId} ref={drag}>
-					<p>mode: {localPageObject.mode}  <span>{isDragging && '😱'}</span></p>
-					<p>PageId: {localPageObject.pageId}</p>
-					<legend>[{localPageObject.pageId}] {dtFormated} ({dtDescription}) - {localPageObject.subject} Treeid:{localPageObject.journalId}</legend>
+					{/* <p>mode: {localPageObject.mode}  </p> */}
+					{/* <p>PageId: {localPageObject.pageId}</p> */}
+					<legend>[{localPageObject.pageId}] {dtFormated} ({dtDescription}) - {localPageObject.subject} Treeid:{localPageObject.journalId} <span>{isDragging && '😱'}</span></legend>
 					<SlateEditor pageId={localPageObject.pageId} pageContentObject={localPageObject.contentObject} readOnly={readonly()} pageContentObjectChanged={pageContentObjectChanged}></SlateEditor>
 
 					{readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
