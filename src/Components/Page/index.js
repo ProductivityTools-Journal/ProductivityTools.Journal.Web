@@ -16,7 +16,21 @@ function Page({ page, updatePageInList, key }) {
 
 
 	useEffect(() => {
-		setLocalPageObject({ ...page });
+
+		let pageContentObject = null;
+		if (page.contentType == 'Slate') {
+			try {
+				pageContentObject = JSON.parse(page.content);
+			} catch (error) {
+				pageContentObject = Common.getStringSlateStructureFromRawDetails(page.content, "XXXX2s");
+			}
+		}
+		else {
+			pageContentObject = Common.getStringSlateStructureFromRawDetails(page.content, "XXX1");
+		}
+
+		let x = { ...page, contentObject: pageContentObject }
+		setLocalPageObject(x);
 	}, [page]);
 
 	const [mode, setMode] = useState('readonly');
@@ -24,6 +38,13 @@ function Page({ page, updatePageInList, key }) {
 	let dtDescription = mt.fromNow();
 	let dtFormated = mt.format('YYYY.MM.DD hh:mm')
 	const buttonStyle = { textAlign: 'left' }
+
+	const pageContentObjectChanged = (contentObject) => {
+		console.log("pageContentObjectChanged");
+		console.log(contentObject);
+		setLocalPageObject({ ...localPageObject, contentObject: contentObject });
+	}
+
 
 	const edit = () => {
 		//console.log()
@@ -54,6 +75,7 @@ function Page({ page, updatePageInList, key }) {
 		let eventSum = undefined;//we need it to keep mode=edit, which is not returned from server
 		debugger;
 		localPageObject.contentType = 'Slate';
+		localPageObject.content=JSON.stringify(localPageObject.contentObject);
 		if (localPageObject.pageId == null) {
 			let savedEvent = await apiService.savePage(localPageObject);
 			eventSum = { ...localPageObject, ...savedEvent }
@@ -94,38 +116,24 @@ function Page({ page, updatePageInList, key }) {
 
 	const checkState = () => {
 		console.log(page)
+		console.log(pageContentObjectChanged)
 	}
 
-	const pageObjectContentChanged = (page) => {
-		console.log("pageObjectContentChanged");
-		console.log(page);
 
-	}
 
 	const getComponent = () => {
 		//console.log("working event");
 		//console.log(page);
 		if (localPageObject != null) {
 
-			let pageObjectContent = null;
-			if (localPageObject.contentType == 'Slate') {
-				try {
-					pageObjectContent = JSON.parse(localPageObject.content);
-				} catch (error) {
-					pageObjectContent = Common.getStringSlateStructureFromRawDetails(localPageObject.content, "XXXX2s");
 
-				}
-			}
-			else {
-				pageObjectContent = Common.getStringSlateStructureFromRawDetails(localPageObject.content, "XXX1");
-			}
 
 			if (localPageObject.mode == null || localPageObject.mode === 'readonly') {
 				return (
 					<fieldset key={localPageObject.pageId} ref={drag}>
 						<p>mode: {mode}  <span>{isDragging && '😱'}</span></p>
 						<legend>[{localPageObject.pageId}] {dtFormated} ({dtDescription}) - {localPageObject.subject} Treeid:{localPageObject.journalId}</legend>
-						<NotesLabel pageObjectContent={pageObjectContent} readOnly={true} />
+						<NotesLabel pageContentObject={localPageObject.contentObject} readOnly={true} pageContentObjectChanged={pageContentObjectChanged} />
 						<p style={buttonStyle}>
 							<Button variant="contained" color="primary" onClick={edit}>Edit</Button>
 						</p>
@@ -140,7 +148,7 @@ function Page({ page, updatePageInList, key }) {
 					{/* <Notes title='Subject' name='subject' notes={localPageObject.subject} updateState={updateState} /> */}
 					<hr></hr>
 					{/* <Notes notes={notes} name='notes' guid={notes.guid} updateState={updateElementInList} selectedElement={notes} readOnly={false}></Notes>) */}
-					<NotesLabel pageObjectContent={pageObjectContent} readOnly={false} pageObjectContentChanged={pageObjectContentChanged} />
+					<NotesLabel pageContentObject={localPageObject.contentObject} readOnly={false} pageContentObjectChanged={pageContentObjectChanged} />
 
 					<Button variant="contained" color="primary" onClick={save}>Save</Button>
 					<Button variant="contained" color="primary" onClick={close}>Close</Button>
