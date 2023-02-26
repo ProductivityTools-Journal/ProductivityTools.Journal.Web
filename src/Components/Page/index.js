@@ -24,14 +24,15 @@ function Page({ page, updatePageInList, key }) {
 			try {
 				pageContentObject = JSON.parse(page.content);
 			} catch (error) {
-				pageContentObject = Common.getStringSlateStructureFromRawDetails(page.content, "XXXX2s");
+				pageContentObject = Common.getObjectSlateStructureFromRawDetails("Title12", page.content);
 			}
 		}
 		else {
-			pageContentObject = Common.getStringSlateStructureFromRawDetails(page.content, "XXX1");
+			pageContentObject = Common.getObjectSlateStructureFromRawDetails("Title14", page.content);
+
 		}
 
-		let x = { ...page, contentObject: pageContentObject, mode: page.mode == undefined ? 'readonly' : page.mode }
+		let x = { ...page, contentObject: pageContentObject, contentType: 'Slate', mode: page.mode == undefined ? 'readonly' : page.mode }
 		setLocalPageObject(x);
 	}, [page.pageID]);
 

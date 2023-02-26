@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 
-export const getJsonSlateStructureFromRawDetails = (title,rawDetails) => {
+export const getObjectSlateStructureFromRawDetails = (title, rawDetails) => {
     let template = [{
         type: 'title',
         children: [{ text: title || "Title" }],
@@ -11,26 +11,27 @@ export const getJsonSlateStructureFromRawDetails = (title,rawDetails) => {
     return template;
 }
 
-export const getStringSlateStructureFromRawDetails=(rawDetails, title)=>{
-    let o=getJsonSlateStructureFromRawDetails(rawDetails,title);
-    let r=JSON.stringify(o)
+export const getStringSlateStructureFromRawDetails = (title, rawDetails) => {
+    let o = getObjectSlateStructureFromRawDetails(title, rawDetails);
+    let r = JSON.stringify(o)
     return r;
 }
 
-export const getNewPageArray=(journalId)=>{
-    let page=getNewPage(journalId);
-    let result=[page];
+export const getNewPageArray = (journalId) => {
+    let page = getNewPage(journalId);
+    let result = [page];
     return result;
 }
 
-export const getNewPage=(journalId)=>
-{
-    let result={date: undefined,
+export const getNewPage = (journalId) => {
+    let result = {
+        date: undefined,
         frontendId: uuid(),
         journalId: journalId,
-        content:getStringSlateStructureFromRawDetails('Page',''),
+        content: getStringSlateStructureFromRawDetails('Page', ''),
         // content: '[{"type":"title","children":[{"text":"a3"}]},{"type":"paragraph","children":[{"text":"Add notes here"}]}]',
         contentType: 'Slate',
-        subject: "Page"}
+        subject: "Page"
+    }
     return result;
 }
