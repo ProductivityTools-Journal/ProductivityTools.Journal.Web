@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import Modal from '@mui/material/Modal';
 import * as apiService from 'services/apiService'
 
-export default function TreeItemNewModal({ open, selectedTreeNode, handleModalClose }) {
+export default function TreeItemNewModal({ open, selectedTreeNode, treeItemNewModalCallback, treeItemNewModalCallbackCancel }) {
 
     const [treeName, setTreeeName] = useState('new');
 
     const AddNewItem = function () {
         apiService.addTreeNode(Number(selectedTreeNode), treeName);
-        handleModalClose();
+        treeItemNewModalCallback();
     }
 
     const handleChange = (e) => {
@@ -16,7 +16,7 @@ export default function TreeItemNewModal({ open, selectedTreeNode, handleModalCl
     }
 
     const cancel = () => {
-        handleModalClose();
+        treeItemNewModalCallbackCancel();
     }
 
     const body = (

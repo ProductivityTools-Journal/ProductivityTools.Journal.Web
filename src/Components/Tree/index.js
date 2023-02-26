@@ -100,10 +100,10 @@ const StyledTreeItem = (props) => {
       }
       if (type == 'page') {
         debugger;
-        let page=item.page;
+        let page = item.page;
         let pageWithNewParent = { ...page, journalId: node.id }
         apiService.updateJournal(pageWithNewParent);
-        let removePageFromList=item.removePageFromList;
+        let removePageFromList = item.removePageFromList;
         removePageFromList(page);
       }
     },
@@ -124,7 +124,7 @@ const StyledTreeItem = (props) => {
 }
 
 
-export default function CustomizedTreeView({setSelectedTreeNode,selectedTreeNode}) {
+export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNode }) {
   const [expanded, setExpanded] = useState([]);
   const [list, setList] = useState([]);
   const params = useParams();
@@ -135,40 +135,43 @@ export default function CustomizedTreeView({setSelectedTreeNode,selectedTreeNode
 
   const containerRef = useRef(null);
 
-  useEffect(() => {
+  const fetchData = async () => {
+    const r = await apiService.getTree();
+    console.log(r);
+    if (r != null) {
+      setList(r);
+      getNodePath(r[0], params.TreeId);
+    }
+  };
+  const getNodePath = (node, targetId) => {
+    if (targetId == null) return [];
+    debugger;
 
-    const getNodePath = (node, targetId) => {
-      if (targetId == null) return [];
-      if (node != null) {
-        if (node.id === targetId) {
-          var result = [];
-          result = result.concat([targetId.toString()]);
-          return result;
-        } else {
-          for (let n of node.nodes) {
-            //node.nodes.forEach(x=>{
-            var chain = getNodePath(n, targetId);
-            if (chain != null) {
-              var finalResult = chain.concat(node.id.toString());
-              setExpanded(finalResult)
-              return finalResult;
-            }
+    if (node != null) {
+      if (node.id === targetId) {
+        var result = [];
+        result = result.concat([targetId.toString()]);
+        return result;
+      } else {
+        for (let n of node.nodes) {
+          //node.nodes.forEach(x=>{
+          var chain = getNodePath(n, targetId);
+          if (chain != null) {
+            var finalResult = chain.concat(node.id.toString());
+            setExpanded(finalResult)
+            return finalResult;
           }
         }
       }
-      else {
-        return [];
-      }
     }
+    else {
+      return [];
+    }
+  }
 
-    const fetchData = async () => {
-      const r = await apiService.getTree();
-      console.log(r);
-      if (r != null) {
-        setList(r);
-        getNodePath(r[0], params.TreeId);
-      }
-    };
+  useEffect(() => {
+    //if think this is not used target id is always null
+
 
     fetchData();
   }, [params.TreeId]);
@@ -243,9 +246,15 @@ export default function CustomizedTreeView({setSelectedTreeNode,selectedTreeNode
   ];
 
 
-  const handleModalClose = () => {
+  const treeItemNewModalCallback = () => {
+    fetchData();
     setModalOpen(false);
   }
+
+  const treeItemNewModalCallbackCancel = () => {
+    setModalOpen(false);
+  }
+
   const handleModalOpen = () => { setModalOpen(true); }
 
   const handleDeleteDialogOpen = () => {
@@ -279,7 +288,7 @@ export default function CustomizedTreeView({setSelectedTreeNode,selectedTreeNode
         })}
       </TreeView>
       <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu>
-      <TreeItemNewModal open={modalOpen} selectedTreeNode={selectedTreeNode} handleModalClose={handleModalClose} />
+      <TreeItemNewModal open={modalOpen} selectedTreeNode={selectedTreeNode} treeItemNewModalCallback={treeItemNewModalCallback} treeItemNewModalCallbackCancel={treeItemNewModalCallbackCancel} />
       <TreeDeleteDialog open={deleteModalOpen} handleClose={handleClose} handleCloseAndProceed={handleCloseAndProceed}></TreeDeleteDialog>
     </div>
   );
