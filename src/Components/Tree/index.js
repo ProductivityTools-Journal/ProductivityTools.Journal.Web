@@ -101,7 +101,7 @@ const StyledTreeItem = (props) => {
       if (type == 'page') {
         debugger;
         let page=item.page;
-        let pageWithNewParent = { ...page, treeId: node.id }
+        let pageWithNewParent = { ...page, journalId: node.id }
         apiService.updateJournal(pageWithNewParent);
         let removePageFromList=item.removePageFromList;
         removePageFromList(page);
@@ -165,7 +165,6 @@ export default function CustomizedTreeView({setSelectedTreeNode,selectedTreeNode
       const r = await apiService.getTree();
       console.log(r);
       if (r != null) {
-        debugger;
         setList(r);
         getNodePath(r[0], params.TreeId);
       }

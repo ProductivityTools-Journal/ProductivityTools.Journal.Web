@@ -115,35 +115,37 @@ const withLayout = editor => {
     return editor
 }
 
-export default function SlateEditor(props) {
-
+export default function SlateEditor({ pageId, pageContentObject, readOnly, pageContentObjectChanged }) {
+    // console.log("SlateEditor");
+    // console.log(pageContentObject);
     const editor = useMemo(() => withLayout(withListsReact(withListsPlugin(withReact(createEditor())))), [])
     //const editor = useMemo(() => withReact(createEditor()), [])
-    const [value, setValue] = useState([{
-        type: 'paragraph',
-        children: [{ text: 'empty' }],
-    },])
+    // const [value, setValue] = useState([{
+    //     type: 'paragraph',
+    //     children: [{ text: 'empty' }],
+    // },])
     const [title, setTitle] = useState('nothing');
 
-    // useEffect(() => {
-    //     console.log(props)
-    //     console.log(props.selectedElement)
-    //     console.log(props.selectedElement?.elementId)
+    //slate doesn't react to change state
+    //to change value in slate we need to remove all lines and insert new ones
 
-    //     //changeContent();
-    // }, [props.selectedElement])
+    useEffect(() => {
+        console.log("Useffect Page Json content")
+        console.log(pageId);
+        changeContent();
+    }, [])
 
 
-    const getSlateStructureFromRawDetails = (rawDetails, title) => {
-        let template = [{
-            type: 'title',
-            children: [{ text: title || "Title" }],
-        }, {
-            type: 'paragraph',
-            children: [{ text: rawDetails || "No data" }],
-        },]
-        return template;
-    }
+    // const getSlateStructureFromRawDetails = (rawDetails, title) => {
+    //     let template = [{
+    //         type: 'title',
+    //         children: [{ text: title || "Title" }],
+    //     }, {
+    //         type: 'paragraph',
+    //         children: [{ text: rawDetails || "No data" }],
+    //     },]
+    //     return template;
+    // }
 
     const checkIfDetailsContainsTitle = (detailsObject, title) => {
         let detailsTitle = detailsObject[0].children[0].text;
@@ -158,33 +160,42 @@ export default function SlateEditor(props) {
 
     const changeContent = () => {
 
+        if (pageContentObject == undefined) { return; }
+
         editor.changingContent = true;
-        let rawDetails = props.selectedElement?.details;
-        let detailsType = props.selectedElement?.detailsType;
-        let title = props.selectedElement.name;
+        let rawDetails = pageContentObject;
+        // let detailsType = pageContentObject?.detailsType;
+        // let title = pageContentObject.name;
 
-        debugger;
         let newValue = ''
-        if (detailsType == 'Slate') {
-            let detailsObject = JSON.parse(rawDetails);
-            if (detailsObject && Object.keys(detailsObject).length > 0 && Object.getPrototypeOf(detailsObject) != Object.prototype) {
-                let detailsTitle = detailsObject[0].children[0].text;
-                if (detailsTitle != title) {
-                    detailsObject = [{
-                        type: 'title',
-                        children: [{ text: title }],
-                    }].concat(detailsObject);
-                }
-                newValue = detailsObject;
+        //if (detailsType == 'Slate') {
+        console.log("pageContentObject")
+        console.log(pageContentObject)
+        let detailsObject = pageContentObject;
 
-            }
-            else {
-                newValue = getSlateStructureFromRawDetails(rawDetails, title);
-            }
+
+        if (detailsObject && Object.keys(detailsObject).length > 0 && Object.getPrototypeOf(detailsObject) != Object.prototype) {
+            let detailsTitle = detailsObject[0].children[0].text;
+            //tytul, nie jestem pewien czy to potrzebuje
+            // debugger;
+            // if (detailsTitle != title) {
+            //     detailsObject = [{
+            //         type: 'title',
+            //         children: [{ text: title }],
+            //     }].concat(detailsObject);
+            // }
+
+            //koniec tutulu
+            newValue = detailsObject;
+
         }
-        else {
-            newValue = getSlateStructureFromRawDetails(rawDetails, title);;
-        }
+        // else {
+        //     newValue = getSlateStructureFromRawDetails(rawDetails, title);
+        // }
+        // }
+        // else {
+        //     newValue = getSlateStructureFromRawDetails(rawDetails, title);;
+        // }
         console.log("details");
         console.log(rawDetails);
         console.log("NewVAlue");
@@ -192,7 +203,7 @@ export default function SlateEditor(props) {
         let totalNodes = editor.children.length
 
         // No saved content, don't delete anything to prevent errors
-        if (value.length <= 0) {
+        if (pageContentObject.length <= 0) {
             editor.changingContent = false;
             return
         }
@@ -242,46 +253,62 @@ export default function SlateEditor(props) {
     }, [])
 
     const editorChanged = (newValue) => {
+        console.log("new value");
+        console.log(newValue);
         if (editor.changingContent) return;
-        setValue(newValue);
-        props.detailsChanged(newValue)
-        let title = editor.children[0].children[0].text;
-        setTitle(title);
+        // setValue(newValue);
+        pageContentObjectChanged(newValue)
+        // let title = editor.children[0].children[0].text;
+        // setTitle(title);
         //props.titleChanged(title);
     }
-
-    if (props.readOnly) {
-        return (<Slate editor={editor} value={props.selectedElement.details} onChange={editorChanged}>
-
-            <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
-                <Editable readOnly
-                    placeholder='Write something'
-                    renderElement={renderElement}
-                // renderLeaf={renderLeaf}
-                />
-            </div>
-        </Slate>)
+    if (pageContentObject == undefined) {
+        return (<div>waiting</div>)
     }
     else {
+        // if (readOnly) {
+        console.log("pageContentObject")
+        console.log(pageContentObject)
+        console.log("readonly")
+        console.log(readOnly);
         return (
             <div>
-                <div style={{ width: '100%', margin: '0 auto' }}>
-                    <Slate editor={editor} value={props.selectedElement.details} onChange={editorChanged}>
-                        <Toolbar />
+                {/* <p>raw content:</p>
+                <p>{pageContentObject && pageContentObject.length > 0 && pageContentObject[0].children[0].text}</p> */}
+                <Slate editor={editor} value={pageContentObject} onChange={editorChanged}>
+                    {readOnly ? <span></span> : <Toolbar />}
+                    <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
+                        <Editable readOnly={readOnly}
+                            onKeyDown={(event) => onKeyDown(editor, event)}
+                            placeholder='Write something'
+                            renderElement={renderElement}
+                        // renderLeaf={renderLeaf}
+                        />
+                    </div>
+                </Slate>
+            </div>)
+        // }
+        // else {
+        //     return (
+        //         <div>
+        //             <div style={{ width: '100%', margin: '0 auto' }}>
+        //                 <Slate editor={editor} value={pageContentObject} onChange={editorChanged}>
+        //                     <Toolbar />
 
-                        <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
-                            <Editable
-                               onKeyDown={(event) => onKeyDown(editor, event)}
-                                placeholder='Write something'
-                                renderElement={renderElement}
-                                renderLeaf={renderLeaf}
-                            />
-                        </div>
-                    </Slate>
-                </div>
-                {/* <div>slate title: {title}</div>
-                <div><textarea value={JSON.stringify(value)}></textarea></div> */}
-            </div>
-        )
+        //                     <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
+        //                         <Editable
+        //                             onKeyDown={(event) => onKeyDown(editor, event)}
+        //                             placeholder='Write something'
+        //                             renderElement={renderElement}
+        //                             renderLeaf={renderLeaf}
+        //                         />
+        //                     </div>
+        //                 </Slate>
+        //             </div>
+        //             {/* <div>slate title: {title}</div>
+        //         <div><textarea value={JSON.stringify(value)}></textarea></div> */}
+        //         </div>
+        //     )
+        // }
     }
 }

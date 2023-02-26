@@ -4,11 +4,17 @@ import clsx from 'clsx';
 import SlateEditor from 'Components/SlateEditor';
 
 
-function NotesLabel(props) {
+function NotesLabel({ pageContentObject, pageContentObjectChanged, readOnly }) {
+
+
+
+
     return (
         <div>
+            {/* <p>page2</p>
+            <p>{pageContentObject && pageContentObject.length>0 && pageContentObject[0].children[0].text}</p> */}
             {/* <SlateEditor selectedElement={props.selectedElement} detailsChanged={detailsChanged} titleChanged={updateTitle}></SlateEditor> */}
-            <SlateEditor selectedElement={props.selectedElement} readOnly={props.readOnly}></SlateEditor>
+            <SlateEditor pageContentObject={pageContentObject} readOnly={readOnly} pageContentObjectChanged={pageContentObjectChanged}></SlateEditor>
 
             {/* <TextField
                 label={props.title}

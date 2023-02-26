@@ -48,10 +48,10 @@ async function deleteTree(treeId) {
     return callAuthorizedEndpoint(call);
 }
 
-async function saveMeeting(meeting) {
+async function savePage(page) {
     let call = async (header) => {
         console.log("saveMeeting");
-        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, meeting)
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`, page)
         return response.data;
     }
     return invokeCallWithToast(call, "Creating new Jounral Item", "New Journal Item created")
@@ -115,7 +115,7 @@ async function invokeCallWithToast(call, pendingMessage, successMessage) {
 }
 
 
-async function fetchMeetingList(treeId) {
+async function fetchPageList(treeId) {
 
     let call = async (header) => {
         const data = { Id: Number(treeId), DrillDown: true }
@@ -167,10 +167,10 @@ export {
     addTreeNode,
     deleteTree,
     moveTreeNode,
-    saveMeeting,
+    savePage,
     fetchMeeting,
     deleteMeeting,
     updateJournal,
     getDate,
-    fetchMeetingList
+    fetchPageList
 }
