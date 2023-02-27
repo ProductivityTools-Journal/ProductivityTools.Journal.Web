@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState, } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import * as apiService from 'services/apiService'
 import TreeItem from '@mui/lab/TreeItem';
@@ -7,6 +7,8 @@ import { Link, useParams } from "react-router-dom";
 import Collapse from '@mui/material/Collapse';
 import PropTypes from 'prop-types';
 import { Menu, MenuItem } from '@mui/material';
+import { popoverClasses } from "@mui/material/Popover";
+
 
 function TransitionComponent(props) {
     const style = {
@@ -31,25 +33,11 @@ TransitionComponent.propTypes = {
 export default function StyledTreeItem(props) {
 
     const { changeParent, node, openNewModal, ...rest } = props;
-    const [contextMenu, setContextMenu] = useState(null);
     const treeClick = (e, treeId) => {
         e.stopPropagation();
         props.setSelectedTreeNode(treeId);
     }
 
-    const handleContextMenu = (event) => {
-        console.log("handleContextMenu");
-        console.log(event);
-        event.preventDefault();
-        //setContextMenu(contextMenu == null ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6 } : null)
-        setContextMenu(null);
-        setContextMenu({ mouseX: event.clientX + 2, mouseY: event.clientY - 6 })
-    }
-
-    const handleClose = () => {
-        console.log(props);
-        setContextMenu(null);
-    }
 
     const changeParent2 = (source, targetParentId) => {
         debugger;
@@ -96,6 +84,23 @@ export default function StyledTreeItem(props) {
     const openModal = () => {
         debugger;
         openNewModal();
+    }
+
+    const [contextMenu, setContextMenu] = useState(null);
+
+
+    const handleContextMenu = (event) => {
+        setContextMenu(null);
+        console.log("handleContextMenu");
+        console.log(event);
+        event.preventDefault();
+        setContextMenu(contextMenu == null ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6 } : null)
+
+    }
+
+    const handleClose = () => {
+        console.log(props);
+        setContextMenu(null);
     }
 
     return (<TreeItem ref={dragRef} {...rest} TransitionComponent={TransitionComponent} label={
