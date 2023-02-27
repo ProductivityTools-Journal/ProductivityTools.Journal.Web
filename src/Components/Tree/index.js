@@ -174,7 +174,9 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     setModalOpen(false);
   }
 
-  const handleModalOpen = () => { setModalOpen(true); }
+  const handleModalOpen = () => { 
+    console.log("handleModalOpen");
+    setModalOpen(true); }
 
   const handleDeleteDialogOpen = () => {
     setDeleteModalOpen(true);
@@ -203,10 +205,10 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         onNodeToggle={handleToggle}
       >
         {list && list.length > 0 && list.map(x => {
-          return <StyledTreeItem key={x.id} node={x} contextmenuid={x.id} nodeId={x.id.toString()}>{GetNode(x.nodes)}</StyledTreeItem>
+          return <StyledTreeItem key={x.id} node={x} contextmenuid={x.id} nodeId={x.id.toString()} openNewModal={handleModalOpen}>{GetNode(x.nodes)}</StyledTreeItem>
         })}
       </TreeView>
-      <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu>
+      {/* <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu> */}
       <TreeItemNewModal open={modalOpen} selectedTreeNode={selectedTreeNode} treeItemNewModalCallback={treeItemNewModalCallback} treeItemNewModalCallbackCancel={treeItemNewModalCallbackCancel} />
       <TreeDeleteDialog open={deleteModalOpen} handleClose={handleClose} handleCloseAndProceed={handleCloseAndProceed}></TreeDeleteDialog>
     </div>
