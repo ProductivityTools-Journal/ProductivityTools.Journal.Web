@@ -6,7 +6,7 @@ import * as apiService from 'services/apiService'
 import { Link, useParams } from "react-router-dom";
 import ContextMenu from '../ContextMenu'
 import './index.css'
-import StyledTreeItem  from './styledTreeItem';
+import StyledTreeItem from './styledTreeItem';
 import TreeItemNewModal from '../TreeItemNewModal'
 import TreeDeleteDialog from '../TreeDeleteDialog';
 
@@ -45,7 +45,7 @@ function CloseSquare(props) {
 
 export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNode }) {
   const [expanded, setExpanded] = useState([]);
-  const [list, setList] = useState([]);
+  const [root, setRoot] = useState(null);
   const params = useParams();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -55,10 +55,11 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const containerRef = useRef(null);
 
   const fetchData = async () => {
+    debugger;
     const r = await apiService.getTree();
     console.log(r);
     if (r != null) {
-      setList(r);
+      setRoot(r);
       getNodePath(r[0], params.TreeId);
     }
   };
@@ -112,38 +113,26 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     }
   }
 
-  function updateElementInList(elementToUpdate, propertyName, propertyValue) {
-    let newList = list;
-    let newElement = findElement(newList[0], elementToUpdate.id);
+  function updateElementInroot(elementToUpdate, propertyName, propertyValue) {
+    let newroot = root;
+    let newElement = findElement(newroot[0], elementToUpdate.id);
     newElement[propertyName] = propertyValue;
-    setList(newList);
+    setRoot(newroot);
   }
 
   const changeParent = (source, targetParentId) => {
     console.log("change parent");
     console.log("targetParentId", targetParentId)
-    var childObject = findElement(list[0], source.id);
-    var currentParent = findElement(list[0], source.parentId)
+    var childObject = findElement(root[0], source.id);
+    var currentParent = findElement(root[0], source.parentId)
     currentParent.nodes = currentParent.nodes.filter(item => item !== childObject);
-    var newParentobject = findElement(list[0], targetParentId);
+    var newParentobject = findElement(root[0], targetParentId);
     newParentobject.nodes.push(childObject);
-    updateElementInList(childObject, "parentId", targetParentId);
+    updateElementInroot(childObject, "parentId", targetParentId);
     setSelectedTreeNode(source.id)
   }
 
 
-  function GetNode(nodes) {
-    if (nodes !== undefined) {
-      return (nodes.map(x => {
-
-        return (
-          <StyledTreeItem nodeId={x.id.toString()} changeParent={changeParent} setSelectedTreeNode={setSelectedTreeNode} node={x} contextmenuid={x.id} key={x.id} >
-            {GetNode(x.nodes)}
-          </StyledTreeItem >)
-      })
-      )
-    }
-  }
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
@@ -174,9 +163,10 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     setModalOpen(false);
   }
 
-  const handleModalOpen = () => { 
+  const handleModalOpen = () => {
     console.log("handleModalOpen");
-    setModalOpen(true); }
+    setModalOpen(true);
+  }
 
   const handleDeleteDialogOpen = () => {
     setDeleteModalOpen(true);
@@ -193,20 +183,32 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     setDeleteModalOpen(false);
   };
 
+
+  function GetNode(node) {
+    if (node) {
+      debugger;
+      return (
+        <StyledTreeItem key={node.id} changeParent={changeParent} setSelectedTreeNode={setSelectedTreeNode} openNewModal={handleModalOpen} node={node}   >
+          {node?.nodes.map(x => GetNode(x))}
+        </StyledTreeItem >)
+    }
+  }
+
   return (
     <div className='conainer' ref={containerRef}>
       <p>pawel</p>
       <TreeView
         expanded={expanded}
-        // expanded={getNodesIdRoot(list)}///recursive function
+        // expanded={getNodesIdRoot(root)}///recursive function
         defaultCollapseIcon={<MinusSquare />}
         defaultExpandIcon={<PlusSquare />}
         defaultEndIcon={<CloseSquare />}
         onNodeToggle={handleToggle}
       >
-        {list && list.length > 0 && list.map(x => {
-          return <StyledTreeItem key={x.id} node={x} contextmenuid={x.id} nodeId={x.id.toString()} openNewModal={handleModalOpen}>{GetNode(x.nodes)}</StyledTreeItem>
-        })}
+        {/* {root && root.length > 0 && root.map(x => {
+          return <StyledTreeItem key={x.id} node={x} contextmenuid={x.id} nodeId={x.id.toString()}>{GetNode(x.nodes)}</StyledTreeItem>
+        })} */}
+        {GetNode(root)}
       </TreeView>
       {/* <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu> */}
       <TreeItemNewModal open={modalOpen} selectedTreeNode={selectedTreeNode} treeItemNewModalCallback={treeItemNewModalCallback} treeItemNewModalCallbackCancel={treeItemNewModalCallbackCancel} />

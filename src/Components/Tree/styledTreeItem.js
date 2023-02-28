@@ -31,7 +31,8 @@ TransitionComponent.propTypes = {
 };
 
 export default function StyledTreeItem(props) {
-
+    console.log("StyledTreeItem")
+    console.log(props);
     const { changeParent, node, openNewModal, ...rest } = props;
     const treeClick = (e, treeId) => {
         e.stopPropagation();
@@ -81,8 +82,11 @@ export default function StyledTreeItem(props) {
         })
     })
 
-    const openModal = () => {
+    const openModal = (event) => {
         debugger;
+        event.stopPropagation();
+        setContextMenu(null);
+        props.setSelectedTreeNode(node.id);
         openNewModal();
     }
 
@@ -103,14 +107,14 @@ export default function StyledTreeItem(props) {
         setContextMenu(null);
     }
 
-    return (<TreeItem ref={dragRef} {...rest} TransitionComponent={TransitionComponent} label={
+    return (<TreeItem ref={dragRef} nodeId={node.id} {...rest} TransitionComponent={TransitionComponent} label={
         <Box ref={dropRef} onContextMenu={handleContextMenu} >
             <Menu open={contextMenu !== null}
                 onClose={handleClose}
                 anchorReference="anchorPosition"
                 anchorPosition={contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
             >
-                <MenuItem onClick={openModal}>New node under <b>{node.name}</b></MenuItem>
+                <MenuItem onClick={openModal}>New node under &nbsp;<b>{node.name}</b></MenuItem>
             </Menu>
             <Link to="#" onClick={(e) => treeClick(e, node.id)}>{getLabel(node)}</Link>
             <span>{isDragging && '😱'}</span>

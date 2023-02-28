@@ -43,8 +43,8 @@ function Page({ page, updatePageInList, key }) {
 	const buttonStyle = { textAlign: 'left' }
 
 	const pageContentObjectChanged = (contentObject) => {
-		console.log("pageContentObjectChanged");
-		console.log(contentObject);
+		// console.log("pageContentObjectChanged");
+		// console.log(contentObject);
 		setLocalPageObject({ ...localPageObject, contentObject: contentObject });
 	}
 
@@ -177,7 +177,7 @@ function Page({ page, updatePageInList, key }) {
 	const getComponent2 = () => {
 
 		if (localPageObject != null && localPageObject.Deleted != true) {
-			console.log(localPageObject.mode)
+			//console.log(localPageObject.mode)
 			return (
 				<fieldset key={localPageObject.pageId} ref={drag}>
 					{/* <p>mode: {localPageObject.mode}  </p> */}

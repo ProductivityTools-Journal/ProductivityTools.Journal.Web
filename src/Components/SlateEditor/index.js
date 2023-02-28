@@ -130,8 +130,8 @@ export default function SlateEditor({ pageId, pageContentObject, readOnly, pageC
     //to change value in slate we need to remove all lines and insert new ones
 
     useEffect(() => {
-        console.log("Useffect Page Json content")
-        console.log(pageId);
+        // console.log("Useffect Page Json content")
+        // console.log(pageId);
         changeContent();
     }, [])
 
@@ -169,8 +169,8 @@ export default function SlateEditor({ pageId, pageContentObject, readOnly, pageC
 
         let newValue = ''
         //if (detailsType == 'Slate') {
-        console.log("pageContentObject")
-        console.log(pageContentObject)
+        // console.log("pageContentObject")
+        // console.log(pageContentObject)
         let detailsObject = pageContentObject;
 
 
@@ -196,10 +196,10 @@ export default function SlateEditor({ pageId, pageContentObject, readOnly, pageC
         // else {
         //     newValue = getSlateStructureFromRawDetails(rawDetails, title);;
         // }
-        console.log("details");
-        console.log(rawDetails);
-        console.log("NewVAlue");
-        console.log(newValue);
+        // console.log("details");
+        // console.log(rawDetails);
+        // console.log("NewVAlue");
+        // console.log(newValue);
         let totalNodes = editor.children.length
 
         // No saved content, don't delete anything to prevent errors
@@ -213,8 +213,8 @@ export default function SlateEditor({ pageId, pageContentObject, readOnly, pageC
         // Remove every node except the last one
         // Otherwise SlateJS will return error as there's no content
         for (let i = 0; i < totalNodes - 1; i++) {
-            console.log(i);
-            console.log(editor.children);
+            // console.log(i);
+            // console.log(editor.children);
             Transforms.removeNodes(editor, {
                 at: [0],
             })
@@ -253,8 +253,8 @@ export default function SlateEditor({ pageId, pageContentObject, readOnly, pageC
     }, [])
 
     const editorChanged = (newValue) => {
-        console.log("new value");
-        console.log(newValue);
+        // console.log("new value");
+        // console.log(newValue);
         if (editor.changingContent) return;
         // setValue(newValue);
         pageContentObjectChanged(newValue)
@@ -267,10 +267,10 @@ export default function SlateEditor({ pageId, pageContentObject, readOnly, pageC
     }
     else {
         // if (readOnly) {
-        console.log("pageContentObject")
-        console.log(pageContentObject)
-        console.log("readonly")
-        console.log(readOnly);
+        // console.log("pageContentObject")
+        // console.log(pageContentObject)
+        // console.log("readonly")
+        // console.log(readOnly);
         return (
             <div>
                 {/* <p>raw content:</p>

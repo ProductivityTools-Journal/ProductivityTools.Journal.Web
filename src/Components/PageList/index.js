@@ -26,9 +26,9 @@ export default function PageList(props) {
 
     const updatePageInList = (page) => {
         return;
-        console.log("updateMeetingInList");
-        console.log(page);
-        console.log(pages);
+        // console.log("updateMeetingInList");
+        // console.log(page);
+        // console.log(pages);
         let updatedList = pages.map(item => {
             if (item.frontendId === page.frontendId) {
                 if (page.Deleted == true) {
