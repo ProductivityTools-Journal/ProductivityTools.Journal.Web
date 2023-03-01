@@ -21,14 +21,14 @@ export default function TreeItemNewModal({ open, selectedTreeNode, treeItemNewMo
 
     console.log("Modal");
     console.log(selectedTreeNode);
-    const [treeName, setTreeeName] = useState('new');
+    const [treeName, setTreeeName] = useState("");
 
-    const AddNewItem = function () {
-        apiService.addTreeNode(Number(selectedTreeNode), treeName);
+    const addNewItem = function () {
+        apiService.addTreeNode(Number(selectedTreeNode.id), treeName);
         treeItemNewModalCallback();
     }
 
-    const handleChange = (e) => {
+    const journalNameChange = (e) => {
         setTreeeName(e.target.value);
     }
 
@@ -40,12 +40,12 @@ export default function TreeItemNewModal({ open, selectedTreeNode, treeItemNewMo
     return (<Modal open={open}>
         <Box sx={style}>
             <p><span>Adding new child element to: </span><b>{selectedTreeNode?.name}</b></p>
-            <TextField id="outlined-basic" label="Outlined" variant="outlined" /><br />
-            <Button variant="contained" color="primary" onClick={AddNewItem}>Add</Button>
+            <TextField id="outlined-basic" label="Outlined" variant="outlined" onChange={journalNameChange} /><br />
+            <Button variant="contained" color="primary" onClick={addNewItem}>Add</Button>
             <Button variant="outlined" color="primary" onClick={cancel}>Cancel</Button>
 
-            <input type='text' value={treeName} onChange={handleChange} />
-            <button onClick={() => AddNewItem()}>Add</button>
+            <input type='text' value={treeName} onChange={journalNameChange} />
+            <button onClick={addNewItem}>Add</button>
             <button onClick={cancel}>Cancel</button>
         </Box>
     </ Modal>)

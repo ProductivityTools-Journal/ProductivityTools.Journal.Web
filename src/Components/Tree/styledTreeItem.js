@@ -113,7 +113,9 @@ export default function StyledTreeItem(props) {
                 anchorReference="anchorPosition"
                 anchorPosition={contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
             >
-                <MenuItem onClick={openModal}>New node under &nbsp;<b>{node.name}</b></MenuItem>
+                <MenuItem onClick={openModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
+                <MenuItem onClick={openModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
+
             </Menu>
             <Link to="#" onClick={(e) => treeClick(e, node)}>{getLabel(node)}</Link>
             <span>{isDragging && '😱'}</span>
