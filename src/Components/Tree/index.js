@@ -9,6 +9,7 @@ import './index.css'
 import StyledTreeItem from './styledTreeItem';
 import TreeItemNewModal from '../TreeItemNewModal'
 import TreeDeleteDialog from '../TreeDeleteDialog';
+import JournalRenameModal from 'Components/JournalRenameModal';
 
 
 
@@ -48,7 +49,8 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const [root, setRoot] = useState(null);
   const params = useParams();
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [newModalOpen, setNewModalOpen] = useState(false);
+  const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
 
@@ -153,40 +155,42 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   // ];
 
 
-  const treeItemNewModalCallback = () => {
-    fetchData();
-    setModalOpen(false);
-  }
 
-  const treeItemNewModalCallbackCancel = () => {
-    setModalOpen(false);
-  }
 
-  const handleModalOpen = () => {
+  const openModal = (type) => {
+    console.log("openModal);")
+    switch (type) {
+      case 'rename':
+        setRenameModalOpen(true);
+        break;
+    
+      default:
+        setNewModalOpen(true);
+    }
     console.log("handleModalOpen");
-    setModalOpen(true);
+    
   }
 
   const handleDeleteDialogOpen = () => {
     setDeleteModalOpen(true);
   };
 
-  const handleCloseAndProceed = async () => {
-    console.log("handleCloseAndProceed");
-    await apiService.deleteTree(selectedTreeNode);
-    setDeleteModalOpen(false);
-  };
 
-  const handleClose = () => {
-    console.log("handleClose");
-    setDeleteModalOpen(false);
-  };
 
+  const closeModal=()=>{
+    setDeleteModalOpen(false);
+    setRenameModalOpen(false);
+  }
+
+  const closeAndRefresh = () => {
+    fetchData();
+    setNewModalOpen(false);
+  }
 
   function GetNode(node) {
     if (node) {
       return (
-        <StyledTreeItem key={node.id} changeParent={changeParent} setSelectedTreeNode={setSelectedTreeNode} openNewModal={handleModalOpen} node={node}   >
+        <StyledTreeItem key={node.id} changeParent={changeParent} setSelectedTreeNode={setSelectedTreeNode} openModal={openModal} node={node}   >
           {node?.nodes.map(x => GetNode(x))}
         </StyledTreeItem >)
     }
@@ -209,8 +213,9 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         {GetNode(root)}
       </TreeView>
       {/* <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu> */}
-      <TreeItemNewModal open={modalOpen} selectedTreeNode={selectedTreeNode} treeItemNewModalCallback={treeItemNewModalCallback} treeItemNewModalCallbackCancel={treeItemNewModalCallbackCancel} />
-      <TreeDeleteDialog open={deleteModalOpen} handleClose={handleClose} handleCloseAndProceed={handleCloseAndProceed}></TreeDeleteDialog>
+      <TreeItemNewModal open={newModalOpen} selectedTreeNode={selectedTreeNode} closeAndRefresh={closeAndRefresh} closeModal={closeModal} />
+      <JournalRenameModal open={renameModalOpen} selectedJournal={selectedTreeNode} closeModal={closeModal}></JournalRenameModal>
+      <TreeDeleteDialog open={deleteModalOpen} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></TreeDeleteDialog>
     </div>
   );
 }

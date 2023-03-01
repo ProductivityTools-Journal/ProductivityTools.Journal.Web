@@ -5,14 +5,21 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import * as apiService from 'services/apiService'
 
-export default function AlertDialog(props) {
+export default function AlertDialog({ open, selectedJournal, closeAndRefresh, closeModal }) {
+  
+  const handleCloseAndProceed = async () => {
+    console.log("handleCloseAndProceed");
+    await apiService.deleteTree(selectedJournal.id);
+    closeAndRefresh(false);
+  };
 
   return (
     <div>
       <Dialog
-        open={props.open}
-        onClose={props.handleClose}
+        open={open}
+        onClose={closeModal}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -23,10 +30,10 @@ export default function AlertDialog(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.handleCloseAndProceed} color="primary">
+          <Button onClick={handleCloseAndProceed} color="primary">
             Yes
           </Button>
-          <Button onClick={props.handleClose} color="primary" autoFocus>
+          <Button onClick={closeModal} color="primary" autoFocus>
             Cancel
           </Button>
         </DialogActions>

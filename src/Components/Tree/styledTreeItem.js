@@ -33,7 +33,7 @@ TransitionComponent.propTypes = {
 export default function StyledTreeItem(props) {
     //console.log("StyledTreeItem")
    // console.log(props);
-    const { changeParent, node, openNewModal, ...rest } = props;
+    const { changeParent, node, openModal, ...rest } = props;
     const treeClick = (e, node) => {
         e.stopPropagation();
         props.setSelectedTreeNode(node);
@@ -82,11 +82,18 @@ export default function StyledTreeItem(props) {
         })
     })
 
-    const openModal = (event) => {
+    const openNewModal = (event) => {
         event.stopPropagation();
         setContextMenu(null);
         props.setSelectedTreeNode(node);
-        openNewModal();
+        openModal('new');
+    }
+
+    const openRenameModal=(event)=>{
+        event.stopPropagation();
+        setContextMenu(null);
+        props.setSelectedTreeNode(node);
+        openModal('rename');
     }
 
     const [contextMenu, setContextMenu] = useState(null);
@@ -113,8 +120,8 @@ export default function StyledTreeItem(props) {
                 anchorReference="anchorPosition"
                 anchorPosition={contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
             >
-                <MenuItem onClick={openModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
-                <MenuItem onClick={openModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
+                <MenuItem onClick={openNewModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
+                <MenuItem onClick={openRenameModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
 
             </Menu>
             <Link to="#" onClick={(e) => treeClick(e, node)}>{getLabel(node)}</Link>

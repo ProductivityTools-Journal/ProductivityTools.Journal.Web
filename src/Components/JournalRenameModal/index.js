@@ -17,14 +17,15 @@ const style = {
     p: 4,
 };
 
-export default function TreeItemNewModal({ open, selectedTreeNode, treeItemNewModalCallback, closeModal }) {
+export default function JournalRenameModal({ open, selectedJournal, treeItemNewModalCallback, closeModal }) {
 
     console.log("Modal");
-    console.log(selectedTreeNode);
+    console.log(selectedJournal);
     const [treeName, setTreeeName] = useState("");
 
-    const addNewItem = function () {
-        apiService.addTreeNode(Number(selectedTreeNode.id), treeName);
+    const renameJournal = function () {
+        //apiService.addTreeNode(Number(selectedTreeNode.id), treeName);
+
         treeItemNewModalCallback();
     }
 
@@ -40,14 +41,10 @@ export default function TreeItemNewModal({ open, selectedTreeNode, treeItemNewMo
 
     return (<Modal open={open}>
         <Box sx={style}>
-            <p><span>Adding new child element to: </span><b>{selectedTreeNode?.name}</b></p>
-            <TextField id="outlined-basic" label="Outlined" variant="outlined" onChange={journalNameChange} /><br />
-            <Button variant="contained" color="primary" onClick={addNewItem}>Add</Button>
+            <p><span>Renaming Journal: </span><b>{selectedJournal?.name}</b></p>
+            <TextField id="outlined-basic" label="Outlined" variant="outlined" onChange={journalNameChange} value={selectedJournal?.name || ''} fullWidth={true} /><br />
+            <Button variant="contained" color="primary" onClick={renameJournal}>Rename</Button>
             <Button variant="outlined" color="primary" onClick={cancel}>Cancel</Button>
-
-            <input type='text' value={treeName} onChange={journalNameChange} />
-            <button onClick={addNewItem}>Add</button>
-            <button onClick={cancel}>Cancel</button>
         </Box>
     </ Modal>)
 }
