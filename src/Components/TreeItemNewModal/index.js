@@ -1,9 +1,26 @@
 import React, { useState } from 'react'
 import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import * as apiService from 'services/apiService'
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 export default function TreeItemNewModal({ open, selectedTreeNode, treeItemNewModalCallback, treeItemNewModalCallbackCancel }) {
 
+    console.log("Modal");
+    console.log(selectedTreeNode);
     const [treeName, setTreeeName] = useState('new');
 
     const AddNewItem = function () {
@@ -19,13 +36,17 @@ export default function TreeItemNewModal({ open, selectedTreeNode, treeItemNewMo
         treeItemNewModalCallbackCancel();
     }
 
-    const body = (
-        <div>
-            <p>New tree item name:</p>
+
+    return (<Modal open={open}>
+        <Box sx={style}>
+            <p><span>Adding new child element to: </span><b>{selectedTreeNode?.name}</b></p>
+            <TextField id="outlined-basic" label="Outlined" variant="outlined" /><br />
+            <Button variant="contained" color="primary" onClick={AddNewItem}>Add</Button>
+            <Button variant="outlined" color="primary" onClick={cancel}>Cancel</Button>
+
             <input type='text' value={treeName} onChange={handleChange} />
             <button onClick={() => AddNewItem()}>Add</button>
             <button onClick={cancel}>Cancel</button>
-        </div>
-    )
-    return <Modal open={open}><p>{body}</p></ Modal>
+        </Box>
+    </ Modal>)
 }

@@ -55,7 +55,6 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const containerRef = useRef(null);
 
   const fetchData = async () => {
-    debugger;
     const r = await apiService.getTree();
     console.log(r);
     if (r != null) {
@@ -129,7 +128,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     var newParentobject = findElement(root[0], targetParentId);
     newParentobject.nodes.push(childObject);
     updateElementInroot(childObject, "parentId", targetParentId);
-    setSelectedTreeNode(source.id)
+    setSelectedTreeNode(source)
   }
 
 
@@ -138,20 +137,20 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     setExpanded(nodeIds);
   };
 
-  const menuItems = [
-    {
-      text: 'Add new tree item',
-      onclick: (treeId) => { setSelectedTreeNode(treeId); handleModalOpen(); }
-    },
-    {
-      text: 'Delete',
-      onclick: (treeId) => { setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
-    },
-    {
-      text: 'Rename',
-      onclick: (treeId) => { setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
-    }
-  ];
+  // const menuItems = [
+  //   {
+  //     text: 'Add new tree item',
+  //     onclick: (treeId) => { setSelectedTreeNode(treeId); handleModalOpen(); }
+  //   },
+  //   {
+  //     text: 'Delete',
+  //     onclick: (treeId) => { setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
+  //   },
+  //   {
+  //     text: 'Rename',
+  //     onclick: (treeId) => { setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
+  //   }
+  // ];
 
 
   const treeItemNewModalCallback = () => {
@@ -186,7 +185,6 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
 
   function GetNode(node) {
     if (node) {
-      debugger;
       return (
         <StyledTreeItem key={node.id} changeParent={changeParent} setSelectedTreeNode={setSelectedTreeNode} openNewModal={handleModalOpen} node={node}   >
           {node?.nodes.map(x => GetNode(x))}

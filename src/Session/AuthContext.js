@@ -14,7 +14,7 @@ export function AuthProvider({children}){
         //Adds an observer for changes to the signed-in user's ID token, which includes sign-in, sign-out, and token refresh events.
         return auth.onIdTokenChanged(async (user) => {
             if (!user) {
-                console.log("missing user")
+               // console.log("missing user")
                 setUser(null)
             }   
             else {
@@ -22,7 +22,7 @@ export function AuthProvider({children}){
                 setUser(user);
                 localStorage.setItem("token", token);
                 localStorage.setItem("refreshToken", user.refreshToken);
-                console.log("After getIdToken, onIdTokenChanged method invoked and token in the localstorage updated", token);
+               // console.log("After getIdToken, onIdTokenChanged method invoked and token in the localstorage updated", token);
                 toast("New token saved in local storage")
             }
         })
@@ -36,11 +36,11 @@ export function AuthProvider({children}){
         const handle = setInterval(async () => {
             const user = auth.currentUser;
             if (user) {
-                console.log("Auth Context, setInterval invoked, getIdToken o user performed");
+              //  console.log("Auth Context, setInterval invoked, getIdToken o user performed");
                 toast(minutes + ' min passed and token refresh invoked')
                 //true - force refresh
                 await user.getIdToken(true);
-                console.log(user);
+                //console.log(user);
             }
         }, interval);
         return () => clearInterval(handle);

@@ -8,21 +8,25 @@ import * as Common from '../Common.js'
 
 
 
-export default function PageList(props) {
+export default function PageList({ selectedTreeNode }) {
 
     const [pages, setPages] = useState([]);
 
     useEffect(() => {
+        console.log("selectedTreeNode");
+        console.log(selectedTreeNode);
         const fetchData = async () => {
-            const data = await apiService.fetchPageList(props.selectedTreeNode);
+            const data = await apiService.fetchPageList(selectedTreeNode.id);
             data.forEach(element => {
                 element.frontendId = uuid()
             });
             setPages(data);
         }
-        fetchData();
+        if (selectedTreeNode != null) {
+            fetchData();
+        }
         //console.log("fetching data");
-    }, [props.selectedTreeNode]);
+    }, [selectedTreeNode?.id]);
 
     const updatePageInList = (page) => {
         return;
@@ -50,7 +54,7 @@ export default function PageList(props) {
     const newEvent = () => {
         //console.log('new event');
 
-        let newPage = Common.getNewPage(props.selectedTreeNode);
+        let newPage = Common.getNewPage(selectedTreeNode);
         newPage.mode = 'edit';
         //let newPage = [{ frontendId: uuid(), mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] }]
         setPages([newPage, ...pages]);

@@ -31,7 +31,7 @@ const signInWithGoogle = async () => {
 
         console.log("token validation");
         let token = localStorage.getItem('token');
-        console.log("token from localstorage", token);
+       // console.log("token from localstorage", token);
         return res.user;
     } catch (err) {
         console.error(err);

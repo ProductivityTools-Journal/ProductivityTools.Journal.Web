@@ -149,7 +149,7 @@ async function callAuthorizedEndpoint(call) {
 
 async function invokeCall(call) {
     let token = localStorage.getItem('token')
-    console.log("token from localstorage", token)
+    //console.log("token from localstorage", token)
     const header = { headers: { Authorization: `Bearer ${token}` } }
     try {
         const response = call(header);

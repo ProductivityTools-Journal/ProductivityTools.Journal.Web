@@ -10,7 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function Main() {
 
     const [editedMeeting, setEditedMeeting] = useState(undefined);
-    const [selectedTreeNode, setSelectedTreeNode] = useState(1);
+    const [selectedTreeNode, setSelectedTreeNode] = useState(null);
 
     function setEditMeeting(journalItemId) {
         setEditedMeeting(journalItemId)

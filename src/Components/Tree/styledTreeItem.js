@@ -31,17 +31,17 @@ TransitionComponent.propTypes = {
 };
 
 export default function StyledTreeItem(props) {
-    console.log("StyledTreeItem")
-    console.log(props);
+    //console.log("StyledTreeItem")
+   // console.log(props);
     const { changeParent, node, openNewModal, ...rest } = props;
-    const treeClick = (e, treeId) => {
+    const treeClick = (e, node) => {
         e.stopPropagation();
-        props.setSelectedTreeNode(treeId);
+        props.setSelectedTreeNode(node);
     }
 
 
     const changeParent2 = (source, targetParentId) => {
-        debugger;
+       // debugger;
         apiService.moveTreeNode(source.id, targetParentId)
         changeParent(source, targetParentId);
     }
@@ -83,10 +83,9 @@ export default function StyledTreeItem(props) {
     })
 
     const openModal = (event) => {
-        debugger;
         event.stopPropagation();
         setContextMenu(null);
-        props.setSelectedTreeNode(node.id);
+        props.setSelectedTreeNode(node);
         openNewModal();
     }
 
@@ -116,7 +115,7 @@ export default function StyledTreeItem(props) {
             >
                 <MenuItem onClick={openModal}>New node under &nbsp;<b>{node.name}</b></MenuItem>
             </Menu>
-            <Link to="#" onClick={(e) => treeClick(e, node.id)}>{getLabel(node)}</Link>
+            <Link to="#" onClick={(e) => treeClick(e, node)}>{getLabel(node)}</Link>
             <span>{isDragging && '😱'}</span>
             <span> {isOver && <span>Drop Here!</span>}</span>
 
