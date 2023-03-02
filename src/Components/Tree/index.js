@@ -8,7 +8,7 @@ import ContextMenu from '../ContextMenu'
 import './index.css'
 import StyledTreeItem from './styledTreeItem';
 import TreeItemNewModal from '../TreeItemNewModal'
-import TreeDeleteDialog from '../TreeDeleteDialog';
+import JounralDeleteDialog from '../JounralDeleteDialog';
 import JournalRenameModal from 'Components/JournalRenameModal';
 
 
@@ -163,12 +163,17 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
       case 'rename':
         setRenameModalOpen(true);
         break;
-    
-      default:
+      case 'delete':
+        setDeleteModalOpen(true);
+        break;
+      case 'new':
         setNewModalOpen(true);
+        break;
+      default:
+        console.log("Not working!!!")
     }
     console.log("handleModalOpen");
-    
+
   }
 
   const handleDeleteDialogOpen = () => {
@@ -177,7 +182,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
 
 
 
-  const closeModal=()=>{
+  const closeModal = () => {
     setDeleteModalOpen(false);
     setRenameModalOpen(false);
   }
@@ -215,7 +220,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
       {/* <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu> */}
       <TreeItemNewModal open={newModalOpen} selectedTreeNode={selectedTreeNode} closeAndRefresh={closeAndRefresh} closeModal={closeModal} />
       <JournalRenameModal open={renameModalOpen} selectedJournal={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></JournalRenameModal>
-      <TreeDeleteDialog open={deleteModalOpen} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></TreeDeleteDialog>
+      <JounralDeleteDialog open={deleteModalOpen} selectedJournal={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></JounralDeleteDialog>
     </div>
   );
 }

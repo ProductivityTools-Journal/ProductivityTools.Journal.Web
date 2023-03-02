@@ -23,11 +23,11 @@ export const getNewPageArray = (journalId) => {
     return result;
 }
 
-export const getNewPage = (journalId) => {
+export const getNewPage = (journal) => {
     let result = {
         date: undefined,
         frontendId: uuid(),
-        journalId: journalId,
+        journalId: journal.id,
         content: getStringSlateStructureFromRawDetails('Page', ''),
         // content: '[{"type":"title","children":[{"text":"a3"}]},{"type":"paragraph","children":[{"text":"Add notes here"}]}]',
         contentType: 'Slate',

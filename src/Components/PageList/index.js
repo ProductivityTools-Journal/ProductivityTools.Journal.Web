@@ -52,12 +52,11 @@ export default function PageList({ selectedTreeNode }) {
     }
 
     const newEvent = () => {
-        //console.log('new event');
-
         let newPage = Common.getNewPage(selectedTreeNode);
         newPage.mode = 'edit';
-        //let newPage = [{ frontendId: uuid(), mode: 'edit', subject: 'InitialMeetingName', treeId: props.selectedTreeNode, notesList: [{ type: 'new', notes: 'Add notes here', guid: uuid() }] }]
         setPages([newPage, ...pages]);
+        // console.log('new event');
+        // console.log(newPage);
     }
 
     const checkState = () => {
@@ -73,18 +72,6 @@ export default function PageList({ selectedTreeNode }) {
                     <Page page={item} updatePageInList={updatePageInList} key={item.frontendId} />
                 );
             })}
-
-
-
-            {/* <p>Pages:</p>
-            {pages && pages.length > 0 && [].concat(pages)
-            .sort((a,b)=>a.Date>b.Date?1:-1)
-            .map(function (item) {
-                return (
-                    <Page page={item} updateMeetingInList={updateMeetingInList} key={item.PageId} />
-                );
-            })} */}
-
         </div>
     );
 }

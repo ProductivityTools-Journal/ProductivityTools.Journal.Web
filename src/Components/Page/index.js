@@ -175,14 +175,16 @@ function Page({ page, updatePageInList, key }) {
 	const readonly = () => localPageObject.mode === 'readonly';
 
 	const getComponent2 = () => {
-
+		console.log(localPageObject)
+		console.log("Get Component");
 		if (localPageObject != null && localPageObject.Deleted != true) {
 			//console.log(localPageObject.mode)
 			return (
 				<fieldset key={localPageObject.pageId} ref={drag}>
 					{/* <p>mode: {localPageObject.mode}  </p> */}
 					{/* <p>PageId: {localPageObject.pageId}</p> */}
-					<legend>[{localPageObject.pageId}] {dtFormated} ({dtDescription}) - {localPageObject.subject} Treeid:{localPageObject.journalId} <span>{isDragging && '😱'}</span></legend>
+					<legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} Treeid:{localPageObject?.journalId} <span>{isDragging && '😱'}</span></legend>
+					{/* <legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} </legend> */}
 					<SlateEditor pageId={localPageObject.pageId} pageContentObject={localPageObject.contentObject} readOnly={readonly()} pageContentObjectChanged={pageContentObjectChanged}></SlateEditor>
 
 					{readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}

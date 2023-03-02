@@ -96,6 +96,13 @@ export default function StyledTreeItem(props) {
         openModal('rename');
     }
 
+    const openDeleteModal=(event)=>{
+        event.stopPropagation();
+        setContextMenu(null);
+        props.setSelectedTreeNode(node);
+        openModal('delete');
+    }
+
     const [contextMenu, setContextMenu] = useState(null);
 
 
@@ -122,6 +129,7 @@ export default function StyledTreeItem(props) {
             >
                 <MenuItem onClick={openNewModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
                 <MenuItem onClick={openRenameModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
+                <MenuItem onClick={openDeleteModal}>Remove &nbsp;<b>{node.name}</b></MenuItem>
 
             </Menu>
             <Link to="#" onClick={(e) => treeClick(e, node)}>{getLabel(node)}</Link>
