@@ -48,6 +48,16 @@ async function deleteTree(treeId) {
     return callAuthorizedEndpoint(call);
 }
 
+async function renameJournal(journalId, newName) {
+    let call = async (header) => {
+        const data = { JournalId: journalId, NewName: newName }
+        const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/Rename`, data, header);
+        console.log(response.data);
+        return response.data;
+    }
+    return callAuthorizedEndpoint(call)
+}
+
 async function savePage(page) {
     let call = async (header) => {
         console.log("saveMeeting");
@@ -167,6 +177,7 @@ export {
     addTreeNode,
     deleteTree,
     moveTreeNode,
+    renameJournal,
     savePage,
     fetchMeeting,
     deleteMeeting,

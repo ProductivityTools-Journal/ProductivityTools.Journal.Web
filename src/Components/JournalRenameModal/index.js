@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -17,20 +17,26 @@ const style = {
     p: 4,
 };
 
-export default function JournalRenameModal({ open, selectedJournal, treeItemNewModalCallback, closeModal }) {
+export default function JournalRenameModal({ open, selectedJournal, closeAndRefresh, closeModal }) {
 
     console.log("Modal");
     console.log(selectedJournal);
-    const [treeName, setTreeeName] = useState("");
 
-    const renameJournal = function () {
-        //apiService.addTreeNode(Number(selectedTreeNode.id), treeName);
+    const [newJournalName, setNewJournalName] = useState("");
 
-        treeItemNewModalCallback();
+    useEffect(() => {
+        setNewJournalName(selectedJournal?.name);
+    }, [selectedJournal])
+
+    const renameJournal = async function () {
+        var r = await apiService.renameJournal(Number(selectedJournal.id), newJournalName);
+        if (r) {
+            closeAndRefresh();
+        }
     }
 
     const journalNameChange = (e) => {
-        setTreeeName(e.target.value);
+        setNewJournalName(e.target.value);
     }
 
     const cancel = () => {
@@ -41,8 +47,8 @@ export default function JournalRenameModal({ open, selectedJournal, treeItemNewM
 
     return (<Modal open={open}>
         <Box sx={style}>
-            <p><span>Renaming Journal: </span><b>{selectedJournal?.name}</b></p>
-            <TextField id="outlined-basic" label="Outlined" variant="outlined" onChange={journalNameChange} value={selectedJournal?.name || ''} fullWidth={true} /><br />
+            <p><span>Renaming Journal: </span><b>{newJournalName?.name}</b></p>
+            <TextField id="outlined-basic" label="Outlined" variant="outlined" onChange={journalNameChange} value={newJournalName || ''} fullWidth={true} /><br />
             <Button variant="contained" color="primary" onClick={renameJournal}>Rename</Button>
             <Button variant="outlined" color="primary" onClick={cancel}>Cancel</Button>
         </Box>
