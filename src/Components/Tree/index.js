@@ -196,7 +196,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     if (node) {
       return (
         <StyledTreeItem key={node.id} changeParent={changeParent} setSelectedTreeNode={setSelectedTreeNode} openModal={openModal} node={node}   >
-          {node?.nodes.map(x => GetNode(x))}
+          {node?.nodes?.map(x => GetNode(x))}
         </StyledTreeItem >)
     }
   }
