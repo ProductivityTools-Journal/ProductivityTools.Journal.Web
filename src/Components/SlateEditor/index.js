@@ -20,55 +20,13 @@ import {
 
 
 import { Slate, Editable, withReact } from 'slate-react'
-import { ListType, withLists, withListsReact, onKeyDown } from '@prezly/slate-lists';
+//import { ListType, withLists, withListsReact, onKeyDown } from '@prezly/slate-lists'; trzeba to skasować
 import Toolbar from './Toolbar'
 import { autocompleteClasses } from '@mui/material';
 import { useDebugValue } from 'react';
 
-const ListTypeEnum = {
-    PARAGRAPH: 'paragraph',
-    ORDERED_LIST: 'ordered-list',
-    UNORDERED_LIST: 'unorderedList',
-    LIST_ITEM: 'list-item',
-    LIST_ITEM_TEXT: 'list-item-text',
-}
 
-const withListsPlugin = withLists({
-    isConvertibleToListTextNode(node) {
-        return SlateElement.isElementType(node, ListTypeEnum.PARAGRAPH);
-    },
-    isDefaultTextNode(node) {
-        return SlateElement.isElementType(node, ListTypeEnum.PARAGRAPH);
-    },
-    isListNode(node, type) {
-        if (type) {
-            return SlateElement.isElementType(node, type);
-        }
-        return (
-            SlateElement.isElementType(node, ListTypeEnum.ORDERED_LIST) ||
-            SlateElement.isElementType(node, ListTypeEnum.UNORDERED_LIST)
-        );
-    },
-    isListItemNode(node) {
-        return SlateElement.isElementType(node, ListTypeEnum.LIST_ITEM);
-    },
-    isListItemTextNode(node) {
-        return SlateElement.isElementType(node, ListTypeEnum.LIST_ITEM_TEXT);
-    },
-    createDefaultTextNode(props = {}) {
-        return { children: [{ text: '' }], ...props, type: ListTypeEnum.PARAGRAPH };
-    },
-    createListNode(type = ListType.UNORDERED, props = {}) {
-        const nodeType = type === ListType.ORDERED ? ListTypeEnum.ORDERED_LIST : ListTypeEnum.UNORDERED_LIST;
-        return { children: [{ text: '' }], ...props, type: nodeType };
-    },
-    createListItemNode(props = {}) {
-        return { children: [{ text: '' }], ...props, type: ListTypeEnum.LIST_ITEM };
-    },
-    createListItemTextNode(props = {}) {
-        return { children: [{ text: '' }], ...props, type: ListTypeEnum.LIST_ITEM_TEXT };
-    },
-});
+
 
 const withLayout = editor => {
     const { normalizeNode } = editor
@@ -118,7 +76,7 @@ const withLayout = editor => {
 export default function SlateEditor({ pageId, pageContentObject, readOnly, pageContentObjectChanged }) {
     // console.log("SlateEditor");
     // console.log(pageContentObject);
-    const editor = useMemo(() => withLayout(withListsReact(withListsPlugin(withReact(createEditor())))), [])
+    const editor = useMemo(() => withLayout(withReact(createEditor())), [])
     //const editor = useMemo(() => withReact(createEditor()), [])
     // const [value, setValue] = useState([{
     //     type: 'paragraph',
@@ -279,7 +237,6 @@ export default function SlateEditor({ pageId, pageContentObject, readOnly, pageC
                     {readOnly ? <span></span> : <Toolbar />}
                     <div className="editor-wrapper" style={{ border: '1px solid #f3f3f3', padding: '0 10px' }}>
                         <Editable readOnly={readOnly}
-                            onKeyDown={(event) => onKeyDown(editor, event)}
                             placeholder='Write something'
                             renderElement={renderElement}
                         // renderLeaf={renderLeaf}

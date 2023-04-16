@@ -1,7 +1,6 @@
 import axios from 'axios'
 import * as Consts from 'Consts';
 import { config } from 'Consts';
-import { AuthService } from '../OAuth/OAuth';
 import { toast } from 'react-toastify';
 import { auth } from '../Session/firebase'
 
