@@ -28,10 +28,6 @@ const signInWithGoogle = async () => {
         const res = await signInWithPopup(auth, googleProvider);
         console.log(res);
         localStorage.setItem("token", res.user.accessToken);
-
-        console.log("token validation");
-        let token = localStorage.getItem('token');
-       // console.log("token from localstorage", token);
         return res.user;
     } catch (err) {
         console.error(err);

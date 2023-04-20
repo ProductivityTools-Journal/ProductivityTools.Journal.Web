@@ -1,13 +1,12 @@
-import { useEffect, useState, } from 'react'
+import { useState, } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import * as apiService from 'services/apiService'
 import TreeItem from '@mui/lab/TreeItem';
 import Box from '@mui/material/Box';
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Collapse from '@mui/material/Collapse';
 import PropTypes from 'prop-types';
 import { Menu, MenuItem } from '@mui/material';
-import { popoverClasses } from "@mui/material/Popover";
 
 
 function TransitionComponent(props) {
@@ -24,15 +23,11 @@ function TransitionComponent(props) {
 }
 
 TransitionComponent.propTypes = {
-    /**
-     * Show the component; triggers the enter or exit states
-     */
     in: PropTypes.bool,
 };
 
 export default function StyledTreeItem(props) {
-    //console.log("StyledTreeItem")
-   // console.log(props);
+
     const { changeParent, node, openModal, ...rest } = props;
     const treeClick = (e, node) => {
         e.stopPropagation();
@@ -41,7 +36,6 @@ export default function StyledTreeItem(props) {
 
 
     const changeParent2 = (source, targetParentId) => {
-       // debugger;
         apiService.moveTreeNode(source.id, targetParentId)
         changeParent(source, targetParentId);
     }
@@ -65,10 +59,10 @@ export default function StyledTreeItem(props) {
             console.log(item);
             console.log(monitor.getItemType())
             let type = monitor.getItemType();
-            if (type == 'tree') {
+            if (type === 'tree') {
                 changeParent2(item, node.id);
             }
-            if (type == 'page') {
+            if (type === 'page') {
                 debugger;
                 let page = item.page;
                 let pageWithNewParent = { ...page, journalId: node.id }
@@ -130,13 +124,10 @@ export default function StyledTreeItem(props) {
                 <MenuItem onClick={openNewModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
                 <MenuItem onClick={openRenameModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
                 <MenuItem onClick={openDeleteModal}>Remove &nbsp;<b>{node.name}</b></MenuItem>
-
             </Menu>
             <Link to="#" onClick={(e) => treeClick(e, node)}>{getLabel(node)}</Link>
             <span>{isDragging && '😱'}</span>
             <span> {isOver && <span>Drop Here!</span>}</span>
-
         </Box>}>
-
     </TreeItem>)
 }
