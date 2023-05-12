@@ -189,7 +189,7 @@ function Page({ page, updatePageInList, key }) {
 					<SlateEditor pageId={localPageObject.pageId} pageContentObject={localPageObject.contentObject} readOnly={readonly()} pageContentObjectChanged={pageContentObjectChanged}></SlateEditor>
 
 					{readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
-					<PTPlate></PTPlate>
+					<PTPlate content="pawel"></PTPlate>
 				</fieldset>
 			)
 		}
