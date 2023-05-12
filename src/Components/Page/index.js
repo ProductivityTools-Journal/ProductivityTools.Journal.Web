@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid';
 import { useDrag } from 'react-dnd'
 import * as Common from '../Common.js'
 import SlateEditor from 'Components/SlateEditor';
+import { PTPlate } from 'productivitytools.plate';
 
 
 
@@ -188,6 +189,7 @@ function Page({ page, updatePageInList, key }) {
 					<SlateEditor pageId={localPageObject.pageId} pageContentObject={localPageObject.contentObject} readOnly={readonly()} pageContentObjectChanged={pageContentObjectChanged}></SlateEditor>
 
 					{readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
+					<PTPlate></PTPlate>
 				</fieldset>
 			)
 		}
