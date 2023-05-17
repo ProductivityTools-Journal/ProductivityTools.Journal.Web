@@ -4,8 +4,9 @@ import "./index.css";
 import App from "./App";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  // <React.StrictMode>
+  // if I turn on this then plate not working it refreshes all the time
+    <App />,
+  // </React.StrictMode>,
   document.getElementById("root")
 );

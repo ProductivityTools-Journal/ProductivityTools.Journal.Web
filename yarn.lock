@@ -3142,7 +3142,7 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
   integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
 
-"@types/react-dom@^18.0.0", "@types/react-dom@^18.0.11":
+"@types/react-dom@^18.0.0":
   version "18.2.4"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.2.4.tgz#13f25bfbf4e404d26f62ac6e406591451acba9e0"
   integrity sha512-G2mHoTMTL4yoydITgOGwWdWMVd8sNgyEP85xVmMKAPUBwQWm9wBPQUmvbeF4V3WBY1P7mmL4BkjQ0SqUpf1snw==
@@ -3163,7 +3163,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^18.0.35":
+"@types/react@*":
   version "18.2.6"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.6.tgz#5cd53ee0d30ffc193b159d3516c8c8ad2f19d571"
   integrity sha512-wRZClXn//zxCFW+ye/D2qY65UsYP1Fpex2YXorHc8awoNamkMZSvBxwxdYVInsHOZZd2Ppq8isnSzJL5Mpf8OA==
@@ -9603,23 +9603,19 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
-productivitytools.plate@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/productivitytools.plate/-/productivitytools.plate-0.0.2.tgz#e775c64a06d79f880e31cfdb3093fbe22338ba53"
-  integrity sha512-du3+CJBixZkRmPF0++/Vb6LqmGVXVhT6SBNbabKADB7fgdMwyKRtfDawtZIaYR4ywEVOP0VLTFI7cRYNrdfG7g==
+productivitytools.plate@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/productivitytools.plate/-/productivitytools.plate-0.0.3.tgz#33479f823d553c6b67ee2e0df3a060f3455256ca"
+  integrity sha512-1lNJDvhGESOoUGwdlSq8/ZfwdxJr017VzvAEPCHzWARepiHPYZzQlyNcJm16tYcB6Nlx0CM+q+/vOL34lJIZGQ==
   dependencies:
     "@testing-library/jest-dom" "^5.16.5"
     "@testing-library/react" "^13.4.0"
     "@testing-library/user-event" "^13.5.0"
     "@types/jest" "^27.5.2"
     "@types/node" "^18.15.11"
-    "@types/react" "^18.0.35"
-    "@types/react-dom" "^18.0.11"
     "@types/styled-components" "^5.1.26"
     "@udecode/plate" "^20.6.3"
     "@udecode/plate-basic-elements" "^20.4.0"
-    react "^18.2.0"
-    react-dom "^18.2.0"
     react-scripts "5.0.1"
     slate "^0.93.0"
     slate-history "^0.93.0"
