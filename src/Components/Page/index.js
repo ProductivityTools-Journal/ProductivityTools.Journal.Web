@@ -175,6 +175,13 @@ function Page({ page, updatePageInList, key }) {
 
 	const readonly = () => localPageObject.mode === 'readonly';
 
+	const contentChanged=(contentObject)=>{
+		console.log("content changed");
+		console.log(contentObject);
+		setLocalPageObject({ ...localPageObject, contentObject: contentObject });
+		console.log(localPageObject);
+	}
+
 	const getComponent2 = () => {
 		console.log(localPageObject)
 		console.log("Get Component");
@@ -189,7 +196,8 @@ function Page({ page, updatePageInList, key }) {
 					<SlateEditor pageId={localPageObject.pageId} pageContentObject={localPageObject.contentObject} readOnly={readonly()} pageContentObjectChanged={pageContentObjectChanged}></SlateEditor>
 
 					{readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
-					<PTPlate content={localPageObject.contentObject}></PTPlate>
+					<PTPlate content={localPageObject.contentObject} contentChanged={contentChanged} ></PTPlate>
+					<span>{JSON.stringify(localPageObject.contentObject)}</span>
 				</fieldset>
 			)
 		}
