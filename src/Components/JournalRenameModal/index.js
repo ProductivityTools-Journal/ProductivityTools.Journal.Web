@@ -31,6 +31,7 @@ export default function JournalRenameModal({ open, selectedJournal, closeAndRefr
     const renameJournal = async function () {
         var r = await apiService.renameJournal(Number(selectedJournal.id), newJournalName);
         if (r) {
+            console.log("close and refresh")
             closeAndRefresh();
         }
     }
