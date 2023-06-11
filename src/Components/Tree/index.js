@@ -7,7 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import ContextMenu from '../ContextMenu'
 import './index.css'
 import StyledTreeItem from './styledTreeItem';
-import TreeItemNewModal from '../TreeItemNewModal'
+import JournalNewModal from '../JournalNewModal'
 import JounralDeleteDialog from '../JounralDeleteDialog';
 import JournalRenameModal from 'Components/JournalRenameModal';
 
@@ -218,7 +218,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         {GetNode(root)}
       </TreeView>
       {/* <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu> */}
-      <TreeItemNewModal open={newModalOpen} selectedTreeNode={selectedTreeNode} closeAndRefresh={closeAndRefresh} closeModal={closeModal} />
+      <JournalNewModal open={newModalOpen} selectedTreeNode={selectedTreeNode} closeAndRefresh={closeAndRefresh} closeModal={closeModal} />
       <JournalRenameModal open={renameModalOpen} selectedJournal={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></JournalRenameModal>
       <JounralDeleteDialog open={deleteModalOpen} selectedJournal={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></JounralDeleteDialog>
     </div>
