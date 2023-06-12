@@ -185,6 +185,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const closeModal = () => {
     setDeleteModalOpen(false);
     setRenameModalOpen(false);
+    setNewModalOpen(false);
   }
 
   const closeAndRefresh = () => {
@@ -218,7 +219,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         {GetNode(root)}
       </TreeView>
       {/* <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu> */}
-      <JournalNewModal open={newModalOpen} selectedTreeNode={selectedTreeNode} closeAndRefresh={closeAndRefresh} closeModal={closeModal} />
+      <JournalNewModal open={newModalOpen} selectedTreeNode={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh} />
       <JournalRenameModal open={renameModalOpen} selectedJournal={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></JournalRenameModal>
       <JounralDeleteDialog open={deleteModalOpen} selectedJournal={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></JounralDeleteDialog>
     </div>

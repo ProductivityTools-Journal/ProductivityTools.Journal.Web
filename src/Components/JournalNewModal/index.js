@@ -17,7 +17,7 @@ const style = {
     p: 4,
 };
 
-export default function TreeItemNewModal({ open, selectedTreeNode, treeItemNewModalCallback, closeModal }) {
+export default function JournalNewModal({ open, selectedTreeNode, closeAndRefresh, closeModal }) {
 
     console.log("Modal");
     console.log(selectedTreeNode);
@@ -25,7 +25,7 @@ export default function TreeItemNewModal({ open, selectedTreeNode, treeItemNewMo
 
     const addNewItem = function () {
         apiService.addTreeNode(Number(selectedTreeNode.id), treeName);
-        treeItemNewModalCallback();
+        closeAndRefresh();
     }
 
     const journalNameChange = (e) => {
