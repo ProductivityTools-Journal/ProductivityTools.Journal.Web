@@ -12,10 +12,9 @@ import { PTPlate } from "productivitytools.plate";
 
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 function Page({ page, updatePageInList, key }) {
   //const { meeting, ...rest } = props;
@@ -206,25 +205,22 @@ function Page({ page, updatePageInList, key }) {
             {localPageObject?.journalId} <span>{isDragging && "😱"}</span>
           </legend>
           {/* <legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} </legend> */}
-          <SlateEditor
-            pageId={localPageObject.pageId}
-            pageContentObject={localPageObject.contentObject}
-            readOnly={readonly()}
-            pageContentObjectChanged={pageContentObjectChanged}
-          ></SlateEditor>
 
-          {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
           <PTPlate content={localPageObject.contentObject} contentChanged={contentChanged}></PTPlate>
-          <span>{JSON.stringify(localPageObject.contentObject)}</span>
+          {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
+
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-              <Typography>Accordion 1</Typography>
+              <Typography>Plate</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet
-                blandit leo lobortis eget.
-              </Typography>
+              <SlateEditor
+                pageId={localPageObject.pageId}
+                pageContentObject={localPageObject.contentObject}
+                readOnly={readonly()}
+                pageContentObjectChanged={pageContentObjectChanged}
+              ></SlateEditor>
+              <span>{JSON.stringify(localPageObject.contentObject)}</span>
             </AccordionDetails>
           </Accordion>
         </fieldset>
