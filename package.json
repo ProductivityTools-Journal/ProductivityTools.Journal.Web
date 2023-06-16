@@ -17,7 +17,7 @@
     "jwt-check-expiration": "^1.0.5",
     "moment": "^2.26.0",
     "oidc-client": "^1.10.1",
-    "productivitytools.plate": "0.0.12",
+    "productivitytools.plate": "0.1.0",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",

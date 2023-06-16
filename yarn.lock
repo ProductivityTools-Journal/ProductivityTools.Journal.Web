@@ -9660,10 +9660,10 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
-productivitytools.plate@0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/productivitytools.plate/-/productivitytools.plate-0.0.12.tgz#2c5cb05d56592967f3165e1286b846fbb514b96f"
-  integrity sha512-ex6rdCA57avwrxUFlaiQglzjmZuG94LDU8xEqVoaJIRtBuY4/V020RNaxjhyoWP6uXkgEA8yIeUR+n0wzKxH4Q==
+productivitytools.plate@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/productivitytools.plate/-/productivitytools.plate-0.1.0.tgz#d8fb636207c5d3e9f7755c12fcddbf913244c55b"
+  integrity sha512-n/ptOfVQfG0+cGgaWgzM6FF6UbTSmWvm0E97VfnzbfYWitJtxOxFjJmjsaXa1C3FBSWQ2aDKPrYzoLJfLZofbw==
   dependencies:
     "@styled-icons/boxicons-regular" "^10.47.0"
     "@styled-icons/foundation" "^10.46.0"
