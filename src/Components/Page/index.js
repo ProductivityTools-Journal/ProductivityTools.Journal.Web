@@ -124,6 +124,17 @@ function Page({ page, updatePageInList, key }) {
     console.log(pageContentObjectChanged);
   };
 
+  const onFileChange = async (event) => {
+    console.log(event.target.files);
+    if (event.target.files.length > 0) {
+      let file = event.target.files[0];
+      console.log("invoke service.uploadPhoto");
+      var r = await service.uploadPhoto(file, placeId);
+      console.log("onFileUpload");
+      console.log(r);
+    }
+  };
+
   const getEditModeButtons = () => {
     return (
       <p style={buttonStyle}>
@@ -140,6 +151,7 @@ function Page({ page, updatePageInList, key }) {
         <Button variant="outlined" color="primary" onClick={checkState}>
           CheckState
         </Button>
+        <input type="file" accept="image/png, image/jpg" onChange={onFileChange} />
       </p>
     );
   };
