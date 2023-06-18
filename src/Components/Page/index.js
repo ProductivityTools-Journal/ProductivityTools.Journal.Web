@@ -5,7 +5,6 @@ import NotesLabel from "Components/NotesLabel";
 import Notes from "Components/Notes";
 import * as apiService from "services/apiService";
 import { v4 as uuid } from "uuid";
-import { useDrag } from "react-dnd";
 import * as Common from "../Common.js";
 import SlateEditor from "Components/SlateEditor";
 import { PTPlate } from "productivitytools.plate";
@@ -15,10 +14,12 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PageAnchor from 'Components/PageAnchor';
 
 function Page({ page, updatePageInList, key }) {
   //const { meeting, ...rest } = props;
   const [localPageObject, setLocalPageObject] = useState();
+  const [imageUrl, setImageUrl] = useState();
 
   useEffect(() => {
     console.log("FFFFFFFFFFF use effect");
@@ -111,13 +112,7 @@ function Page({ page, updatePageInList, key }) {
     setLocalPageObject(page);
   };
 
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: "page",
-    item: { page: page, removePageFromList: removePageFromList },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
+
 
   const checkState = () => {
     console.log(page);
@@ -130,8 +125,9 @@ function Page({ page, updatePageInList, key }) {
       let file = event.target.files[0];
       console.log("invoke service.uploadPhoto");
       console.log(page);
-      var r = await apiService.uploadPhoto(file, page.pageId);
+      var r = await apiService.uploadPhoto(file, page.journalId, page.pageId);
       console.log("onFileUpload");
+      setImageUrl(r);
       console.log(r);
     }
   };
@@ -153,6 +149,7 @@ function Page({ page, updatePageInList, key }) {
           CheckState
         </Button>
         <input type="file" accept="image/png, image/jpg" onChange={onFileChange} />
+        <span>{imageUrl}</span>
       </p>
     );
   };
@@ -210,15 +207,15 @@ function Page({ page, updatePageInList, key }) {
     if (localPageObject != null && localPageObject.Deleted != true) {
       //console.log(localPageObject.mode)
       return (
-        <fieldset key={localPageObject.pageId} ref={drag}>
+        <fieldset key={localPageObject.pageId}>
           {/* <p>mode: {localPageObject.mode}  </p> */}
           {/* <p>PageId: {localPageObject.pageId}</p> */}
           <legend>
             [{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} Treeid:
-            {localPageObject?.journalId} <span>{isDragging && "😱"}</span>
+            {localPageObject?.journalId}
           </legend>
           {/* <legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} </legend> */}
-
+          <PageAnchor page={page} removePageFromList={removePageFromList}></PageAnchor>
           <PTPlate content={localPageObject.contentObject} contentChanged={contentChanged}></PTPlate>
           {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
 

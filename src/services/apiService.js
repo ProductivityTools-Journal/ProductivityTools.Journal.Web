@@ -164,10 +164,10 @@ async function fetchPageList(treeId) {
   return invokeCallWithToast(call, "Trying to meeting list", "Meeting list returned");
 }
 
-async function uploadPhoto(photo, pageId) {
+async function uploadPhoto(photo, journalId, pageId) {
   let call = async (header) => {
     const formData = new FormData();
-    let photoName = pageId + "-" + photo.name;
+    let photoName = "journalId-" + journalId + "-pageId-" + pageId + "-" + photo.name;
     formData.append("file", photo, photoName);
 
     console.log(photo);
