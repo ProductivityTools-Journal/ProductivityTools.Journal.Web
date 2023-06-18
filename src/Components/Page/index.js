@@ -129,7 +129,8 @@ function Page({ page, updatePageInList, key }) {
     if (event.target.files.length > 0) {
       let file = event.target.files[0];
       console.log("invoke service.uploadPhoto");
-      var r = await service.uploadPhoto(file, placeId);
+      console.log(page);
+      var r = await apiService.uploadPhoto(file, page.pageId);
       console.log("onFileUpload");
       console.log(r);
     }

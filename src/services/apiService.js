@@ -164,15 +164,15 @@ async function fetchPageList(treeId) {
   return invokeCallWithToast(call, "Trying to meeting list", "Meeting list returned");
 }
 
-async function uploadPhoto(photo, journalId) {
+async function uploadPhoto(photo, pageId) {
   let call = async (header) => {
     const formData = new FormData();
-    let photoName = journalId + "-" + photo.name;
+    let photoName = pageId + "-" + photo.name;
     formData.append("file", photo, photoName);
 
     console.log(photo);
 
-    const response = await axios.post(`${config.PATH_BASE}/uploads`, formData);
+    const response = await axios.post(`${config.PATH_BASE}Image/Upload`, formData, header);
     return response.data;
   };
   return invokeCallWithToast(call, "Trying to upload photo", "Photo uploaded");
@@ -221,5 +221,5 @@ export {
   updateJournal,
   getDate,
   fetchPageList,
-  uploadPhoto
+  uploadPhoto,
 };
