@@ -178,6 +178,19 @@ async function uploadPhoto(photo, journalId, pageId) {
   return invokeCallWithToast(call, "Trying to upload photo", "Photo uploaded");
 }
 
+async function getCookie(idtoken){
+  let call = async (header) => {
+    const data = { Idtoken: idtoken };
+    const response = await axios.post(
+      `${config.PATH_BASE}Session/Login`,
+      data
+    );
+    console.log(response.data);
+    return response.data;
+  };
+  return invokeCall(call, "Trying to upload photo", "Photo uploaded");
+}
+
 async function callAuthorizedEndpoint(call) {
   console.log("auth", auth);
   console.log("current user", auth.currentUser);
@@ -222,4 +235,5 @@ export {
   getDate,
   fetchPageList,
   uploadPhoto,
+  getCookie,
 };

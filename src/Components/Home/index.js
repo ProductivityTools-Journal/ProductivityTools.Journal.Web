@@ -38,6 +38,7 @@ export default function Home() {
             <p>{auth?.currentUser?.email} </p>
             <button onClick={buttonLogout}>logout</button>
             <Link to="/List">List</Link>
+            <img alt="pawel" src="https://storage.cloud.google.com/ptjournal_pwujczyk-gmail-com/journalId-1494-pageId-825-hiopopotam-022.png"></img>
         </div >
     )
 }

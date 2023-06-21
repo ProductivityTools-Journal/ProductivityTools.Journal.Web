@@ -150,6 +150,7 @@ function Page({ page, updatePageInList, key }) {
         </Button>
         <input type="file" accept="image/png, image/jpg" onChange={onFileChange} />
         <span>{imageUrl}</span>
+        <img src={imageUrl}></img>
       </p>
     );
   };

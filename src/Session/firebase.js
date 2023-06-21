@@ -1,5 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { isJwtExpired } from 'jwt-check-expiration';
+import * as apiService from "services/apiService";
+
+
 
 import {
     GoogleAuthProvider,
@@ -27,7 +30,12 @@ const signInWithGoogle = async () => {
     try {
         const res = await signInWithPopup(auth, googleProvider);
         console.log(res);
-        localStorage.setItem("token", res.user.accessToken);
+        localStorage.setItem("token", res.user.accessToken);     
+        
+        const user = auth.currentUser;
+        const token=await user.getIdToken(true);
+        apiService.getCookie(token);
+
         return res.user;
     } catch (err) {
         console.error(err);

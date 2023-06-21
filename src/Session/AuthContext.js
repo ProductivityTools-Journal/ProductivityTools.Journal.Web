@@ -19,6 +19,7 @@ export function AuthProvider({children}){
             }   
             else {
                 const token = await user.getIdToken();
+                
                 setUser(user);
                 localStorage.setItem("token", token);
                 localStorage.setItem("refreshToken", user.refreshToken);
@@ -31,7 +32,7 @@ export function AuthProvider({children}){
     
     useEffect(() => {
         const minutes=4;
-        const interval=minutes * 60 * 1000;
+        const interval=minutes * 60 * 10000;
         
         const handle = setInterval(async () => {
             const user = auth.currentUser;
