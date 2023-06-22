@@ -38,7 +38,12 @@ export default function Home() {
             <p>{auth?.currentUser?.email} </p>
             <button onClick={buttonLogout}>logout</button>
             <Link to="/List">List</Link>
-            <img alt="pawel" src="https://storage.cloud.google.com/ptjournal_pwujczyk-gmail-com/journalId-1494-pageId-825-hiopopotam-022.png"></img>
+            {/* <img alt="pawel1" src="https://storage.cloud.google.com/ptjournal_pwujczyk-gmail-com/journalId-1494-pageId-825-hiopopotam-022.png"></img><br></br> */}
+            <img alt="pawel2" src="https://firebasestorage.googleapis.com/v0/b/ptjournal-b53b0.appspot.com/o/xxx%2Fhiopopotam.png?alt=media"></img><br></br>
+            <img alt="pawel3" src="https://firebasestorage.googleapis.com/v0/b/ptjournal-b53b0.appspot.com/o/hiopopotam.png?alt=media"></img><br></br>
+            {/* <img alt="pawel4" src="https://firebasestorage.googleapis.com/v0/b/ptjournal-b53b0.appspot.com/o/xxx/hiopopotam.png?alt=media"></img><br></br> */}
+            <img alt="pawel5" src="https://firebasestorage.googleapis.com/v0/b/ptjournal-b53b0.appspot.com/o/ocTFwme0AqYwxrJsyyNoHZZOsc83%2FjournalId-1494-pageId-825-Untitled-011.png?alt=media"></img><br></br>
+            <img alt="pawel6" src="https://firebasestorage.googleapis.com/v0/b/ptjournal-b53b0.appspot.com/o/user%2FocTFwme0AqYwxrJsyyNoHZZOsc83%2FjournalId-1494-pageId-825-hiopopotam-061.png?alt=media"></img><br></br>
         </div >
     )
 }
