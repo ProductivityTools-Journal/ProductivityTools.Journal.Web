@@ -45,10 +45,8 @@ export default function Home() {
     return x1;
   };
   const storage = getStorage();
-debugger;
   getDownloadURL(ref(storage, "hiopopotam.png"))
     .then((url) => {
-        debugger;
       // `url` is the download URL for 'images/stars.jpg
       // Or inserted into an <img> element
       const img = document.getElementById("xx1");
@@ -56,15 +54,14 @@ debugger;
     })
     .catch((error) => {
       // Handle any errors
-      console.log("X3dkdXrf3dX")
+      console.log("X3dkdXrf3dX");
       console.log(error);
     });
 
-    var x = auth?.currentUser?.accessToken;
-    var path=x+"\Untitled.png";
-    getDownloadURL(ref(storage, "hiopopotam.png"))
+  var x = auth?.currentUser?.uid;
+  var path = x + "/Untitled.png";
+  getDownloadURL(ref(storage, path))
     .then((url) => {
-        debugger;
       // `url` is the download URL for 'images/stars.jpg
       // Or inserted into an <img> element
       const img = document.getElementById("xx2");
@@ -72,12 +69,27 @@ debugger;
     })
     .catch((error) => {
       // Handle any errors
-      console.log("X3dkdXrf3dX")
+      console.log("X3dkdXrf3dX");
       console.log(error);
     });
 
+  const download1 = () => {
+    let url = "https://storage.googleapis.com/storage/v1/b/ptjournaltest1/o/Untitled.png?alt=media";
+    let token = "Bearer "+"ya29.a0AWY7CklOO41nU5AoVxAU3ypVkY4O_0tOEAiGwSRJRosJhJAB7yw_TEmiIcDjHSNxyKOVaRTcpQp73yFp-HYPyRLjTOgBEzxwmBqNkM3BZwjnvKGW5MaQvh3ocHWl3zKq0VhYwZcoMPDVcK18wEmki6WvkWNeaCgYKAQUSARESFQG1tDrphDRmP8LVZc4G_OpYJAdemA0163";
+    const headers = { 'Authorization': token };
+    console.log(token);
+    debugger;
+    fetch(url, { headers }).then((response) => {
+      debugger;
+      console.log(response);
+    }).catch(error=>{
+      debugger;
+    });
+  };
+
   return (
     <div>
+      <button onClick={download1}>xx</button>
       <p>Welcome on home page of ProductivityTools.Journal3.2</p>
       <p>{date ? `Server responded with date ${dtFormated}` : "Server hasn't responded yet"}</p>
       <p>{auth?.currentUser?.displayName}</p>
@@ -85,9 +97,7 @@ debugger;
       <button onClick={buttonLogout}>logout</button>
       <Link to="/List">List</Link>
       <img id="xx1" alt="pawel18"></img> ddf
-
       <img id="xx2" alt="pawel18"></img> ddf
-
       {/* <img alt="pawel1" src="https://storage.cloud.google.com/ptjournal_pwujczyk-gmail-com/journalId-1494-pageId-825-hiopopotam-022.png"></img><br></br> */}
       {/* <img
         alt="pawel2"
