@@ -29,75 +29,75 @@ export default function Home() {
   let mt = moment(date);
   let dtFormated = mt.format("YYYY.MM.DD hh:mm:ss");
 
-  const getPicture = () => {
-    var x = auth?.currentUser?.accessToken;
-    let x1 =
-      "https://storage.googleapis.com/storage/v1/b/ptjournal_pwujczyk-gmail-com/o/journalId-1494-pageId-825-hiopopotam-022.png?alt=media&access_token=" +
-      x;
-    return x1;
-  };
+  // const getPicture = () => {
+  //   var x = auth?.currentUser?.accessToken;
+  //   let x1 =
+  //     "https://storage.googleapis.com/storage/v1/b/ptjournal_pwujczyk-gmail-com/o/journalId-1494-pageId-825-hiopopotam-022.png?alt=media&access_token=" +
+  //     x;
+  //   return x1;
+  // };
 
-  const getPicture2 = () => {
-    var x = auth?.currentUser?.accessToken;
-    let x1 =
-      "https://firebasestorage.googleapis.com/v0/b/ptjournal-b53b0.appspot.com/o/ocTFwme0AqYwxrJsyyNoHZZOsc83%2FjournalId-1494-pageId-825-Untitled-011.png?alt=media&access_token=" +
-      x;
-    return x1;
-  };
-  const storage = getStorage();
-  getDownloadURL(ref(storage, "hiopopotam.png"))
-    .then((url) => {
-      // `url` is the download URL for 'images/stars.jpg
-      // Or inserted into an <img> element
-      const img = document.getElementById("xx1");
-      img.setAttribute("src", url);
-    })
-    .catch((error) => {
-      // Handle any errors
-      console.log("X3dkdXrf3dX");
-      console.log(error);
-    });
+  // const getPicture2 = () => {
+  //   var x = auth?.currentUser?.accessToken;
+  //   let x1 =
+  //     "https://firebasestorage.googleapis.com/v0/b/ptjournal-b53b0.appspot.com/o/ocTFwme0AqYwxrJsyyNoHZZOsc83%2FjournalId-1494-pageId-825-Untitled-011.png?alt=media&access_token=" +
+  //     x;
+  //   return x1;
+  // };
+  // const storage = getStorage();
+  // getDownloadURL(ref(storage, "hiopopotam.png"))
+  //   .then((url) => {
+  //     // `url` is the download URL for 'images/stars.jpg
+  //     // Or inserted into an <img> element
+  //     const img = document.getElementById("xx1");
+  //     img.setAttribute("src", url);
+  //   })
+  //   .catch((error) => {
+  //     // Handle any errors
+  //     console.log("X3dkdXrf3dX");
+  //     console.log(error);
+  //   });
 
-  var x = auth?.currentUser?.uid;
-  var path = x + "/Untitled.png";
-  getDownloadURL(ref(storage, path))
-    .then((url) => {
-      // `url` is the download URL for 'images/stars.jpg
-      // Or inserted into an <img> element
-      const img = document.getElementById("xx2");
-      img.setAttribute("src", url);
-    })
-    .catch((error) => {
-      // Handle any errors
-      console.log("X3dkdXrf3dX");
-      console.log(error);
-    });
+  // var x = auth?.currentUser?.uid;
+  // var path = x + "/Untitled.png";
+  // getDownloadURL(ref(storage, path))
+  //   .then((url) => {
+  //     // `url` is the download URL for 'images/stars.jpg
+  //     // Or inserted into an <img> element
+  //     const img = document.getElementById("xx2");
+  //     img.setAttribute("src", url);
+  //   })
+  //   .catch((error) => {
+  //     // Handle any errors
+  //     console.log("X3dkdXrf3dX");
+  //     console.log(error);
+  //   });
 
-  const download1 = () => {
-    let url = "https://storage.googleapis.com/storage/v1/b/ptjournaltest1/o/Untitled.png?alt=media";
-    let token = "Bearer "+"ya29.a0AWY7CklOO41nU5AoVxAU3ypVkY4O_0tOEAiGwSRJRosJhJAB7yw_TEmiIcDjHSNxyKOVaRTcpQp73yFp-HYPyRLjTOgBEzxwmBqNkM3BZwjnvKGW5MaQvh3ocHWl3zKq0VhYwZcoMPDVcK18wEmki6WvkWNeaCgYKAQUSARESFQG1tDrphDRmP8LVZc4G_OpYJAdemA0163";
-    const headers = { 'Authorization': token };
-    console.log(token);
-    debugger;
-    fetch(url, { headers }).then((response) => {
-      debugger;
-      console.log(response);
-    }).catch(error=>{
-      debugger;
-    });
-  };
+  // const download1 = () => {
+  //   let url = "https://storage.googleapis.com/storage/v1/b/ptjournaltest1/o/Untitled.png?alt=media";
+  //   let token = "Bearer "+"ya29.a0AWY7CklOO41nU5AoVxAU3ypVkY4O_0tOEAiGwSRJRosJhJAB7yw_TEmiIcDjHSNxyKOVaRTcpQp73yFp-HYPyRLjTOgBEzxwmBqNkM3BZwjnvKGW5MaQvh3ocHWl3zKq0VhYwZcoMPDVcK18wEmki6WvkWNeaCgYKAQUSARESFQG1tDrphDRmP8LVZc4G_OpYJAdemA0163";
+  //   const headers = { 'Authorization': token };
+  //   console.log(token);
+  //   debugger;
+  //   fetch(url, { headers }).then((response) => {
+  //     debugger;
+  //     console.log(response);
+  //   }).catch(error=>{
+  //     debugger;
+  //   });
+  // };
 
   return (
     <div>
-      <button onClick={download1}>xx</button>
-      <p>Welcome on home page of ProductivityTools.Journal3.2</p>
+      <p>Welcome on home page of ProductivityTools.Journal3.3</p>
+      <img src="http://localhost:3000/Image"></img>
+      
       <p>{date ? `Server responded with date ${dtFormated}` : "Server hasn't responded yet"}</p>
       <p>{auth?.currentUser?.displayName}</p>
       <p>{auth?.currentUser?.email} </p>
       <button onClick={buttonLogout}>logout</button>
       <Link to="/List">List</Link>
-      <img id="xx1" alt="pawel18"></img> ddf
-      <img id="xx2" alt="pawel18"></img> ddf
+
       {/* <img alt="pawel1" src="https://storage.cloud.google.com/ptjournal_pwujczyk-gmail-com/journalId-1494-pageId-825-hiopopotam-022.png"></img><br></br> */}
       {/* <img
         alt="pawel2"
