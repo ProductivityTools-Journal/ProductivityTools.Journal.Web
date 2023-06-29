@@ -89,8 +89,10 @@ export default function Home() {
 
   return (
     <div>
-      <p>Welcome on home page of ProductivityTools.Journal3.3</p>
-      <img src="http://localhost:3000/Image"></img>
+      <p>Welcome on home page of dProductivityTools.Journal3.3</p>
+      <img src="http://localhost:3000/Image?fsdaf=pfe.png"></img>
+      <img src="http://localhost:5002/api/Image/Get?filename=l5m45fd5f4r8dx.png"></img>
+
       
       <p>{date ? `Server responded with date ${dtFormated}` : "Server hasn't responded yet"}</p>
       <p>{auth?.currentUser?.displayName}</p>
