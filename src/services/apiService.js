@@ -178,22 +178,33 @@ async function uploadPhoto(photo, journalId, pageId) {
   return invokeCallWithToast(call, "Trying to upload photo", "Photo uploaded");
 }
 
-async function getCookie(idtoken){
-  let call = async (header) => {
-    const data = { Idtoken: idtoken };
-    const response = await axios.post(
-      `${config.PATH_BASE}Session/Login`,
-      data
-    );
-    console.log(response.data);
-    return response.data;
+async function getCookie(idtoken) {
+  // let call = async (header) => {
+  //   const data = { Idtoken: idtoken };
+  //   const response = await axios.post(
+  //     `${config.PATH_BASE}Session/Login`,
+  //     data,
+  //     header
+  //   );
+  //   console.log(response.data);
+  //   return response.data;
+  // };
+  // return invokeCall(call, "Trying to upload photo", "Photo uploaded");
+  const header = {
+    headers: {},
   };
-  return invokeCall(call, "Trying to upload photo", "Photo uploaded");
+  console.log(header);
+  var response = await axios.get(`${config.PATH_BASE}Session/LoginGet?token=${auth.currentUser.accessToken}`, {
+   
+    withCredentials: true,
+  });
+  console.log(response.data);
 }
 
 async function callAuthorizedEndpoint(call) {
   console.log("auth", auth);
   console.log("current user", auth.currentUser);
+  axios.defaults.withCredentials = true;
   if (auth && auth.currentUser && auth.currentUser.accessToken) {
     const header = {
       headers: { Authorization: `Bearer ${auth.currentUser.accessToken}` },
