@@ -18,6 +18,20 @@ async function getTree() {
   return invokeCallWithToast(call, "Trying to get tree", "Tree returned");
 }
 
+async function getTreePath(){
+  console.log("GetTreePathInvoked");
+  console.log(auth);
+  let call = async (header) => {
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/GetJournalPath`,
+      {},
+      header
+    );
+    return response.data;
+  };
+  return invokeCallWithToast(call, "Trying to get path tree", "Path tree returned");
+}
+
 async function addTreeNode(parentId, name) {
   let call = async (header) => {
     const data = { ParentId: parentId, Name: name };
@@ -235,6 +249,7 @@ async function invokeCall(call) {
 
 export {
   getTree,
+  getTreePath,
   addTreeNode,
   deleteTree,
   moveTreeNode,

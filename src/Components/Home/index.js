@@ -93,6 +93,7 @@ export default function Home() {
       <img src="http://localhost:3000/Image?fsdaf=pfe.png"></img>
       {/* <img src="http://localhost:5002/api/Image/Get?filename=l5m45fd5f4r8dx.png"></img> */}
       <img src="http://localhost:8080/?fileName=journalId-133-pageId-1273-PPO-054.png"></img>
+      <img src="https://us-central1-ptjournal-b53b0.cloudfunctions.net/CloudBuildFunction/?fileName=journalId-133-pageId-1273-PPO-054.png"></img>
 
       
       <p>{date ? `Server responded with date ${dtFormated}` : "Server hasn't responded yet"}</p>

@@ -14,7 +14,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import PageAnchor from 'Components/PageAnchor';
+import PageAnchor from "Components/PageAnchor";
 
 function Page({ page, updatePageInList, key }) {
   //const { meeting, ...rest } = props;
@@ -41,6 +41,16 @@ function Page({ page, updatePageInList, key }) {
       mode: page.mode == undefined ? "readonly" : page.mode,
     };
     setLocalPageObject(x);
+  }, [page.pageID]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await apiService.getTreePath(page.journalId);
+      console.log(data);
+    };
+    if (page != null) {
+      fetchData();
+    }
   }, [page.pageID]);
 
   // const [mode, setMode] = useState('readonly');
@@ -111,8 +121,6 @@ function Page({ page, updatePageInList, key }) {
     updatePageInList(page);
     setLocalPageObject(page);
   };
-
-
 
   const checkState = () => {
     console.log(page);
