@@ -20,6 +20,7 @@ function Page({ page, updatePageInList, key }) {
   //const { meeting, ...rest } = props;
   const [localPageObject, setLocalPageObject] = useState();
   const [imageUrl, setImageUrl] = useState();
+  const [journalPath, setJournalPath]=useState();
 
   useEffect(() => {
     console.log("FFFFFFFFFFF use effect");
@@ -43,9 +44,12 @@ function Page({ page, updatePageInList, key }) {
     setLocalPageObject(x);
   }, [page.pageID]);
 
+  
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await apiService.getTreePath(page.journalId);
+      setJournalPath(data);
       console.log(data);
     };
     if (page != null) {
