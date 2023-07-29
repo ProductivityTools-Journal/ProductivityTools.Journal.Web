@@ -48,12 +48,12 @@ function Page({ page, updatePageInList, key }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await apiService.getTreePath(page.journalId);
-      setJournalPath(data);
-      console.log(data);
+      // const data = await apiService.getTreePath(page.journalId);
+      // setJournalPath(data);
+      // console.log(data);
     };
     if (page != null) {
-      fetchData();
+     // fetchData();
     }
   }, [page.pageID]);
 
