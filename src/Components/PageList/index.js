@@ -27,12 +27,16 @@ export default function PageList({ selectedTreeNode }) {
 
   useEffect(() => {
     const fetchData = async () => {
-        let x=pages.map(x=>x.journalId);
-        await apiService.getTreePaths(x);
-        console.log(pages);
-        console.log("XXXXXXXX")
-        // debugger;
-
+      let uniqueJournalIds = [];
+      pages.forEach((x) => {
+        if (uniqueJournalIds.includes(x.journalId) == false) {
+          uniqueJournalIds.push(x.journalId);
+        }
+      });
+      await apiService.getTreePaths(uniqueJournalIds);
+      console.log(pages);
+      console.log("XXXXXXXX");
+      // debugger;
     };
     fetchData();
   }, [pages]);
