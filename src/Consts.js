@@ -21,7 +21,7 @@ export const clientScope = 'openid profile ProductivityTools.Meetings.API';
 
 const dev={
     clientId:"devmeetingsweb",
-    PATH_BASE :'https://localhost:8001/api/',
+    PATH_BASE :'http://localhost:5002/api/',
     stsAuthority : 'https://identityserver.productivitytools.top:8010/',
     clientRoot : 'http://localhost:3000/',
  //   apiRoot : 'http://localhost:5002/'

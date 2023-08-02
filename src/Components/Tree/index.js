@@ -1,17 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import SvgIcon from '@mui/material/SvgIcon';
-import TreeView from '@mui/lab/TreeView';
+import React, { useState, useEffect, useRef } from "react";
+import SvgIcon from "@mui/material/SvgIcon";
+import TreeView from "@mui/lab/TreeView";
 
-import * as apiService from 'services/apiService'
+import * as apiService from "services/apiService";
 import { Link, useParams } from "react-router-dom";
-import ContextMenu from '../ContextMenu'
-import './index.css'
-import StyledTreeItem from './styledTreeItem';
-import JournalNewModal from '../JournalNewModal'
-import JounralDeleteDialog from '../JounralDeleteDialog';
-import JournalRenameModal from 'Components/JournalRenameModal';
-
-
+import ContextMenu from "../ContextMenu";
+import "./index.css";
+import StyledTreeItem from "./styledTreeItem";
+import JournalNewModal from "../JournalNewModal";
+import JounralDeleteDialog from "../JounralDeleteDialog";
+import JournalRenameModal from "Components/JournalRenameModal";
 
 function MinusSquare(props) {
   return (
@@ -40,10 +38,6 @@ function CloseSquare(props) {
   );
 }
 
-
-
-
-
 export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNode }) {
   const [expanded, setExpanded] = useState([]);
   const [root, setRoot] = useState(null);
@@ -52,7 +46,6 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const [newModalOpen, setNewModalOpen] = useState(false);
   const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-
 
   const containerRef = useRef(null);
 
@@ -79,20 +72,18 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
           var chain = getNodePath(n, targetId);
           if (chain != null) {
             var finalResult = chain.concat(node.id.toString());
-            setExpanded(finalResult)
+            setExpanded(finalResult);
             return finalResult;
           }
         }
       }
-    }
-    else {
+    } else {
       return [];
     }
-  }
+  };
 
   useEffect(() => {
     //if think this is not used target id is always null
-
 
     fetchData();
   }, [params.TreeId]);
@@ -112,7 +103,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         }
       }
     }
-  }
+  };
 
   function updateElementInroot(elementToUpdate, propertyName, propertyValue) {
     let newroot = root;
@@ -123,17 +114,15 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
 
   const changeParent = (source, targetParentId) => {
     console.log("change parent");
-    console.log("targetParentId", targetParentId)
+    console.log("targetParentId", targetParentId);
     var childObject = findElement(root[0], source.id);
-    var currentParent = findElement(root[0], source.parentId)
-    currentParent.nodes = currentParent.nodes.filter(item => item !== childObject);
+    var currentParent = findElement(root[0], source.parentId);
+    currentParent.nodes = currentParent.nodes.filter((item) => item !== childObject);
     var newParentobject = findElement(root[0], targetParentId);
     newParentobject.nodes.push(childObject);
     updateElementInroot(childObject, "parentId", targetParentId);
-    setSelectedTreeNode(source)
-  }
-
-
+    setSelectedTreeNode(source);
+  };
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
@@ -154,56 +143,57 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   //   }
   // ];
 
-
-
-
   const openModal = (type) => {
-    console.log("openModal);")
+    console.log("openModal);");
     switch (type) {
-      case 'rename':
+      case "rename":
         setRenameModalOpen(true);
         break;
-      case 'delete':
+      case "delete":
         setDeleteModalOpen(true);
         break;
-      case 'new':
+      case "new":
         setNewModalOpen(true);
         break;
       default:
-        console.log("Not working!!!")
+        console.log("Not working!!!");
     }
     console.log("handleModalOpen");
-
-  }
+  };
 
   const handleDeleteDialogOpen = () => {
     setDeleteModalOpen(true);
   };
 
-
-
   const closeModal = () => {
     setDeleteModalOpen(false);
     setRenameModalOpen(false);
     setNewModalOpen(false);
-  }
+  };
 
   const closeAndRefresh = () => {
     fetchData();
     closeModal();
-  }
+  };
 
   function GetNode(node) {
     if (node) {
       return (
-        <StyledTreeItem key={node.id} changeParent={changeParent} setSelectedTreeNode={setSelectedTreeNode} openModal={openModal} node={node}   >
-          {node?.nodes?.map(x => GetNode(x))}
-        </StyledTreeItem >)
+        <StyledTreeItem
+          key={node.id}
+          changeParent={changeParent}
+          setSelectedTreeNode={setSelectedTreeNode}
+          openModal={openModal}
+          node={node}
+        >
+          {node?.nodes?.map((x) => GetNode(x))}
+        </StyledTreeItem>
+      );
     }
   }
 
   return (
-    <div className='conainer' ref={containerRef}>
+    <div className="conainer" ref={containerRef}>
       <p>pawel</p>
       <TreeView
         expanded={expanded}
@@ -219,9 +209,24 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         {GetNode(root)}
       </TreeView>
       {/* <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu> */}
-      <JournalNewModal open={newModalOpen} selectedTreeNode={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh} />
-      <JournalRenameModal open={renameModalOpen} selectedJournal={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></JournalRenameModal>
-      <JounralDeleteDialog open={deleteModalOpen} selectedJournal={selectedTreeNode} closeModal={closeModal} closeAndRefresh={closeAndRefresh}></JounralDeleteDialog>
+      <JournalNewModal
+        open={newModalOpen}
+        selectedTreeNode={selectedTreeNode}
+        closeModal={closeModal}
+        closeAndRefresh={closeAndRefresh}
+      />
+      <JournalRenameModal
+        open={renameModalOpen}
+        selectedJournal={selectedTreeNode}
+        closeModal={closeModal}
+        closeAndRefresh={closeAndRefresh}
+      ></JournalRenameModal>
+      <JounralDeleteDialog
+        open={deleteModalOpen}
+        selectedJournal={selectedTreeNode}
+        closeModal={closeModal}
+        closeAndRefresh={closeAndRefresh}
+      ></JounralDeleteDialog>
     </div>
   );
 }

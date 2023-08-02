@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import * as moment from "moment";
 import NotesLabel from "Components/NotesLabel";
@@ -15,12 +15,15 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PageAnchor from "Components/PageAnchor";
+import { JournalContext } from "Components/JournalContext/index.js";
 
 function Page({ page, updatePageInList, key }) {
   //const { meeting, ...rest } = props;
   const [localPageObject, setLocalPageObject] = useState();
   const [imageUrl, setImageUrl] = useState();
-  const [journalPath, setJournalPath]=useState();
+  const [journalPath, setJournalPath] = useState();
+
+  const journalTreeContext = useContext(JournalContext);
 
   useEffect(() => {
     console.log("FFFFFFFFFFF use effect");
@@ -44,8 +47,6 @@ function Page({ page, updatePageInList, key }) {
     setLocalPageObject(x);
   }, [page.pageID]);
 
-  
-
   useEffect(() => {
     const fetchData = async () => {
       // const data = await apiService.getTreePath(page.journalId);
@@ -53,7 +54,7 @@ function Page({ page, updatePageInList, key }) {
       // console.log(data);
     };
     if (page != null) {
-     // fetchData();
+      // fetchData();
     }
   }, [page.pageID]);
 
@@ -147,6 +148,7 @@ function Page({ page, updatePageInList, key }) {
   const getEditModeButtons = () => {
     return (
       <p style={buttonStyle}>
+        <span>xxx</span><span>{journalTreeContext.journalTree}</span>
         <Button variant="contained" color="primary" onClick={save}>
           {" "}
           Save
