@@ -15,7 +15,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PageAnchor from "Components/PageAnchor";
-import { JournalContext } from "Components/JournalContext/index.js";
+import { JournalTreeContext } from "Components/JournalContext/index.js";
 
 function Page({ page, updatePageInList, key }) {
   //const { meeting, ...rest } = props;
@@ -23,7 +23,7 @@ function Page({ page, updatePageInList, key }) {
   const [imageUrl, setImageUrl] = useState();
   const [journalPath, setJournalPath] = useState();
 
-  const journalTreeContext = useContext(JournalContext);
+  const journalTreeContext= useContext(JournalTreeContext);
 
   useEffect(() => {
     console.log("FFFFFFFFFFF use effect");
@@ -149,6 +149,10 @@ function Page({ page, updatePageInList, key }) {
     return (
       <p style={buttonStyle}>
         <span>xxx</span><span>{journalTreeContext.journalTree}</span>
+             
+        <Button variant="contained" color="primary" onClick={()=>{journalTreeContext.setJournalTree('gosia')}}>
+        Update context
+        </Button>
         <Button variant="contained" color="primary" onClick={save}>
           {" "}
           Save

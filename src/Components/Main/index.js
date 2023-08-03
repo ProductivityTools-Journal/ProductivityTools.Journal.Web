@@ -4,7 +4,7 @@ import PageList from "Components/PageList";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Link, useNavigate } from "react-router-dom";
-import { JournalContext } from "../JournalContext";
+import { JournalTreeContextProvider } from "../JournalContext";
 
 export default function Main() {
   const [editedMeeting, setEditedMeeting] = useState(undefined);
@@ -38,18 +38,20 @@ export default function Main() {
     <div>
       <div>EditedMeeting:{editedMeeting}</div>
       <Link to="/">Home</Link>
-      <DndProvider backend={HTML5Backend}>
-        {" "}
-        {/* drag and drop */}
-        <div style={{ width: "400px", float: "left" }}>
-          <Tree
-            setSelectedTreeNode={setSelectedTreeNode}
-            selectedTreeNode={selectedTreeNode}
-            createNewMeeting={newMeeting}
-          />
-        </div>
-        <PageList selectedTreeNode={selectedTreeNode} />
-      </DndProvider>
+      <JournalTreeContextProvider>
+        <DndProvider backend={HTML5Backend}>
+          {" "}
+          {/* drag and drop */}
+          <div style={{ width: "400px", float: "left" }}>
+            <Tree
+              setSelectedTreeNode={setSelectedTreeNode}
+              selectedTreeNode={selectedTreeNode}
+              createNewMeeting={newMeeting}
+            />
+          </div>
+          <PageList selectedTreeNode={selectedTreeNode} />
+        </DndProvider>
+      </JournalTreeContextProvider>{" "}
     </div>
   );
 }
