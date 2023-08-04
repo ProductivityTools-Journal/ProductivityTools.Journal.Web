@@ -45,7 +45,7 @@ async function addTreeNode(parentId, name) {
     console.log(response.data);
     return response.data;
   };
-  return callAuthorizedEndpoint(call);
+  return invokeCallWithToast(call);
 }
 
 async function moveTreeNode(sourceId, targetParentId) {
@@ -251,7 +251,6 @@ async function invokeCall(call) {
 
 export {
   getTree,
-  getTreePaths,
   addTreeNode,
   deleteTree,
   moveTreeNode,

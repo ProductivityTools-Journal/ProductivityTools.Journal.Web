@@ -33,7 +33,7 @@ export default function PageList({ selectedTreeNode }) {
           uniqueJournalIds.push(x.journalId);
         }
       });
-      await apiService.getTreePaths(uniqueJournalIds);
+    
       console.log(pages);
       console.log("XXXXXXXX");
       // debugger;
