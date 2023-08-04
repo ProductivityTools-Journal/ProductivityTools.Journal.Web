@@ -23,7 +23,7 @@ function Page({ page, updatePageInList, key }) {
   const [imageUrl, setImageUrl] = useState();
   const [journalPath, setJournalPath] = useState();
 
-  const journalTreeContext= useContext(JournalTreeContext);
+  const journalTreeContext = useContext(JournalTreeContext);
 
   useEffect(() => {
     console.log("FFFFFFFFFFF use effect");
@@ -46,6 +46,10 @@ function Page({ page, updatePageInList, key }) {
     };
     setLocalPageObject(x);
   }, [page.pageID]);
+
+  useEffect(() => {
+    setJournalPath(journalTreeContext.findPath(page.journalId));
+  }, [page.journalId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -148,10 +152,14 @@ function Page({ page, updatePageInList, key }) {
   const getEditModeButtons = () => {
     return (
       <p style={buttonStyle}>
-        <span>xxx</span><span>{journalTreeContext.journalTree}</span>
-             
-        <Button variant="contained" color="primary" onClick={()=>{journalTreeContext.setJournalTree('gosia')}}>
-        Update context
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setJournalPath(journalTreeContext.findPath(page.journalId));
+          }}
+        >
+          Update context
         </Button>
         <Button variant="contained" color="primary" onClick={save}>
           {" "}
@@ -235,6 +243,7 @@ function Page({ page, updatePageInList, key }) {
           </legend>
           {/* <legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} </legend> */}
           <PageAnchor page={page} removePageFromList={removePageFromList}></PageAnchor>
+          <span>{journalPath}</span>
           <PTPlate content={localPageObject.contentObject} contentChanged={contentChanged}></PTPlate>
           {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
 

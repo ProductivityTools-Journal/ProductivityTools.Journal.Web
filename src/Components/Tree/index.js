@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import SvgIcon from "@mui/material/SvgIcon";
 import TreeView from "@mui/lab/TreeView";
 
@@ -10,6 +10,7 @@ import StyledTreeItem from "./styledTreeItem";
 import JournalNewModal from "../JournalNewModal";
 import JounralDeleteDialog from "../JounralDeleteDialog";
 import JournalRenameModal from "Components/JournalRenameModal";
+import { JournalTreeContext } from "Components/JournalContext/index.js";
 
 function MinusSquare(props) {
   return (
@@ -47,13 +48,18 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
+  const journalTreeContext = useContext(JournalTreeContext);
+
   const containerRef = useRef(null);
 
   const fetchData = async () => {
     const r = await apiService.getTree();
     console.log(r);
+
+    journalTreeContext.setJournalTree(r);
     if (r != null) {
       setRoot(r);
+
       getNodePath(r[0], params.TreeId);
     }
   };
