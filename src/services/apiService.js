@@ -210,10 +210,11 @@ async function getCookie(idtoken) {
     headers: {},
   };
   console.log(header);
-  var response = await axios.get(`${config.PATH_BASE}Session/LoginGet?token=${auth.currentUser.accessToken}`, {
+  //comented
+  // var response = await axios.get(`${config.PATH_BASE}Session/LoginGet?token=${auth.currentUser.accessToken}`, {
    
-    withCredentials: true,
-  });
+  //   withCredentials: true,
+  // });
   console.log(response.data);
 }
 
