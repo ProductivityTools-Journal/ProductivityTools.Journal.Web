@@ -215,7 +215,7 @@ async function getCookie(idtoken) {
    
   //   withCredentials: true,
   // });
-  console.log(response.data);
+  //console.log(response.data);
 }
 
 async function callAuthorizedEndpoint(call) {
