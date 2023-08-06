@@ -197,7 +197,7 @@ async function uploadPhoto(photo, journalId, pageId) {
 async function getUserEmail() {
   let call = async (header) => {
     const data = { Id: 1, DrillDown: true };
-    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/UserEmail`, data, header);
+    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/UserEmail`, data);
     console.log(response.data);
     return response.data;
   };
