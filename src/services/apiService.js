@@ -135,6 +135,14 @@ async function getDate() {
   return response.data;
 }
 
+async function getDate2() {
+  const response = await axios.post(
+    `${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/Date2`
+  );
+  return response.data;
+}
+
+
 async function deleteMeeting(journalId) {
   let call = async (header) => {
     console.log(journalId);
@@ -272,6 +280,7 @@ export {
   deleteMeeting,
   updateJournal,
   getDate,
+  getDate2,
   fetchPageList,
   uploadPhoto,
   getCookie,

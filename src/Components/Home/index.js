@@ -30,6 +30,14 @@ export default function Home() {
     fetchData();
   },[])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await apiService.getDate2();
+      setUserEmail(data);
+    };
+    fetchData();
+  }, []);
+
   const buttonLogout = () => {
     logout();
     navigate("/Login");
@@ -98,7 +106,7 @@ export default function Home() {
 
   return (
     <div>
-      <p>Welcome on home page of dProductivityTools.Journal3.6</p>
+      <p>Welcome on home page of dProductivityTools.Journal3.7</p>
       {/* <img src="http://localhost:3000/Image?fsdaf=pfe.png"></img>
       {/* <img src="http://localhost:5002/api/Image/Get?filename=l5m45fd5f4r8dx.png"></img> */}
       {/* <img src="http://localhost:8080/?fileName=journalId-133-pageId-1273-PPO-054.png"></img>
