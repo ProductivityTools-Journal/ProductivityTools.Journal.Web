@@ -9,6 +9,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
 export default function Home() {
   const [date, setDate] = useState();
+  const [userEmail, setUserEmail] = useState();
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
@@ -20,6 +21,14 @@ export default function Home() {
 
   // const login = () => {
   // }
+
+  useEffect(()=>{
+    const fetchData = async () => {
+      const data = await apiService.getUserEmail();
+      setUserEmail(data);
+    };
+    fetchData();
+  },[])
 
   const buttonLogout = () => {
     logout();
@@ -100,6 +109,7 @@ export default function Home() {
       <p>{auth?.currentUser?.displayName}</p>
       <p>{auth?.currentUser?.email} </p>
       <button onClick={buttonLogout}>logout</button>
+      <p><span>UserEmial:{userEmail}</span></p>
       <Link to="/List">List</Link>
 
       {/* <img alt="pawel1" src="https://storage.cloud.google.com/ptjournal_pwujczyk-gmail-com/journalId-1494-pageId-825-hiopopotam-022.png"></img><br></br> */}

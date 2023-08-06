@@ -194,6 +194,20 @@ async function uploadPhoto(photo, journalId, pageId) {
   return invokeCallWithToast(call, "Trying to upload photo", "Photo uploaded");
 }
 
+async function getUserEmail() {
+  let call = async (header) => {
+    const data = {};
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/UserEmail`,
+      data,
+      header
+    );
+    console.log(response.data);
+    return response.data;
+  };
+  return invokeCallWithToast(call, "Trying to meeting list", "Meeting list returned");
+}
+
 async function getCookie(idtoken) {
   // let call = async (header) => {
   //   const data = { Idtoken: idtoken };
@@ -212,7 +226,7 @@ async function getCookie(idtoken) {
   console.log(header);
   //comented
   // var response = await axios.get(`${config.PATH_BASE}Session/LoginGet?token=${auth.currentUser.accessToken}`, {
-   
+
   //   withCredentials: true,
   // });
   //console.log(response.data);
@@ -252,6 +266,7 @@ async function invokeCall(call) {
 
 export {
   getTree,
+  getUserEmail,
   addTreeNode,
   deleteTree,
   moveTreeNode,
