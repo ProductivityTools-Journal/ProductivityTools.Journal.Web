@@ -10,7 +10,7 @@ export function JournalTreeContextProvider({ children }) {
 
   const findRecurency = (id, node) => {
     console.log(node);
-    if (node.id == id) {
+    if (node.id == id || node.id == node.parentId) {
       return node;
     } else {
       for (const n of node?.nodes) {
@@ -24,7 +24,7 @@ export function JournalTreeContextProvider({ children }) {
 
   const findPath = (id) => {
     console.log(journalTree);
-
+    debugger;
     let nodeInJournalTree = findRecurency(id, journalTree);
     console.log(nodeInJournalTree);
     var path = "";
