@@ -30,9 +30,9 @@ export function JournalTreeContextProvider({ children }) {
     var path = "";
     while (nodeInJournalTree != null) {
       path = nodeInJournalTree.name + ">>" + path;
-      nodeInJournalTree = nodeInJournalTree.parent;
+      nodeInJournalTree = findRecurency(nodeInJournalTree.parentId, journalTree);
     }
-    return path.trim(">>");
+    return path.slice(0, path.length - 2);
   };
 
   const value = { journalTree, setJournalTree, findPath };
