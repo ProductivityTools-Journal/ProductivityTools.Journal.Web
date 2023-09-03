@@ -229,11 +229,11 @@ async function getCookie(idtoken) {
   };
   console.log(header);
   //comented
-  // var response = await axios.get(`${config.PATH_BASE}Session/LoginGet?token=${auth.currentUser.accessToken}`, {
+  var response = await axios.get(`${config.PATH_BASE}Session/LoginGet?token=${auth.currentUser.accessToken}`, {
 
-  //   withCredentials: true,
-  // });
-  //console.log(response.data);
+    withCredentials: true,
+  });
+  console.log(response.data);
 }
 
 async function callAuthorizedEndpoint(call) {
