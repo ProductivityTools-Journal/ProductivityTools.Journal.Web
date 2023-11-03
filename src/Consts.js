@@ -30,7 +30,7 @@ const dev={
 
 const prod={
     clientId:"prodmeetingsweb",
-    PATH_BASE :'https://apijournal.productivitytools.top:8021/api/',
+    PATH_BASE :'https://apijournal.productivitytools.top:8022/api/',
     stsAuthority : 'https://identityserver.productivitytools.top:8010/',
     clientRoot : 'https://meetingsweb.z13.web.core.windows.net/',
   //  apiRoot : 'http://localhost:5002/'
