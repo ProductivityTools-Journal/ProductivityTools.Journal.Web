@@ -1,5 +1,5 @@
 //export const PATH_BASE='http://192.168.1.51:8081/api/	';
-export const PATH_MEETINGS_CONTROLER = 'Meetings';
+export const PATH_MEETINGS_CONTROLER = 'Page';
 export const PATH_MEETINGS_ACTION = 'List';
 export const PATH_MEETINGS_DATE = 'Date';
 export const PATH_MEETING_ACTION = 'Meeting';
