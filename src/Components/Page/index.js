@@ -48,7 +48,7 @@ function Page({ page, updatePageInList, key }) {
   }, [page.pageID]);
 
   useEffect(() => {
-    debugger;
+    
     setJournalPath(journalTreeContext.findPath(page.journalId));
   }, [page.journalId]);
 

@@ -24,7 +24,7 @@ export function JournalTreeContextProvider({ children }) {
 
   const findPath = (id) => {
     console.log(journalTree);
-    debugger;
+    
     let nodeInJournalTree = findRecurency(id, journalTree);
     console.log(nodeInJournalTree);
     var path = "";

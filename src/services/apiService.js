@@ -73,7 +73,7 @@ async function deleteTree(treeId) {
     console.log(response.data);
     return response.data;
   };
-  return callAuthorizedEndpoint(call);
+  return invokeCallWithToast(call,"delete tree", "tree deleted");
 }
 
 async function renameJournal(journalId, newName) {
@@ -83,7 +83,7 @@ async function renameJournal(journalId, newName) {
     console.log(response.data);
     return response.data;
   };
-  return callAuthorizedEndpoint(call);
+  return invokeCallWithToast(call, "renaming", "renamed");
 }
 
 async function savePage(page) {
@@ -236,24 +236,24 @@ async function getCookie(idtoken) {
   console.log(response.data);
 }
 
-async function callAuthorizedEndpoint(call) {
-  console.log("auth", auth);
-  console.log("current user", auth.currentUser);
-  axios.defaults.withCredentials = true;
-  if (auth && auth.currentUser && auth.currentUser.accessToken) {
-    const header = {
-      headers: { Authorization: `Bearer ${auth.currentUser.accessToken}` },
-    };
-    try {
-      const result = await call(header);
-      return result;
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    console.log("User not authenticated");
-  }
-}
+// async function callAuthorizedEndpoint(call) {
+//   console.log("auth", auth);
+//   console.log("current user", auth.currentUser);
+//   axios.defaults.withCredentials = true;
+//   if (auth && auth.currentUser && auth.currentUser.accessToken) {
+//     const header = {
+//       headers: { Authorization: `Bearer ${auth.currentUser.accessToken}` },
+//     };
+//     try {
+//       const result = await call(header);
+//       return result;
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   } else {
+//     console.log("User not authenticated");
+//   }
+// }
 
 async function invokeCall(call) {
   let token = localStorage.getItem("token");
