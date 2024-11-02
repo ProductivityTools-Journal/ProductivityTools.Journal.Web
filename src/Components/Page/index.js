@@ -229,6 +229,11 @@ function Page({ page, updatePageInList, key }) {
     console.log(localPageObject);
   };
 
+  const pinnedChanged=(e)=>{
+    console.log("pinnedChanged",e.target.checked)
+    setLocalPageObject({ ...localPageObject, pinned: e.target.checked });
+  }
+
   const getComponent2 = () => {
     console.log(localPageObject);
     console.log("Get Component");
@@ -244,21 +249,22 @@ function Page({ page, updatePageInList, key }) {
           </legend>
           {/* <legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} </legend> */}
           <PageAnchor page={page} removePageFromList={removePageFromList}></PageAnchor>
+          <span><input type="checkbox" onClick={pinnedChanged}></input>Pinned</span><br/>
           <span>{journalPath}</span>
           <PTPlate content={localPageObject.contentObject} contentChanged={contentChanged}></PTPlate>
           {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
 
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-              <Typography>Plate</Typography>
+              <Typography>Debuginfo</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <SlateEditor
+             {/*} <SlateEditor
                 pageId={localPageObject.pageId}
                 pageContentObject={localPageObject.contentObject}
                 readOnly={readonly()}
                 pageContentObjectChanged={pageContentObjectChanged}
-              ></SlateEditor>
+      ></SlateEditor>*/}
               <span>{JSON.stringify(localPageObject.contentObject)}</span>
             </AccordionDetails>
           </Accordion>
