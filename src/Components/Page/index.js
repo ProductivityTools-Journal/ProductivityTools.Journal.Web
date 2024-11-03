@@ -249,7 +249,7 @@ function Page({ page, updatePageInList, key }) {
           </legend>
           {/* <legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} </legend> */}
           <PageAnchor page={page} removePageFromList={removePageFromList}></PageAnchor>
-          <span><input type="checkbox" onClick={pinnedChanged}></input>Pinned</span><br/>
+          <span><input type="checkbox" onClick={pinnedChanged} checked={localPageObject.pinned}></input>Pinned</span><br/>
           <span>{journalPath}</span>
           <PTPlate content={localPageObject.contentObject} contentChanged={contentChanged}></PTPlate>
           {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
