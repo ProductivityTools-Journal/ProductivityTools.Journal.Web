@@ -33,7 +33,7 @@ export default function PageList({ selectedTreeNode }) {
           uniqueJournalIds.push(x.journalId);
         }
       });
-    
+
       console.log(pages);
       console.log("XXXXXXXX");
       // debugger;
@@ -82,7 +82,7 @@ export default function PageList({ selectedTreeNode }) {
 
       {pages &&
         pages.length > 0 &&
-        pages.map(function (item) {
+        pages.sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.date - a.date).map(function (item) {
           return <Page page={item} updatePageInList={updatePageInList} key={item.frontendId} />;
         })}
     </div>
