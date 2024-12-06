@@ -76,7 +76,7 @@ export default function PageList({ selectedTreeNode }) {
     console.log(pages);
   };
   return (
-    <div className="App" style={{ color: "#3b3d3b", marginLeft: "400px", width: "1200px" }}>
+    <div className="App" style={{ color: "#3b3d3b", marginLeft: "400px" }}>
       <Button onClick={newEvent}>Add New</Button>
       <Button onClick={checkState}>CheckSatate</Button>
 
