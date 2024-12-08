@@ -1,7 +1,7 @@
 import { useState, } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import * as apiService from 'services/apiService'
-import TreeItem from '@mui/lab/TreeItem';
+import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import Box from '@mui/material/Box';
 import { Link } from "react-router-dom";
 import Collapse from '@mui/material/Collapse';
