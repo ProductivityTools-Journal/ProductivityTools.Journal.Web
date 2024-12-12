@@ -215,7 +215,7 @@ export default function SlateEditor({ pageId, pageContentObject, readOnly, pageC
         // console.log(newValue);
         if (editor.changingContent) return;
         // setValue(newValue);
-        pageContentObjectChanged(newValue)
+        //pageContentObjectChanged(newValue)
         // let title = editor.children[0].children[0].text;
         // setTitle(title);
         //props.titleChanged(title);

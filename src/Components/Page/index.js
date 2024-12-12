@@ -259,12 +259,12 @@ function Page({ page, updatePageInList, key }) {
               <Typography>Debuginfo</Typography>
             </AccordionSummary>
             <AccordionDetails>
-             {/*} <SlateEditor
+              <SlateEditor
                 pageId={localPageObject.pageId}
                 pageContentObject={localPageObject.contentObject}
                 readOnly={readonly()}
                 pageContentObjectChanged={pageContentObjectChanged}
-      ></SlateEditor>*/}
+      ></SlateEditor>
               <span>{JSON.stringify(localPageObject.contentObject)}</span>
             </AccordionDetails>
           </Accordion>

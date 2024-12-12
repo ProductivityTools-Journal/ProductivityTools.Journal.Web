@@ -114,7 +114,7 @@ export default function StyledTreeItem(props) {
         setContextMenu(null);
     }
 
-    return (<TreeItem ref={dragRef} nodeId={node.id} {...rest} TransitionComponent={TransitionComponent} label={
+    return (<TreeItem ref={dragRef} itemId={node.id} nodeId={node.id} {...rest} TransitionComponent={TransitionComponent} label={
         <Box ref={dropRef} onContextMenu={handleContextMenu} >
             <Menu open={contextMenu !== null}
                 onClose={handleClose}
