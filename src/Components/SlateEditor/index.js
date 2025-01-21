@@ -1,7 +1,6 @@
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import React, { useState, useCallback, useEffect, useMemo } from "react";
-import Moment from 'react-moment';
 import './Editor.css'
 import withLinks from './Plugins/withLinks'
 import { Element } from './Parts/Element.js'
