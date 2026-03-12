@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "pt-journal-temp",
     "public": "build",
     "ignore": [
       "firebase.json",
