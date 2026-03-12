@@ -12,12 +12,12 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCPfDq6Cnxz2OaeumfrCW5BzbhqCmmXeHk",
-    authDomain: "ptjournal-b53b0.firebaseapp.com",
-    projectId: "ptjournal-b53b0",
-    storageBucket: "ptjournal-b53b0.appspot.com",
-    messagingSenderId: "126962328042",
-    appId: "1:126962328042:web:43a4816cd5644d65ce5293"
+    apiKey: "AIzaSyA5rZKf-dVt6mKGvMHa9pgJ_P6gohdmLeo",
+    authDomain: "ptprojectsweb.firebaseapp.com",
+    projectId: "ptprojectsweb",
+    storageBucket: "ptprojectsweb.firebasestorage.app",
+    messagingSenderId: "93484780890",
+    appId: "1:93484780890:web:0e9f7b8629d308ff9ff763"
 };
 
 // Initialize Firebase
