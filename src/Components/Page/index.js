@@ -7,8 +7,47 @@ import * as apiService from "services/apiService";
 import { v4 as uuid } from "uuid";
 import * as Common from "../Common.js";
 import SlateEditor from "Components/SlateEditor";
-import { PTPlate } from "productivitytools.plate";
-
+import {
+  Plate,
+  HeadingToolbar,
+  createPlateUI,
+  createPlugins,
+  createBasicElementsPlugin,
+  createBasicMarksPlugin,
+  createHeadingPlugin,
+  createBlockquotePlugin,
+  createCodeBlockPlugin,
+  createParagraphPlugin,
+  createBoldPlugin,
+  createItalicPlugin,
+  createUnderlinePlugin,
+  createStrikethroughPlugin,
+  createCodePlugin,
+  createListPlugin,
+  createIndentPlugin,
+  createTablePlugin,
+  createLinkPlugin,
+  createImagePlugin,
+  createMediaEmbedPlugin,
+  createExitBreakPlugin,
+  createSoftBreakPlugin,
+  createResetNodePlugin,
+  createNormalizeTypesPlugin,
+  createTrailingBlockPlugin,
+  createPluginFactory,
+  withProps,
+  StyledElement,
+  KEYS_HEADING,
+  ELEMENT_PARAGRAPH,
+  ELEMENT_BLOCKQUOTE,
+  ELEMENT_CODE_BLOCK,
+  isBlockAboveEmpty,
+  isCodeBlockEmpty,
+  isSelectionAtBlockStart,
+  isSelectionAtCodeBlockStart,
+  unwrapCodeBlock,
+} from "@udecode/plate";
+import ToolbarButtons from "./ToolbarButtons";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -16,6 +55,132 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PageAnchor from "Components/PageAnchor";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
+
+const createTitlePlugin = createPluginFactory({
+  key: "title",
+  isElement: true,
+});
+
+const plateUI = createPlateUI({
+  title: withProps(StyledElement, {
+    styles: {
+      root: {
+        margin: "0 0 0 0",
+        fontSize: "25px",
+        fontWeight: "1000",
+        color: "gray",
+      },
+    },
+  }),
+  h1: withProps(StyledElement, {
+    styles: {
+      root: {
+        margin: "0 0 0 0",
+        fontSize: "20px",
+        fontWeight: "1000",
+      },
+    },
+  }),
+});
+
+const platePlugins = createPlugins(
+  [
+    createBasicElementsPlugin(),
+    createTitlePlugin(),
+    createNormalizeTypesPlugin({
+      options: {
+        rules: [{ path: [0], strictType: "title" }],
+      },
+    }),
+    createTrailingBlockPlugin({
+      options: {
+        type: "p",
+      },
+    }),
+    createExitBreakPlugin({
+      options: {
+        rules: [
+          {
+            hotkey: "mod+enter",
+          },
+          {
+            hotkey: "mod+shift+enter",
+            before: true,
+          },
+          {
+            hotkey: "enter",
+            query: {
+              start: true,
+              end: true,
+              allow: [...KEYS_HEADING, "title"],
+            },
+            relative: true,
+            level: 1,
+          },
+        ],
+      },
+    }),
+    createResetNodePlugin({
+      options: {
+        rules: [
+          {
+            types: [ELEMENT_BLOCKQUOTE],
+            defaultType: ELEMENT_PARAGRAPH,
+            hotkey: "Enter",
+            predicate: isBlockAboveEmpty,
+          },
+          {
+            types: [ELEMENT_BLOCKQUOTE],
+            defaultType: ELEMENT_PARAGRAPH,
+            hotkey: "Backspace",
+            predicate: isSelectionAtBlockStart,
+          },
+          {
+            types: [ELEMENT_CODE_BLOCK],
+            defaultType: ELEMENT_PARAGRAPH,
+            onReset: unwrapCodeBlock,
+            hotkey: "Enter",
+            predicate: isCodeBlockEmpty,
+          },
+          {
+            types: [ELEMENT_CODE_BLOCK],
+            defaultType: ELEMENT_PARAGRAPH,
+            onReset: unwrapCodeBlock,
+            hotkey: "Backspace",
+            predicate: isSelectionAtCodeBlockStart,
+          },
+        ],
+      },
+    }),
+    createBasicMarksPlugin(),
+    createHeadingPlugin(),
+    createBlockquotePlugin(),
+    createCodeBlockPlugin(),
+    createParagraphPlugin(),
+    createBoldPlugin(),
+    createItalicPlugin(),
+    createUnderlinePlugin(),
+    createStrikethroughPlugin(),
+    createCodePlugin(),
+    createListPlugin(),
+    createIndentPlugin({
+      offset: 24,
+      unit: "px",
+    }),
+    createTablePlugin({
+      options: {
+        initialTableWidth: 600,
+      },
+    }),
+    createLinkPlugin(),
+    createImagePlugin(),
+    createMediaEmbedPlugin(),
+    createSoftBreakPlugin(),
+  ],
+  {
+    components: plateUI,
+  }
+);
 
 function Page({ page, updatePageInList, key }) {
   //const { meeting, ...rest } = props;
@@ -251,7 +416,20 @@ function Page({ page, updatePageInList, key }) {
           <PageAnchor page={page} removePageFromList={removePageFromList}></PageAnchor>
           <span><input type="checkbox" onClick={pinnedChanged} checked={localPageObject.pinned}></input>Pinned</span><br/>
           <span>{journalPath}</span>
-          <PTPlate content={localPageObject.contentObject} contentChanged={contentChanged}></PTPlate>
+          <Plate
+            key={`${localPageObject.pageId || localPageObject.frontendId}-${localPageObject.mode}`}
+            initialValue={localPageObject.contentObject || [{ type: "p", children: [{ text: "" }] }]}
+            value={localPageObject.contentObject || [{ type: "p", children: [{ text: "" }] }]}
+            onChange={contentChanged}
+            plugins={platePlugins}
+            readOnly={readonly()}
+            editableProps={{ placeholder: "Type..." }}
+            firstChildren={
+              <HeadingToolbar>
+                <ToolbarButtons />
+              </HeadingToolbar>
+            }
+          />
           {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
 
           <Accordion>
