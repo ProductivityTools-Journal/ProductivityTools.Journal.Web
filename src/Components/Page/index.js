@@ -351,7 +351,7 @@ function Page({ page, updatePageInList, key }) {
     return (
       <p style={buttonStyle}>
         <Button variant="contained" color="primary" onClick={edit}>
-          Edit
+          edit1
         </Button>
       </p>
     );
