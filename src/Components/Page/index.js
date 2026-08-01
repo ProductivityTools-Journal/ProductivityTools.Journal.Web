@@ -10,6 +10,7 @@ import SlateEditor from "Components/SlateEditor";
 import {
   Plate,
   HeadingToolbar,
+  PlateFloatingLink,
   createPlateUI,
   createPlugins,
   createBasicElementsPlugin,
@@ -172,7 +173,9 @@ const platePlugins = createPlugins(
         initialTableWidth: 600,
       },
     }),
-    createLinkPlugin(),
+    createLinkPlugin({
+      renderAfterEditable: PlateFloatingLink,
+    }),
     createImagePlugin(),
     createMediaEmbedPlugin(),
     createSoftBreakPlugin(),
