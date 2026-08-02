@@ -56,6 +56,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PageAnchor from "Components/PageAnchor";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
+import { toast } from "react-toastify";
 
 const createTitlePlugin = createPluginFactory({
   key: "title",
@@ -318,6 +319,20 @@ function Page({ page, updatePageInList, key }) {
     }
   };
 
+  const copyPublicLink = async () => {
+    const pageId = localPageObject?.pageId || page?.pageId;
+    if (!pageId) {
+      toast.warn("Page is not saved yet");
+      return;
+    }
+    const result = await apiService.getPagePublicHash(pageId);
+    if (result) {
+      const link = Common.extractLink(result);
+      await Common.copyTextToClipboard(link);
+      toast.success("Page public link copied to clipboard!");
+    }
+  };
+
   const getEditModeButtons = () => {
     return (
       <p style={buttonStyle}>
@@ -343,6 +358,9 @@ function Page({ page, updatePageInList, key }) {
         <Button variant="outlined" color="primary" onClick={checkState}>
           CheckState
         </Button>
+        <Button variant="outlined" color="primary" onClick={copyPublicLink}>
+          Public Link
+        </Button>
         <input type="file" accept="image/png, image/jpg" onChange={onFileChange} />
         <span>{imageUrl}</span>
         <img src={imageUrl}></img>
@@ -355,6 +373,9 @@ function Page({ page, updatePageInList, key }) {
       <p style={buttonStyle}>
         <Button variant="contained" color="primary" onClick={edit}>
           edit1
+        </Button>
+        <Button variant="outlined" color="primary" onClick={copyPublicLink}>
+          Public Link
         </Button>
       </p>
     );

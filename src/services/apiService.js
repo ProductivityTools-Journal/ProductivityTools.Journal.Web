@@ -268,6 +268,39 @@ async function invokeCall(call) {
   }
 }
 
+async function getPagePublicHash(pageId) {
+  let call = async (header) => {
+    const data = {
+      Id: parseInt(pageId),
+      PageId: parseInt(pageId),
+    };
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/GetPublicHash`,
+      data,
+      header
+    );
+    return response.data;
+  };
+  return invokeCallWithToast(call, "Getting page public link", "Page public link returned");
+}
+
+async function getJournalPublicHash(journalId) {
+  let call = async (header) => {
+    const data = {
+      Id: parseInt(journalId),
+      JournalId: parseInt(journalId),
+      TreeId: parseInt(journalId),
+    };
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/GetPublicHash`,
+      data,
+      header
+    );
+    return response.data;
+  };
+  return invokeCallWithToast(call, "Getting journal public link", "Journal public link returned");
+}
+
 export {
   getTree,
   getUserEmail,
@@ -284,4 +317,6 @@ export {
   fetchPageList,
   uploadPhoto,
   getCookie,
+  getPagePublicHash,
+  getJournalPublicHash,
 };

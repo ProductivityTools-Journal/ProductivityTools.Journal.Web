@@ -1,6 +1,8 @@
 import { useState, } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import * as apiService from 'services/apiService'
+import * as Common from '../Common.js'
+import { toast } from 'react-toastify'
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import Box from '@mui/material/Box';
 import { Link } from "react-router-dom";
@@ -97,6 +99,17 @@ export default function StyledTreeItem(props) {
         openModal('delete');
     }
 
+    const copyPublicLink = async (event) => {
+        event.stopPropagation();
+        setContextMenu(null);
+        const result = await apiService.getJournalPublicHash(node.id);
+        if (result) {
+            const link = Common.extractLink(result);
+            await Common.copyTextToClipboard(link);
+            toast.success("Journal public link copied to clipboard!");
+        }
+    }
+
     const [contextMenu, setContextMenu] = useState(null);
 
 
@@ -124,6 +137,7 @@ export default function StyledTreeItem(props) {
                 <MenuItem onClick={openNewModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
                 <MenuItem onClick={openRenameModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
                 <MenuItem onClick={openDeleteModal}>Remove &nbsp;<b>{node.name}</b></MenuItem>
+                <MenuItem onClick={copyPublicLink}>Copy Public Link for &nbsp;<b>{node.name}</b></MenuItem>
             </Menu>
             <Link to="#" onClick={(e) => treeClick(e, node)}>{getLabel(node)}</Link>
             <span>{isDragging && '😱'}</span>

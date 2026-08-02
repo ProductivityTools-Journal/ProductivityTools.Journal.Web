@@ -35,3 +35,40 @@ export const getNewPage = (journal) => {
     }
     return result;
 }
+
+export const extractLink = (data) => {
+    if (typeof data === "string") {
+        return data;
+    }
+    if (data && typeof data === "object") {
+        return (
+            data.url ||
+            data.Url ||
+            data.link ||
+            data.Link ||
+            data.hash ||
+            data.Hash ||
+            data.publicHash ||
+            data.PublicHash ||
+            (data.data ? extractLink(data.data) : JSON.stringify(data))
+        );
+    }
+    return String(data);
+};
+
+export const copyTextToClipboard = async (text) => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+    } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        textArea.remove();
+    }
+};
