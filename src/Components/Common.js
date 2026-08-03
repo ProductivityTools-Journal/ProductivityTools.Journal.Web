@@ -1,4 +1,6 @@
 import { v4 as uuid } from 'uuid';
+import * as Consts from 'Consts';
+import { config } from 'Consts';
 
 export const getObjectSlateStructureFromRawDetails = (title, rawDetails) => {
     let template = [{
@@ -36,24 +38,44 @@ export const getNewPage = (journal) => {
     return result;
 }
 
-export const extractLink = (data) => {
+export const extractHash = (data) => {
     if (typeof data === "string") {
         return data;
     }
     if (data && typeof data === "object") {
         return (
-            data.url ||
-            data.Url ||
-            data.link ||
-            data.Link ||
-            data.hash ||
-            data.Hash ||
             data.publicHash ||
             data.PublicHash ||
-            (data.data ? extractLink(data.data) : JSON.stringify(data))
+            data.hash ||
+            data.Hash ||
+            data.url ||
+            data.Url ||
+            (data.data ? extractHash(data.data) : JSON.stringify(data))
         );
     }
     return String(data);
+};
+
+export const extractLink = extractHash;
+
+export const getPagePublicUrl = (hashOrUrl) => {
+    const raw = extractHash(hashOrUrl);
+    if (!raw) return "";
+    if (raw.startsWith("http://") || raw.startsWith("https://")) {
+        return raw;
+    }
+    const cleanBase = config.PATH_BASE.endsWith("/") ? config.PATH_BASE : `${config.PATH_BASE}/`;
+    return `${cleanBase}${Consts.PATH_MEETINGS_CONTROLER}/Public/${raw}`;
+};
+
+export const getJournalPublicUrl = (hashOrUrl) => {
+    const raw = extractHash(hashOrUrl);
+    if (!raw) return "";
+    if (raw.startsWith("http://") || raw.startsWith("https://")) {
+        return raw;
+    }
+    const cleanBase = config.PATH_BASE.endsWith("/") ? config.PATH_BASE : `${config.PATH_BASE}/`;
+    return `${cleanBase}${Consts.PATH_TREE_CONTROLER}/Public/${raw}`;
 };
 
 export const copyTextToClipboard = async (text) => {

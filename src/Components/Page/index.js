@@ -327,8 +327,8 @@ function Page({ page, updatePageInList, key }) {
     }
     const result = await apiService.getPagePublicHash(pageId);
     if (result) {
-      const link = Common.extractLink(result);
-      await Common.copyTextToClipboard(link);
+      const fullUrl = Common.getPagePublicUrl(result);
+      await Common.copyTextToClipboard(fullUrl);
       toast.success("Page public link copied to clipboard!");
     }
   };

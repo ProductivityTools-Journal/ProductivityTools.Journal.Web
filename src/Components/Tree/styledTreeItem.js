@@ -104,8 +104,8 @@ export default function StyledTreeItem(props) {
         setContextMenu(null);
         const result = await apiService.getJournalPublicHash(node.id);
         if (result) {
-            const link = Common.extractLink(result);
-            await Common.copyTextToClipboard(link);
+            const fullUrl = Common.getJournalPublicUrl(result);
+            await Common.copyTextToClipboard(fullUrl);
             toast.success("Journal public link copied to clipboard!");
         }
     }
