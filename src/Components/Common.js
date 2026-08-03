@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import { Node } from 'slate';
 import * as Consts from 'Consts';
 import { config } from 'Consts';
 
@@ -19,6 +20,11 @@ export const getStringSlateStructureFromRawDetails = (title, rawDetails) => {
     return r;
 }
 
+export const getPlainTextFromSlateStructure = (nodes) => {
+    if (!nodes || !Array.isArray(nodes)) return "";
+    return nodes.map((node) => Node.string(node)).join("\n");
+};
+
 export const getNewPageArray = (journalId) => {
     let page = getNewPage(journalId);
     let result = [page];
@@ -26,12 +32,13 @@ export const getNewPageArray = (journalId) => {
 }
 
 export const getNewPage = (journal) => {
+    let contentObject = getObjectSlateStructureFromRawDetails('Page', '');
     let result = {
         date: undefined,
         frontendId: uuid(),
         journalId: journal.id,
-        content: getStringSlateStructureFromRawDetails('Page', ''),
-        // content: '[{"type":"title","children":[{"text":"a3"}]},{"type":"paragraph","children":[{"text":"Add notes here"}]}]',
+        content: JSON.stringify(contentObject),
+        plainText: getPlainTextFromSlateStructure(contentObject),
         contentType: 'Slate',
         subject: "Page"
     }

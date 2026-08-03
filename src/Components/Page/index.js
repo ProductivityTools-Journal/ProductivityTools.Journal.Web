@@ -272,6 +272,7 @@ function Page({ page, updatePageInList, key }) {
     let eventSum = undefined; //we need it to keep mode=edit, which is not returned from server
     localPageObject.contentType = "Slate";
     localPageObject.content = JSON.stringify(localPageObject.contentObject);
+    localPageObject.plainText = Common.getPlainTextFromSlateStructure(localPageObject.contentObject);
     if (localPageObject.pageId == null) {
       let savedEvent = await apiService.savePage(localPageObject);
 
