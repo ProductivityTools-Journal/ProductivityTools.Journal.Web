@@ -301,6 +301,18 @@ async function getJournalPublicHash(journalId) {
   return invokeCallWithToast(call, "Getting journal public link", "Journal public link returned");
 }
 
+async function getPagesWithoutPlainText() {
+  let call = async (header) => {
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/GetPagesWithoutPlainText`,
+      {},
+      header
+    );
+    return response.data;
+  };
+  return invokeCallWithToast(call, "Fetching unmigrated pages", "Unmigrated pages fetched");
+}
+
 export {
   getTree,
   getUserEmail,
@@ -319,4 +331,5 @@ export {
   getCookie,
   getPagePublicHash,
   getJournalPublicHash,
+  getPagesWithoutPlainText,
 };
