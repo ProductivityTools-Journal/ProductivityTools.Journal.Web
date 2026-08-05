@@ -105,7 +105,7 @@ export default function Main() {
           onClick={migratePlainText}
           disabled={isMigrating}
         >
-          {isMigrating ? "Migrating..." : "Migrate 100 PlainText"}
+          {isMigrating ? "Migrating..." : "Migrate 1000 PlainText"}
         </Button>
         {editedMeeting && (
           <div style={{ fontSize: "0.85rem", color: "#666" }}>EditedMeeting: {editedMeeting}</div>

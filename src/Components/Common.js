@@ -20,9 +20,88 @@ export const getStringSlateStructureFromRawDetails = (title, rawDetails) => {
     return r;
 }
 
+const isBlockType = (type) => {
+    if (!type) return false;
+    const lower = String(type).toLowerCase();
+    return [
+        'p', 'paragraph', 'title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'ul', 'ol', 'li', 'lic', 'tr', 'table', 'blockquote',
+        'code_block', 'code_line', 'check_item'
+    ].includes(lower);
+};
+
 export const getPlainTextFromSlateStructure = (nodes) => {
-    if (!nodes || !Array.isArray(nodes)) return "";
-    return nodes.map((node) => Node.string(node)).join("\n");
+    if (!nodes) return "";
+    if (typeof nodes === "string") {
+        try {
+            nodes = JSON.parse(nodes);
+        } catch {
+            return nodes;
+        }
+    }
+    if (!Array.isArray(nodes)) {
+        nodes = [nodes];
+    }
+
+    const lines = [];
+    let currentLine = "";
+
+    const flushLine = () => {
+        lines.push(currentLine.trimEnd());
+        currentLine = "";
+    };
+
+    const processNode = (node) => {
+        if (!node) return;
+
+        if (Array.isArray(node)) {
+            for (const child of node) {
+                processNode(child);
+            }
+            return;
+        }
+
+        if (typeof node.text === "string") {
+            currentLine += node.text;
+        }
+
+        if (Array.isArray(node.children)) {
+            const isBlock = isBlockType(node.type);
+            const isTableCell = node.type === "td" || node.type === "th";
+
+            for (const child of node.children) {
+                processNode(child);
+                if (isTableCell) {
+                    currentLine += " ";
+                }
+            }
+
+            if (isBlock) {
+                flushLine();
+            }
+        }
+    };
+
+    for (const node of nodes) {
+        processNode(node);
+        flushLine();
+    }
+
+    const result = [];
+    let previousEmpty = false;
+    for (const line of lines) {
+        if (line.trim() === "") {
+            if (!previousEmpty && result.length > 0) {
+                result.push("");
+                previousEmpty = true;
+            }
+        } else {
+            result.push(line);
+            previousEmpty = false;
+        }
+    }
+
+    return result.join("\n").trim();
 };
 
 export const getNewPageArray = (journalId) => {
