@@ -200,8 +200,6 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
 
   return (
     <div className="conainer" ref={containerRef}>
-      <p>pawsel</p>
-      treeview:
       <SimpleTreeView
         expanded={expanded}
         // expanded={getNodesIdRoot(root)}///recursive function

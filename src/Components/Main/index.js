@@ -5,6 +5,9 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import * as apiService from "services/apiService";
 import * as Common from "../Common.js";
 import { toast } from "react-toastify";
@@ -14,6 +17,9 @@ export default function Main() {
   const [editedMeeting, setEditedMeeting] = useState(undefined);
   const [selectedTreeNode, setSelectedTreeNode] = useState(null);
   const [isMigrating, setIsMigrating] = useState(false);
+  const [showTree, setShowTree] = useState(() => {
+    return typeof window !== "undefined" ? window.innerWidth > 768 : true;
+  });
 
   function setEditMeeting(journalItemId) {
     setEditedMeeting(journalItemId);
@@ -70,9 +76,28 @@ export default function Main() {
 
   return (
     <div>
-      <div>EditedMeeting:{editedMeeting}</div>
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "5px 0" }}>
-        <Link to="/">Home</Link>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          padding: "8px 12px",
+          borderBottom: "1px solid #e0e0e0",
+          marginBottom: "12px",
+          flexWrap: "wrap",
+        }}
+      >
+        <IconButton
+          color="primary"
+          aria-label="toggle navigation tree"
+          onClick={() => setShowTree((prev) => !prev)}
+          title={showTree ? "Hide Tree" : "Show Tree"}
+        >
+          {showTree ? <MenuOpenIcon /> : <MenuIcon />}
+        </IconButton>
+        <Link to="/" style={{ textDecoration: "none", color: "#1976d2", fontWeight: 500 }}>
+          Home
+        </Link>
         <Button
           variant="contained"
           color="secondary"
@@ -82,21 +107,46 @@ export default function Main() {
         >
           {isMigrating ? "Migrating..." : "Migrate 100 PlainText"}
         </Button>
+        {editedMeeting && (
+          <div style={{ fontSize: "0.85rem", color: "#666" }}>EditedMeeting: {editedMeeting}</div>
+        )}
       </div>
       <JournalTreeContextProvider>
         <DndProvider backend={HTML5Backend}>
-          {" "}
-          {/* drag and drop */}
-          <div style={{ width: "400px", float: "left" }}>
-            <Tree
-              setSelectedTreeNode={setSelectedTreeNode}
-              selectedTreeNode={selectedTreeNode}
-              createNewMeeting={newMeeting}
-            />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: "20px",
+              padding: "0 12px",
+              alignItems: "flex-start",
+            }}
+          >
+            <div
+              style={{
+                display: showTree ? "block" : "none",
+                width: "350px",
+                minWidth: "280px",
+                maxWidth: "100%",
+                flexShrink: 0,
+                borderRight: "1px solid #e0e0e0",
+                paddingRight: "12px",
+                boxSizing: "border-box",
+              }}
+            >
+              <Tree
+                setSelectedTreeNode={setSelectedTreeNode}
+                selectedTreeNode={selectedTreeNode}
+                createNewMeeting={newMeeting}
+              />
+            </div>
+            <div style={{ flex: 1, minWidth: "300px", maxWidth: "100%" }}>
+              <PageList selectedTreeNode={selectedTreeNode} />
+            </div>
           </div>
-          <PageList selectedTreeNode={selectedTreeNode} />
         </DndProvider>
-      </JournalTreeContextProvider>{" "}
+      </JournalTreeContextProvider>
     </div>
   );
 }
