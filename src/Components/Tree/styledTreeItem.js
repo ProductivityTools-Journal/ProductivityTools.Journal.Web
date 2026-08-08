@@ -5,7 +5,6 @@ import * as Common from '../Common.js'
 import { toast } from 'react-toastify'
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import Box from '@mui/material/Box';
-import { Link } from "react-router-dom";
 import Collapse from '@mui/material/Collapse';
 import PropTypes from 'prop-types';
 import { Menu, MenuItem } from '@mui/material';
@@ -37,8 +36,9 @@ export default function StyledTreeItem(props) {
     }
 
 
-    const changeParent2 = (source, targetParentId) => {
-        apiService.moveTreeNode(source.id, targetParentId)
+    const changeParent2 = async (source, targetParentId) => {
+        if (!source || !targetParentId || source.id === targetParentId) return;
+        await apiService.moveTreeNode(source.id, targetParentId);
         changeParent(source, targetParentId);
     }
 
@@ -139,7 +139,19 @@ export default function StyledTreeItem(props) {
                 <MenuItem onClick={openDeleteModal}>Remove &nbsp;<b>{node.name}</b></MenuItem>
                 <MenuItem onClick={copyPublicLink}>Copy Public Link for &nbsp;<b>{node.name}</b></MenuItem>
             </Menu>
-            <Link to="#" onClick={(e) => treeClick(e, node)}>{getLabel(node)}</Link>
+            <span
+                onClick={(e) => treeClick(e, node)}
+                style={{
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    color: 'inherit',
+                    textDecoration: 'none',
+                    display: 'inline-block',
+                    padding: '2px 0'
+                }}
+            >
+                {getLabel(node)}
+            </span>
             <span>{isDragging && '😱'}</span>
             <span> {isOver && <span>Drop Here!</span>}</span>
         </Box>}>

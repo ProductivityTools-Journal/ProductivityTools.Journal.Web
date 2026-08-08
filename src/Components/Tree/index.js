@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import SvgIcon from "@mui/material/SvgIcon";
-import TreeView from "@mui/lab/TreeView";
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import * as apiService from "services/apiService";
-import { Link, useParams } from "react-router-dom";
-import ContextMenu from "../ContextMenu";
+import { useParams } from "react-router-dom";
 import "./index.css";
 import StyledTreeItem from "./styledTreeItem";
 import JournalNewModal from "../JournalNewModal";
@@ -59,33 +57,28 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     journalTreeContext.setJournalTree(r);
     if (r != null) {
       setRoot(r);
-
-      getNodePath(r[0], params.TreeId);
+      const rootNode = Array.isArray(r) ? r[0] : r;
+      getNodePath(rootNode, params.TreeId);
     }
   };
   const getNodePath = (node, targetId) => {
-    if (targetId == null) return [];
-    debugger;
+    if (targetId == null || !node) return [];
 
-    if (node != null) {
-      if (node.id === targetId) {
-        var result = [];
-        result = result.concat([targetId.toString()]);
-        return result;
-      } else {
-        for (let n of node.nodes) {
-          //node.nodes.forEach(x=>{
-          var chain = getNodePath(n, targetId);
-          if (chain != null) {
-            var finalResult = chain.concat(node.id.toString());
-            setExpanded(finalResult);
-            return finalResult;
-          }
+    if (node.id === targetId) {
+      var result = [];
+      result = result.concat([targetId.toString()]);
+      return result;
+    } else if (node.nodes && Array.isArray(node.nodes)) {
+      for (let n of node.nodes) {
+        var chain = getNodePath(n, targetId);
+        if (chain != null && chain.length > 0) {
+          var finalResult = chain.concat(node.id.toString());
+          setExpanded(finalResult);
+          return finalResult;
         }
       }
-    } else {
-      return [];
     }
+    return [];
   };
 
   useEffect(() => {
@@ -95,38 +88,69 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   }, [params.TreeId]);
 
   const findElement = (candidateElement, nodeId) => {
-    var candidateElementId = candidateElement.id;
-    //console.log(candidateElement.elementId);
-    // console.log(candidateElementId);
-    if (candidateElementId === nodeId) {
+    if (!candidateElement) {
+      return null;
+    }
+    if (Array.isArray(candidateElement)) {
+      for (let el of candidateElement) {
+        let found = findElement(el, nodeId);
+        if (found != null) {
+          return found;
+        }
+      }
+      return null;
+    }
+    if (candidateElement.id === nodeId) {
       return candidateElement;
-    } else {
-      for (var i = 0; i < candidateElement.nodes.length; i += 1) {
-        var newCandidateElement = candidateElement.nodes[i];
-        var result = findElement(newCandidateElement, nodeId);
+    }
+    if (candidateElement.nodes && Array.isArray(candidateElement.nodes)) {
+      for (let i = 0; i < candidateElement.nodes.length; i += 1) {
+        let newCandidateElement = candidateElement.nodes[i];
+        let result = findElement(newCandidateElement, nodeId);
         if (result != null) {
           return result;
         }
       }
     }
+    return null;
   };
 
   function updateElementInroot(elementToUpdate, propertyName, propertyValue) {
-    let newroot = root;
-    let newElement = findElement(newroot[0], elementToUpdate.id);
-    newElement[propertyName] = propertyValue;
-    setRoot(newroot);
+    if (!root || !elementToUpdate) return;
+    const rootNode = Array.isArray(root) ? root[0] : root;
+    let newElement = findElement(rootNode, elementToUpdate.id);
+    if (newElement) {
+      newElement[propertyName] = propertyValue;
+      const updatedRoot = Array.isArray(root) ? [...root] : { ...rootNode };
+      setRoot(updatedRoot);
+      journalTreeContext.setJournalTree(updatedRoot);
+    }
   }
 
   const changeParent = (source, targetParentId) => {
-    console.log("change parent");
-    console.log("targetParentId", targetParentId);
-    var childObject = findElement(root[0], source.id);
-    var currentParent = findElement(root[0], source.parentId);
-    currentParent.nodes = currentParent.nodes.filter((item) => item !== childObject);
-    var newParentobject = findElement(root[0], targetParentId);
-    newParentobject.nodes.push(childObject);
-    updateElementInroot(childObject, "parentId", targetParentId);
+    console.log("change parent", source, "targetParentId", targetParentId);
+    if (!root || !source || source.id === targetParentId) {
+      return;
+    }
+    const rootNode = Array.isArray(root) ? root[0] : root;
+    const childObject = findElement(rootNode, source.id);
+    const currentParent = findElement(rootNode, source.parentId);
+    if (currentParent && currentParent.nodes) {
+      currentParent.nodes = currentParent.nodes.filter((item) => item.id !== source.id);
+    }
+    const newParentObject = findElement(rootNode, targetParentId);
+    if (newParentObject) {
+      if (!newParentObject.nodes) {
+        newParentObject.nodes = [];
+      }
+      if (childObject) {
+        childObject.parentId = targetParentId;
+        newParentObject.nodes.push(childObject);
+      }
+    }
+    const updatedRoot = Array.isArray(root) ? [...root] : { ...rootNode };
+    setRoot(updatedRoot);
+    journalTreeContext.setJournalTree(updatedRoot);
     setSelectedTreeNode(source);
   };
 
