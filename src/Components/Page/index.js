@@ -439,7 +439,13 @@ function Page({ page, updatePageInList, key }) {
           </legend>
           {/* <legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} </legend> */}
           <PageAnchor page={page} removePageFromList={removePageFromList}></PageAnchor>
-          <span><input type="checkbox" onClick={pinnedChanged} checked={localPageObject.pinned}></input>Pinned</span><br/>
+          {!readonly() && (
+            <span>
+              <input type="checkbox" onClick={pinnedChanged} checked={localPageObject.pinned} />
+              Pinned
+              <br />
+            </span>
+          )}
           <span>{journalPath}</span>
           <Plate
             key={`${localPageObject.pageId || localPageObject.frontendId}-${localPageObject.mode}`}
@@ -450,9 +456,11 @@ function Page({ page, updatePageInList, key }) {
             readOnly={readonly()}
             editableProps={{ placeholder: "Type..." }}
             firstChildren={
-              <HeadingToolbar>
-                <ToolbarButtons />
-              </HeadingToolbar>
+              !readonly() ? (
+                <HeadingToolbar>
+                  <ToolbarButtons />
+                </HeadingToolbar>
+              ) : null
             }
           />
           {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
