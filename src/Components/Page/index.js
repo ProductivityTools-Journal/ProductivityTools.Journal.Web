@@ -362,6 +362,7 @@ function Page({ page, updatePageInList, key }) {
         <Button variant="outlined" color="primary" onClick={copyPublicLink}>
           Public Link
         </Button>
+        <PageAnchor page={page} removePageFromList={removePageFromList} />
         <input type="file" accept="image/png, image/jpg" onChange={onFileChange} />
         <span>{imageUrl}</span>
         <img src={imageUrl}></img>
@@ -378,6 +379,7 @@ function Page({ page, updatePageInList, key }) {
         <Button variant="outlined" color="primary" onClick={copyPublicLink}>
           Public Link
         </Button>
+        <PageAnchor page={page} removePageFromList={removePageFromList} />
       </p>
     );
   };
@@ -438,7 +440,6 @@ function Page({ page, updatePageInList, key }) {
             {localPageObject?.journalId}
           </legend>
           {/* <legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} </legend> */}
-          <PageAnchor page={page} removePageFromList={removePageFromList}></PageAnchor>
           {!readonly() && (
             <span>
               <input type="checkbox" onClick={pinnedChanged} checked={localPageObject.pinned} />
