@@ -439,15 +439,33 @@ function Page({ page, updatePageInList, key }) {
             [{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} Treeid:
             {localPageObject?.journalId}
           </legend>
-          {/* <legend>[{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} </legend> */}
-          {!readonly() && (
-            <span>
-              <input type="checkbox" onClick={pinnedChanged} checked={localPageObject.pinned} />
-              Pinned
-              <br />
-            </span>
-          )}
-          <span>{journalPath}</span>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "4px",
+            }}
+          >
+            <div>
+              {!readonly() && (
+                <span>
+                  <input type="checkbox" onClick={pinnedChanged} checked={localPageObject.pinned} />
+                  Pinned
+                </span>
+              )}
+            </div>
+            <div
+              style={{
+                color: "#888",
+                fontSize: "0.85rem",
+                textAlign: "right",
+                fontStyle: "italic",
+              }}
+            >
+              {journalPath}
+            </div>
+          </div>
           <Plate
             key={`${localPageObject.pageId || localPageObject.frontendId}-${localPageObject.mode}`}
             initialValue={localPageObject.contentObject || [{ type: "p", children: [{ text: "" }] }]}
