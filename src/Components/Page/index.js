@@ -354,7 +354,7 @@ function Page({ page, updatePageInList, key }) {
           Close
         </Button>
         <Button variant="outlined" color="primary" onClick={deletePage}>
-          Delete page
+          Delete
         </Button>
         <Button variant="outlined" color="primary" onClick={checkState}>
           CheckState
@@ -436,8 +436,10 @@ function Page({ page, updatePageInList, key }) {
           {/* <p>mode: {localPageObject.mode}  </p> */}
           {/* <p>PageId: {localPageObject.pageId}</p> */}
           <legend>
-            [{localPageObject?.pageId}] {dtFormated} ({dtDescription}) - {localPageObject?.subject} Treeid:
-            {localPageObject?.journalId}
+            {journalTreeContext?.debug && `[${localPageObject?.pageId}] `}
+            {dtFormated} ({dtDescription})
+            {localPageObject?.subject && localPageObject.subject !== "Page" && ` - ${localPageObject.subject}`}
+            {journalTreeContext?.debug && ` Treeid:${localPageObject?.journalId}`}
           </legend>
           <div
             style={{
@@ -484,20 +486,22 @@ function Page({ page, updatePageInList, key }) {
           />
           {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
 
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-              <Typography>Debuginfo</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <SlateEditor
-                pageId={localPageObject.pageId}
-                pageContentObject={localPageObject.contentObject}
-                readOnly={readonly()}
-                pageContentObjectChanged={pageContentObjectChanged}
-      ></SlateEditor>
-              <span>{JSON.stringify(localPageObject.contentObject)}</span>
-            </AccordionDetails>
-          </Accordion>
+          {journalTreeContext?.debug && (
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+                <Typography>Debuginfo</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <SlateEditor
+                  pageId={localPageObject.pageId}
+                  pageContentObject={localPageObject.contentObject}
+                  readOnly={readonly()}
+                  pageContentObjectChanged={pageContentObjectChanged}
+                ></SlateEditor>
+                <span>{JSON.stringify(localPageObject.contentObject)}</span>
+              </AccordionDetails>
+            </Accordion>
+          )}
         </fieldset>
       );
     }

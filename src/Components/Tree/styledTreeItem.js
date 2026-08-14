@@ -1,4 +1,4 @@
-import { useState, } from 'react'
+import { useState, useContext } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
 import * as apiService from 'services/apiService'
 import * as Common from '../Common.js'
@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import PropTypes from 'prop-types';
 import { Menu, MenuItem } from '@mui/material';
+import { JournalTreeContext } from "Components/JournalContext/index.js";
 
 
 function TransitionComponent(props) {
@@ -28,6 +29,8 @@ TransitionComponent.propTypes = {
 };
 
 export default function StyledTreeItem(props) {
+    const journalTreeContext = useContext(JournalTreeContext);
+    const isDebug = journalTreeContext?.debug;
 
     const { changeParent, node, openModal, ...rest } = props;
     const treeClick = (e, node) => {
@@ -43,8 +46,10 @@ export default function StyledTreeItem(props) {
     }
 
     function getLabel(x) {
-        let l = x.name + " [Id:" + x.id + "]";
-        return l;
+        if (isDebug) {
+            return x.name + " [Id:" + x.id + "]";
+        }
+        return x.name;
     }
 
     const [{ isDragging }, dragRef] = useDrag({
@@ -127,33 +132,45 @@ export default function StyledTreeItem(props) {
         setContextMenu(null);
     }
 
-    return (<TreeItem ref={dragRef} itemId={node.id} nodeId={node.id} {...rest} TransitionComponent={TransitionComponent} label={
-        <Box ref={dropRef} onContextMenu={handleContextMenu} >
-            <Menu open={contextMenu !== null}
-                onClose={handleClose}
-                anchorReference="anchorPosition"
-                anchorPosition={contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
-            >
-                <MenuItem onClick={openNewModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
-                <MenuItem onClick={openRenameModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
-                <MenuItem onClick={openDeleteModal}>Remove &nbsp;<b>{node.name}</b></MenuItem>
-                <MenuItem onClick={copyPublicLink}>Copy Public Link for &nbsp;<b>{node.name}</b></MenuItem>
-            </Menu>
-            <span
-                onClick={(e) => treeClick(e, node)}
-                style={{
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    color: 'inherit',
-                    textDecoration: 'none',
-                    display: 'inline-block',
-                    padding: '2px 0'
-                }}
-            >
-                {getLabel(node)}
-            </span>
-            <span>{isDragging && '😱'}</span>
-            <span> {isOver && <span>Drop Here!</span>}</span>
-        </Box>}>
-    </TreeItem>)
+    return (
+        <TreeItem
+            ref={dragRef}
+            itemId={node.id.toString()}
+            nodeId={node.id.toString()}
+            {...rest}
+            TransitionComponent={TransitionComponent}
+            label={
+                <Box ref={dropRef} onContextMenu={handleContextMenu}>
+                    <Menu
+                        open={contextMenu !== null}
+                        onClose={handleClose}
+                        anchorReference="anchorPosition"
+                        anchorPosition={contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
+                    >
+                        <MenuItem onClick={openNewModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
+                        <MenuItem onClick={openRenameModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
+                        <MenuItem onClick={openDeleteModal}>Remove &nbsp;<b>{node.name}</b></MenuItem>
+                        <MenuItem onClick={copyPublicLink}>Copy Public Link for &nbsp;<b>{node.name}</b></MenuItem>
+                    </Menu>
+                    <span
+                        onClick={(e) => treeClick(e, node)}
+                        style={{
+                            cursor: 'pointer',
+                            userSelect: 'none',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                            display: 'inline-block',
+                            padding: '2px 0'
+                        }}
+                    >
+                        {getLabel(node)}
+                    </span>
+                    <span>{isDragging && '😱'}</span>
+                    <span> {isOver && <span>Drop Here!</span>}</span>
+                </Box>
+            }
+        >
+            {props.children}
+        </TreeItem>
+    );
 }

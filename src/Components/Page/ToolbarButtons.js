@@ -6,6 +6,10 @@ import { Looks4 } from "@styled-icons/material/Looks4";
 import { Looks5 } from "@styled-icons/material/Looks5";
 import { Looks6 } from "@styled-icons/material/Looks6";
 import { FormatQuote } from "@styled-icons/material/FormatQuote";
+import { FormatBold } from "@styled-icons/material/FormatBold";
+import { FormatItalic } from "@styled-icons/material/FormatItalic";
+import { FormatUnderlined } from "@styled-icons/material/FormatUnderlined";
+import { FormatStrikethrough } from "@styled-icons/material/FormatStrikethrough";
 import { CodeBlock } from "@styled-icons/boxicons-regular/CodeBlock";
 import { Link as LinkIcon } from "@styled-icons/material/Link";
 import { FormatListBulleted } from "@styled-icons/material/FormatListBulleted";
@@ -21,6 +25,7 @@ import { BorderRight } from "@styled-icons/material/BorderRight";
 import { Image as ImageIcon } from "@styled-icons/material/Image";
 import {
   BlockToolbarButton,
+  MarkToolbarButton,
   CodeBlockToolbarButton,
   LinkToolbarButton,
   ListToolbarButton,
@@ -36,6 +41,10 @@ import {
   ELEMENT_BLOCKQUOTE,
   ELEMENT_UL,
   ELEMENT_OL,
+  MARK_BOLD,
+  MARK_ITALIC,
+  MARK_UNDERLINE,
+  MARK_STRIKETHROUGH,
   getPluginType,
   usePlateEditorRef,
   focusEditor,
@@ -87,6 +96,26 @@ export const ToolbarButtons = () => {
         tooltip={tooltip("Heading 6")}
         type={getPluginType(editor, ELEMENT_H6)}
         icon={<Looks6 />}
+      />
+      <MarkToolbarButton
+        tooltip={tooltip("Bold (⌘+B)")}
+        type={getPluginType(editor, MARK_BOLD)}
+        icon={<FormatBold />}
+      />
+      <MarkToolbarButton
+        tooltip={tooltip("Italic (⌘+I)")}
+        type={getPluginType(editor, MARK_ITALIC)}
+        icon={<FormatItalic />}
+      />
+      <MarkToolbarButton
+        tooltip={tooltip("Underline (⌘+U)")}
+        type={getPluginType(editor, MARK_UNDERLINE)}
+        icon={<FormatUnderlined />}
+      />
+      <MarkToolbarButton
+        tooltip={tooltip("Strikethrough (⌘+⇧+X)")}
+        type={getPluginType(editor, MARK_STRIKETHROUGH)}
+        icon={<FormatStrikethrough />}
       />
       <BlockToolbarButton
         tooltip={tooltip("Block Quote (⌘+⇧+.)")}

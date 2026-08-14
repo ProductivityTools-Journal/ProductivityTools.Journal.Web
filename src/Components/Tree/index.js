@@ -207,34 +207,32 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   };
 
   function GetNode(node) {
-    if (node) {
-      return (
-        <StyledTreeItem
-          key={node.id}
-          changeParent={changeParent}
-          setSelectedTreeNode={setSelectedTreeNode}
-          openModal={openModal}
-          node={node}
-        >
-          {node?.nodes?.map((x) => GetNode(x))}
-        </StyledTreeItem>
-      );
+    if (!node) return null;
+    if (Array.isArray(node)) {
+      return node.map((x) => GetNode(x));
     }
+    return (
+      <StyledTreeItem
+        key={node.id}
+        changeParent={changeParent}
+        setSelectedTreeNode={setSelectedTreeNode}
+        openModal={openModal}
+        node={node}
+      >
+        {node?.nodes?.map((x) => GetNode(x))}
+      </StyledTreeItem>
+    );
   }
 
   return (
     <div className="conainer" ref={containerRef}>
       <SimpleTreeView
-        expanded={expanded}
-        // expanded={getNodesIdRoot(root)}///recursive function
+        expandedItems={expanded}
+        onExpandedItemsChange={handleToggle}
         defaultCollapseIcon={<MinusSquare />}
         defaultExpandIcon={<PlusSquare />}
         defaultEndIcon={<CloseSquare />}
-        onNodeToggle={handleToggle}
       >
-        {root && root.length > 0 && root.map(x => {
-          return <StyledTreeItem key={x.id} node={x} contextmenuid={x.id} nodeId={x.id.toString()}>{GetNode(x.nodes)}</StyledTreeItem>
-        })}
         {GetNode(root)}
       </SimpleTreeView>
       {/* <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu> */}

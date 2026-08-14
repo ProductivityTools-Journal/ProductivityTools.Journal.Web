@@ -6,6 +6,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import * as apiService from "services/apiService";
@@ -17,6 +19,7 @@ export default function Main() {
   const [editedMeeting, setEditedMeeting] = useState(undefined);
   const [selectedTreeNode, setSelectedTreeNode] = useState(null);
   const [isMigrating, setIsMigrating] = useState(false);
+  const [debug, setDebug] = useState(false);
   const [showTree, setShowTree] = useState(() => {
     return typeof window !== "undefined" ? window.innerWidth > 768 : true;
   });
@@ -110,8 +113,22 @@ export default function Main() {
         {editedMeeting && (
           <div style={{ fontSize: "0.85rem", color: "#666" }}>EditedMeeting: {editedMeeting}</div>
         )}
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={debug}
+                onChange={(e) => setDebug(e.target.checked)}
+                size="small"
+                color="primary"
+              />
+            }
+            label="Debug"
+            style={{ margin: 0, userSelect: "none" }}
+          />
+        </div>
       </div>
-      <JournalTreeContextProvider>
+      <JournalTreeContextProvider debug={debug} setDebug={setDebug}>
         <DndProvider backend={HTML5Backend}>
           <div
             style={{
