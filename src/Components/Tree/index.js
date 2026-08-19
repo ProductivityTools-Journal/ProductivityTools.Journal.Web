@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import SvgIcon from "@mui/material/SvgIcon";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import * as apiService from "services/apiService";
 import { useParams } from "react-router-dom";
@@ -40,6 +45,7 @@ function CloseSquare(props) {
 export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNode }) {
   const [expanded, setExpanded] = useState([]);
   const [root, setRoot] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const params = useParams();
 
   const [newModalOpen, setNewModalOpen] = useState(false);
@@ -49,6 +55,77 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const journalTreeContext = useContext(JournalTreeContext);
 
   const containerRef = useRef(null);
+
+  const filterTree = (node, term) => {
+    if (!node) return null;
+    const trimmed = term.trim().toLowerCase();
+    if (!trimmed) return node;
+
+    const isMatch = node.name && node.name.toLowerCase().includes(trimmed);
+
+    let filteredChildren = [];
+    if (node.nodes && Array.isArray(node.nodes)) {
+      filteredChildren = node.nodes
+        .map((child) => filterTree(child, term))
+        .filter(Boolean);
+    }
+
+    if (isMatch || filteredChildren.length > 0) {
+      return {
+        ...node,
+        nodes: filteredChildren.length > 0 ? filteredChildren : (isMatch ? (node.nodes || []) : []),
+      };
+    }
+    return null;
+  };
+
+  const getAllNodeIds = (node) => {
+    if (!node) return [];
+    if (Array.isArray(node)) {
+      let ids = [];
+      for (const n of node) {
+        ids = ids.concat(getAllNodeIds(n));
+      }
+      return ids;
+    }
+    let ids = [node.id.toString()];
+    if (node.nodes && Array.isArray(node.nodes)) {
+      for (const child of node.nodes) {
+        ids = ids.concat(getAllNodeIds(child));
+      }
+    }
+    return ids;
+  };
+
+  const findDeepestNode = (node, depth = 0) => {
+    if (!node) return null;
+    if (Array.isArray(node)) {
+      let deepest = null;
+      for (const n of node) {
+        const d = findDeepestNode(n, depth);
+        if (d && (!deepest || d.depth > deepest.depth)) {
+          deepest = d;
+        }
+      }
+      return deepest;
+    }
+
+    if (!node.nodes || node.nodes.length === 0) {
+      return { node, depth };
+    }
+
+    let deepest = null;
+    for (const child of node.nodes) {
+      const childDeepest = findDeepestNode(child, depth + 1);
+      if (childDeepest) {
+        if (!deepest || childDeepest.depth > deepest.depth) {
+          deepest = childDeepest;
+        }
+      }
+    }
+
+    return deepest || { node, depth };
+  };
 
   const fetchData = async () => {
     const r = await apiService.getTree();
@@ -86,6 +163,56 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
       }
     }
     return [];
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value.trim()) {
+      const rootNode = Array.isArray(root) ? root[0] : root;
+      const filtered = filterTree(rootNode, value);
+      if (filtered) {
+        const allFilteredIds = getAllNodeIds(filtered);
+        setExpanded(allFilteredIds);
+      }
+    } else {
+      const rootNode = Array.isArray(root) ? root[0] : root;
+      if (selectedTreeNode?.id && rootNode) {
+        const fullPath = getNodePath(rootNode, selectedTreeNode.id);
+        if (fullPath && fullPath.length > 0) {
+          setExpanded(fullPath);
+        }
+      } else if (rootNode?.id != null) {
+        setExpanded([rootNode.id.toString()]);
+      }
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (!root) return;
+      const rootNode = Array.isArray(root) ? root[0] : root;
+
+      if (searchTerm.trim()) {
+        const filtered = filterTree(rootNode, searchTerm);
+        if (filtered) {
+          const deepestResult = findDeepestNode(filtered);
+          if (deepestResult && deepestResult.node) {
+            const targetNode = deepestResult.node;
+            setSelectedTreeNode(targetNode);
+
+            const fullPath = getNodePath(rootNode, targetNode.id);
+            if (fullPath && fullPath.length > 0) {
+              setExpanded(fullPath);
+            } else {
+              setExpanded([targetNode.id.toString()]);
+            }
+          }
+        }
+        setSearchTerm("");
+      }
+    }
   };
 
   useEffect(() => {
@@ -223,6 +350,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         key={node.id}
         changeParent={changeParent}
         setSelectedTreeNode={setSelectedTreeNode}
+        selectedTreeNode={selectedTreeNode}
         openModal={openModal}
         node={node}
       >
@@ -231,16 +359,63 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     );
   }
 
+  const rootNode = Array.isArray(root) ? root[0] : root;
+  const displayedRoot = searchTerm.trim() ? filterTree(rootNode, searchTerm) : root;
+
   return (
     <div className="conainer" ref={containerRef}>
+      <TextField
+        size="small"
+        fullWidth
+        placeholder="Quick search (press Enter to open)..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+        onKeyDown={handleKeyDown}
+        variant="outlined"
+        style={{ marginBottom: "10px" }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon fontSize="small" color="action" />
+            </InputAdornment>
+          ),
+          endAdornment: searchTerm ? (
+            <InputAdornment position="end">
+              <IconButton
+                size="small"
+                onClick={() => {
+                  setSearchTerm("");
+                  if (selectedTreeNode?.id && rootNode) {
+                    const fullPath = getNodePath(rootNode, selectedTreeNode.id);
+                    if (fullPath && fullPath.length > 0) {
+                      setExpanded(fullPath);
+                    }
+                  } else if (rootNode?.id != null) {
+                    setExpanded([rootNode.id.toString()]);
+                  }
+                }}
+              >
+                <ClearIcon fontSize="small" />
+              </IconButton>
+            </InputAdornment>
+          ) : null,
+        }}
+      />
       <SimpleTreeView
         expandedItems={expanded}
         onExpandedItemsChange={handleToggle}
+        selectedItems={selectedTreeNode?.id ? selectedTreeNode.id.toString() : null}
         defaultCollapseIcon={<MinusSquare />}
         defaultExpandIcon={<PlusSquare />}
         defaultEndIcon={<CloseSquare />}
       >
-        {GetNode(root)}
+        {displayedRoot ? (
+          GetNode(displayedRoot)
+        ) : (
+          <div style={{ color: "#888", fontSize: "0.85rem", padding: "8px 4px", fontStyle: "italic" }}>
+            No journals found
+          </div>
+        )}
       </SimpleTreeView>
       {/* <ContextMenu parentRef={containerRef} items={menuItems}></ContextMenu> */}
       <JournalNewModal

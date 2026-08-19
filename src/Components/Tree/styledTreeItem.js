@@ -32,10 +32,11 @@ export default function StyledTreeItem(props) {
     const journalTreeContext = useContext(JournalTreeContext);
     const isDebug = journalTreeContext?.debug;
 
-    const { changeParent, node, openModal, ...rest } = props;
+    const { changeParent, node, openModal, selectedTreeNode, setSelectedTreeNode, ...rest } = props;
+    const isSelected = selectedTreeNode?.id === node.id;
     const treeClick = (e, node) => {
         e.stopPropagation();
-        props.setSelectedTreeNode(node);
+        setSelectedTreeNode(node);
     }
 
 
@@ -157,10 +158,13 @@ export default function StyledTreeItem(props) {
                         style={{
                             cursor: 'pointer',
                             userSelect: 'none',
-                            color: 'inherit',
+                            color: isSelected ? '#1976d2' : 'inherit',
+                            fontWeight: isSelected ? 600 : 400,
+                            backgroundColor: isSelected ? '#e3f2fd' : 'transparent',
+                            borderRadius: '3px',
                             textDecoration: 'none',
                             display: 'inline-block',
-                            padding: '2px 0'
+                            padding: '2px 4px'
                         }}
                     >
                         {getLabel(node)}
