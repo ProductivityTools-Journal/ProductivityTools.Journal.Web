@@ -58,22 +58,29 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     if (r != null) {
       setRoot(r);
       const rootNode = Array.isArray(r) ? r[0] : r;
-      getNodePath(rootNode, params.TreeId);
+      if (params.TreeId) {
+        const path = getNodePath(rootNode, params.TreeId);
+        if (path && path.length > 0) {
+          setExpanded(path);
+        } else if (rootNode?.id != null) {
+          setExpanded([rootNode.id.toString()]);
+        }
+      } else if (rootNode?.id != null) {
+        setExpanded((prev) => (prev.length === 0 ? [rootNode.id.toString()] : prev));
+      }
     }
   };
   const getNodePath = (node, targetId) => {
     if (targetId == null || !node) return [];
 
-    if (node.id === targetId) {
-      var result = [];
-      result = result.concat([targetId.toString()]);
+    if (node.id === targetId || node.id.toString() === targetId.toString()) {
+      var result = [targetId.toString()];
       return result;
     } else if (node.nodes && Array.isArray(node.nodes)) {
       for (let n of node.nodes) {
         var chain = getNodePath(n, targetId);
         if (chain != null && chain.length > 0) {
           var finalResult = chain.concat(node.id.toString());
-          setExpanded(finalResult);
           return finalResult;
         }
       }
