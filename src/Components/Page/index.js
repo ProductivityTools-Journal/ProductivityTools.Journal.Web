@@ -337,17 +337,18 @@ function Page({ page, updatePageInList, key }) {
   const getEditModeButtons = () => {
     return (
       <p style={buttonStyle}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setJournalPath(journalTreeContext.findPath(page.journalId));
-          }}
-        >
-          Update context
-        </Button>
+        {journalTreeContext?.debug && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setJournalPath(journalTreeContext.findPath(page.journalId));
+            }}
+          >
+            Update Context
+          </Button>
+        )}
         <Button variant="contained" color="primary" onClick={save}>
-          {" "}
           Save
         </Button>
         <Button variant="contained" color="primary" onClick={close}>
@@ -356,11 +357,13 @@ function Page({ page, updatePageInList, key }) {
         <Button variant="outlined" color="primary" onClick={deletePage}>
           Delete
         </Button>
-        <Button variant="outlined" color="primary" onClick={checkState}>
-          CheckState
-        </Button>
+        {journalTreeContext?.debug && (
+          <Button variant="outlined" color="primary" onClick={checkState}>
+            Check State
+          </Button>
+        )}
         <Button variant="outlined" color="primary" onClick={copyPublicLink}>
-          Public Link
+          Get public link
         </Button>
         <PageAnchor page={page} removePageFromList={removePageFromList} />
         <input type="file" accept="image/png, image/jpg" onChange={onFileChange} />
@@ -374,10 +377,10 @@ function Page({ page, updatePageInList, key }) {
     return (
       <p style={buttonStyle}>
         <Button variant="contained" color="primary" onClick={edit}>
-          edit1
+          Edit page
         </Button>
         <Button variant="outlined" color="primary" onClick={copyPublicLink}>
-          Public Link
+          Get public link
         </Button>
         <PageAnchor page={page} removePageFromList={removePageFromList} />
       </p>

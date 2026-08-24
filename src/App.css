@@ -17,3 +17,7 @@ fieldset {
 .notesInput {
   margin-top: 10px;
 }
+
+.MuiButton-root, button {
+  text-transform: none !important;
+}

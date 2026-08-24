@@ -12,23 +12,43 @@ import Image from "Components/Image";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./Session/AuthContext";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+
+const theme = createTheme({
+  typography: {
+    button: {
+      textTransform: "none",
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+        },
+      },
+    },
+  },
+});
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="App">
-        <BrowserRouter>
-          <Routes>
-            <Route path="/Login" element={<Login />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/Home" element={<Home />} />
-            <Route path="/List" element={<Main />} />
-            <Route path="/Image" element={<Image />} />
-          </Routes>
-        </BrowserRouter>
-        <ToastContainer />
-      </div>
-    </AuthProvider>
+    <ThemeProvider theme={theme}>
+      <AuthProvider>
+        <div className="App">
+          <BrowserRouter>
+            <Routes>
+              <Route path="/Login" element={<Login />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/Home" element={<Home />} />
+              <Route path="/List" element={<Main />} />
+              <Route path="/Image" element={<Image />} />
+            </Routes>
+          </BrowserRouter>
+          <ToastContainer />
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

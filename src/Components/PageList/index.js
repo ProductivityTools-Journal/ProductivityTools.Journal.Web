@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Page from "Components/Page";
 import * as apiService from "services/apiService";
 import Button from "@mui/material/Button";
 import { v4 as uuid } from "uuid";
 import { useAuth } from "../../Session/AuthContext";
 import * as Common from "../Common.js";
+import { JournalTreeContext } from "Components/JournalContext/index.js";
 
 export default function PageList({ selectedTreeNode }) {
   const [pages, setPages] = useState([]);
+  const journalTreeContext = useContext(JournalTreeContext);
 
   useEffect(() => {
     console.log("selectedTreeNode");
@@ -78,7 +80,7 @@ export default function PageList({ selectedTreeNode }) {
   return (
     <div className="App" style={{ color: "#3b3d3b" }}>
       <Button onClick={newEvent}>Add New</Button>
-      <Button onClick={checkState}>CheckSatate</Button>
+      {journalTreeContext?.debug && <Button onClick={checkState}>Check State</Button>}
 
       {pages &&
         pages.length > 0 &&
