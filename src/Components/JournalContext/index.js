@@ -16,7 +16,7 @@ export function JournalTreeContextProvider({ children, debug: debugProp, setDebu
   const setDebug = setDebugProp !== undefined ? setDebugProp : setInternalDebug;
 
   const findRecurency = (id, node) => {
-    console.log(node);
+    //console.log(node);
     if (!node) return undefined;
     if (node.id == id || node.id == node.parentId) {
       return node;
