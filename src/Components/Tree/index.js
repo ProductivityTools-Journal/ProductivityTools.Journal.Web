@@ -13,6 +13,7 @@ import StyledTreeItem from "./styledTreeItem";
 import JournalNewModal from "../JournalNewModal";
 import JounralDeleteDialog from "../JounralDeleteDialog";
 import JournalRenameModal from "Components/JournalRenameModal";
+import JournalInboxModal from "../JournalInboxModal";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 
 function MinusSquare(props) {
@@ -51,6 +52,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const [newModalOpen, setNewModalOpen] = useState(false);
   const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [inboxModalOpen, setInboxModalOpen] = useState(false);
 
   const journalTreeContext = useContext(JournalTreeContext);
 
@@ -61,7 +63,9 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     const trimmed = term.trim().toLowerCase();
     if (!trimmed) return node;
 
-    const isMatch = node.name && node.name.toLowerCase().includes(trimmed);
+    const isMatch = (node.name && node.name.toLowerCase().includes(trimmed)) ||
+      (node.inboxName && node.inboxName.toLowerCase().includes(trimmed)) ||
+      (node.InboxName && node.InboxName.toLowerCase().includes(trimmed));
 
     let filteredChildren = [];
     if (node.nodes && Array.isArray(node.nodes)) {
@@ -319,6 +323,9 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
       case "new":
         setNewModalOpen(true);
         break;
+      case "inbox":
+        setInboxModalOpen(true);
+        break;
       default:
         console.log("Not working!!!");
     }
@@ -333,6 +340,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     setDeleteModalOpen(false);
     setRenameModalOpen(false);
     setNewModalOpen(false);
+    setInboxModalOpen(false);
   };
 
   const closeAndRefresh = () => {
@@ -352,6 +360,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         setSelectedTreeNode={setSelectedTreeNode}
         selectedTreeNode={selectedTreeNode}
         openModal={openModal}
+        closeAndRefresh={closeAndRefresh}
         node={node}
       >
         {node?.nodes?.map((x) => GetNode(x))}
@@ -436,6 +445,12 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         closeModal={closeModal}
         closeAndRefresh={closeAndRefresh}
       ></JounralDeleteDialog>
+      <JournalInboxModal
+        open={inboxModalOpen}
+        selectedJournal={selectedTreeNode}
+        closeModal={closeModal}
+        closeAndRefresh={closeAndRefresh}
+      ></JournalInboxModal>
     </div>
   );
 }

@@ -32,8 +32,10 @@ export default function StyledTreeItem(props) {
     const journalTreeContext = useContext(JournalTreeContext);
     const isDebug = journalTreeContext?.debug;
 
-    const { changeParent, node, openModal, selectedTreeNode, setSelectedTreeNode, ...rest } = props;
+    const { changeParent, node, openModal, closeAndRefresh, selectedTreeNode, setSelectedTreeNode, ...rest } = props;
     const isSelected = selectedTreeNode?.id === node.id;
+    const hasInboxName = Boolean(node.inboxName || node.InboxName);
+
     const treeClick = (e, node) => {
         e.stopPropagation();
         setSelectedTreeNode(node);
@@ -47,10 +49,15 @@ export default function StyledTreeItem(props) {
     }
 
     function getLabel(x) {
-        if (isDebug) {
-            return x.name + " [Id:" + x.id + "]";
+        let label = x.name;
+        const inbox = x.inboxName || x.InboxName;
+        if (inbox) {
+            label = `${x.name} [${inbox}]`;
         }
-        return x.name;
+        if (isDebug) {
+            return label + " [Id:" + x.id + "]";
+        }
+        return label;
     }
 
     const [{ isDragging }, dragRef] = useDrag({
@@ -105,6 +112,23 @@ export default function StyledTreeItem(props) {
         openModal('delete');
     }
 
+    const openSetInboxNameModal = (event) => {
+        event.stopPropagation();
+        setContextMenu(null);
+        props.setSelectedTreeNode(node);
+        openModal('inbox');
+    }
+
+    const handleClearInboxName = async (event) => {
+        event.stopPropagation();
+        setContextMenu(null);
+        props.setSelectedTreeNode(node);
+        const r = await apiService.removeInboxName(node.id);
+        if (r && closeAndRefresh) {
+            closeAndRefresh();
+        }
+    }
+
     const copyPublicLink = async (event) => {
         event.stopPropagation();
         setContextMenu(null);
@@ -151,6 +175,11 @@ export default function StyledTreeItem(props) {
                         <MenuItem onClick={openNewModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
                         <MenuItem onClick={openRenameModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
                         <MenuItem onClick={openDeleteModal}>Remove &nbsp;<b>{node.name}</b></MenuItem>
+                        {hasInboxName ? (
+                            <MenuItem onClick={handleClearInboxName}>Clear inbox name &nbsp;<b>{node.name}</b></MenuItem>
+                        ) : (
+                            <MenuItem onClick={openSetInboxNameModal}>Set inbox name &nbsp;<b>{node.name}</b></MenuItem>
+                        )}
                         <MenuItem onClick={copyPublicLink}>Copy Public Link for &nbsp;<b>{node.name}</b></MenuItem>
                     </Menu>
                     <span
@@ -158,9 +187,9 @@ export default function StyledTreeItem(props) {
                         style={{
                             cursor: 'pointer',
                             userSelect: 'none',
-                            color: isSelected ? '#1976d2' : 'inherit',
-                            fontWeight: isSelected ? 600 : 400,
-                            backgroundColor: isSelected ? '#e3f2fd' : 'transparent',
+                            color: isSelected ? '#1565c0' : (hasInboxName ? '#1976d2' : 'inherit'),
+                            fontWeight: isSelected ? 600 : (hasInboxName ? 600 : 400),
+                            backgroundColor: isSelected ? '#bbdefb' : (hasInboxName ? '#e8f0fe' : 'transparent'),
                             borderRadius: '3px',
                             textDecoration: 'none',
                             display: 'inline-block',

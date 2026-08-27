@@ -86,6 +86,34 @@ async function renameJournal(journalId, newName) {
   return invokeCallWithToast(call, "renaming", "renamed");
 }
 
+async function setInboxName(journalId, inboxName) {
+  let call = async (header) => {
+    const data = { JournalId: Number(journalId), InboxName: inboxName };
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_SET_INBOX_NAME}`,
+      data,
+      header
+    );
+    console.log(response.data);
+    return response.data;
+  };
+  return invokeCallWithToast(call, "Setting inbox name", "Inbox name set");
+}
+
+async function removeInboxName(journalId) {
+  let call = async (header) => {
+    const data = { Id: Number(journalId) };
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_REMOVE_INBOX_NAME}`,
+      data,
+      header
+    );
+    console.log(response.data);
+    return response.data;
+  };
+  return invokeCallWithToast(call, "Removing inbox name", "Inbox name removed");
+}
+
 async function savePage(page) {
   let call = async (header) => {
     console.log("saveMeeting");
@@ -332,4 +360,6 @@ export {
   getPagePublicHash,
   getJournalPublicHash,
   getPagesWithoutPlainText,
+  setInboxName,
+  removeInboxName,
 };
