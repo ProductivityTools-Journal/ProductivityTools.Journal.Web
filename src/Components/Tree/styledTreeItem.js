@@ -7,7 +7,7 @@ import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import PropTypes from 'prop-types';
-import { Menu, MenuItem } from '@mui/material';
+import { Menu, MenuItem, Divider, Typography } from '@mui/material';
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 
 
@@ -35,6 +35,7 @@ export default function StyledTreeItem(props) {
     const { changeParent, node, openModal, closeAndRefresh, selectedTreeNode, setSelectedTreeNode, ...rest } = props;
     const isSelected = selectedTreeNode?.id === node.id;
     const hasInboxName = Boolean(node.inboxName || node.InboxName);
+    const currentInboxName = node.inboxName || node.InboxName;
 
     const treeClick = (e, node) => {
         e.stopPropagation();
@@ -49,15 +50,10 @@ export default function StyledTreeItem(props) {
     }
 
     function getLabel(x) {
-        let label = x.name;
-        const inbox = x.inboxName || x.InboxName;
-        if (inbox) {
-            label = `${x.name} [${inbox}]`;
-        }
         if (isDebug) {
-            return label + " [Id:" + x.id + "]";
+            return x.name + " [Id:" + x.id + "]";
         }
-        return label;
+        return x.name;
     }
 
     const [{ isDragging }, dragRef] = useDrag({
@@ -172,15 +168,26 @@ export default function StyledTreeItem(props) {
                         anchorReference="anchorPosition"
                         anchorPosition={contextMenu !== null ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
                     >
-                        <MenuItem onClick={openNewModal}>New Journal under &nbsp;<b>{node.name}</b></MenuItem>
-                        <MenuItem onClick={openRenameModal}>Rename &nbsp;<b>{node.name}</b></MenuItem>
-                        <MenuItem onClick={openDeleteModal}>Remove &nbsp;<b>{node.name}</b></MenuItem>
+                        <Box sx={{ px: 2, py: 0.8, borderBottom: '1px solid #e0e0e0', backgroundColor: '#f9f9f9', minWidth: '160px' }}>
+                            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: hasInboxName ? '#1976d2' : '#333' }}>
+                                {node.name}
+                            </Typography>
+                            {hasInboxName && (
+                                <Typography variant="caption" sx={{ color: '#1976d2', display: 'block', fontWeight: 500 }}>
+                                    Inbox: {currentInboxName}
+                                </Typography>
+                            )}
+                        </Box>
+                        <MenuItem onClick={openNewModal}>New Journal</MenuItem>
+                        <MenuItem onClick={openRenameModal}>Rename</MenuItem>
+                        <MenuItem onClick={openDeleteModal}>Remove</MenuItem>
                         {hasInboxName ? (
-                            <MenuItem onClick={handleClearInboxName}>Clear inbox name &nbsp;<b>{node.name}</b></MenuItem>
+                            <MenuItem onClick={handleClearInboxName}>Clear inbox name {currentInboxName}</MenuItem>
                         ) : (
-                            <MenuItem onClick={openSetInboxNameModal}>Set inbox name &nbsp;<b>{node.name}</b></MenuItem>
+                            <MenuItem onClick={openSetInboxNameModal}>Set inbox name</MenuItem>
                         )}
-                        <MenuItem onClick={copyPublicLink}>Copy Public Link for &nbsp;<b>{node.name}</b></MenuItem>
+                        <Divider />
+                        <MenuItem onClick={copyPublicLink}>Copy Public Link</MenuItem>
                     </Menu>
                     <span
                         onClick={(e) => treeClick(e, node)}
