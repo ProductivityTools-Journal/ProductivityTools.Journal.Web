@@ -124,6 +124,27 @@ export const getNewPage = (journal) => {
     return result;
 }
 
+export const getInboxNodes = (node) => {
+    if (!node) return [];
+    if (Array.isArray(node)) {
+        let list = [];
+        for (const n of node) {
+            list = list.concat(getInboxNodes(n));
+        }
+        return list;
+    }
+    let list = [];
+    if (node.inboxName || node.InboxName) {
+        list.push(node);
+    }
+    if (node.nodes && Array.isArray(node.nodes)) {
+        for (const child of node.nodes) {
+            list = list.concat(getInboxNodes(child));
+        }
+    }
+    return list;
+};
+
 export const extractHash = (data) => {
     if (typeof data === "string") {
         return data;

@@ -188,16 +188,33 @@ const platePlugins = createPlugins(
 
 function Page({ page, updatePageInList, key }) {
   //const { meeting, ...rest } = props;
-  const [localPageObject, setLocalPageObject] = useState();
+  const [localPageObject, setLocalPageObject] = useState(() => {
+    let pageContentObject = null;
+    if (page?.contentType === "Slate") {
+      try {
+        pageContentObject = JSON.parse(page.content);
+      } catch (error) {
+        pageContentObject = Common.getObjectSlateStructureFromRawDetails("Title12", page.content);
+      }
+    } else {
+      pageContentObject = Common.getObjectSlateStructureFromRawDetails("Title14", page?.content);
+    }
+
+    return {
+      ...page,
+      contentObject: pageContentObject,
+      contentType: "Slate",
+      mode: page?.mode === undefined ? "readonly" : page.mode,
+    };
+  });
   const [imageUrl, setImageUrl] = useState();
   const [journalPath, setJournalPath] = useState();
 
   const journalTreeContext = useContext(JournalTreeContext);
 
   useEffect(() => {
-    console.log("FFFFFFFFFFF use effect");
     let pageContentObject = null;
-    if (page.contentType == "Slate") {
+    if (page.contentType === "Slate") {
       try {
         pageContentObject = JSON.parse(page.content);
       } catch (error) {
@@ -211,10 +228,10 @@ function Page({ page, updatePageInList, key }) {
       ...page,
       contentObject: pageContentObject,
       contentType: "Slate",
-      mode: page.mode == undefined ? "readonly" : page.mode,
+      mode: page.mode === undefined ? "readonly" : page.mode,
     };
     setLocalPageObject(x);
-  }, [page.pageID]);
+  }, [page.pageId, page.frontendId, page.mode, page.content, page.contentType]);
 
   useEffect(() => {
     

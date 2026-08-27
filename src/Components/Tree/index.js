@@ -220,10 +220,21 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   };
 
   useEffect(() => {
-    //if think this is not used target id is always null
-
     fetchData();
   }, [params.TreeId]);
+
+  useEffect(() => {
+    if (selectedTreeNode?.id && root) {
+      const rootNode = Array.isArray(root) ? root[0] : root;
+      const fullPath = getNodePath(rootNode, selectedTreeNode.id);
+      if (fullPath && fullPath.length > 0) {
+        setExpanded((prev) => {
+          const combined = new Set([...prev, ...fullPath]);
+          return Array.from(combined);
+        });
+      }
+    }
+  }, [selectedTreeNode?.id, root]);
 
   const findElement = (candidateElement, nodeId) => {
     if (!candidateElement) {

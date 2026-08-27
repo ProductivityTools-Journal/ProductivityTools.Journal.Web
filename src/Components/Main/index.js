@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Tree from "Components/Tree";
 import PageList from "Components/PageList";
 import { DndProvider } from "react-dnd";
@@ -13,28 +13,33 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import * as apiService from "services/apiService";
 import * as Common from "../Common.js";
 import { toast } from "react-toastify";
-import { JournalTreeContextProvider } from "../JournalContext";
+import { JournalTreeContextProvider, JournalTreeContext } from "../JournalContext";
 
-export default function Main() {
+function MainContent({ debug, setDebug }) {
   const [editedMeeting, setEditedMeeting] = useState(undefined);
   const [selectedTreeNode, setSelectedTreeNode] = useState(null);
+  const [newPageTrigger, setNewPageTrigger] = useState(null);
   const [isMigrating, setIsMigrating] = useState(false);
-  const [debug, setDebug] = useState(false);
   const [showTree, setShowTree] = useState(() => {
     return typeof window !== "undefined" ? window.innerWidth > 768 : true;
   });
 
-  function setEditMeeting(journalItemId) {
-    setEditedMeeting(journalItemId);
-  }
+  const journalTreeContext = useContext(JournalTreeContext);
+  const inboxNodes = Common.getInboxNodes(journalTreeContext?.journalTree);
 
   function newMeeting() {
     setEditedMeeting(null);
   }
 
-  function clearEditMeeting() {
-    setEditedMeeting(undefined);
-  }
+  const handleTreeNodeSelect = (node) => {
+    setSelectedTreeNode(node);
+    setNewPageTrigger(null);
+  };
+
+  const handleInboxClick = (node) => {
+    setSelectedTreeNode(node);
+    setNewPageTrigger({ treeNodeId: node.id, timestamp: Date.now() });
+  };
 
   const migratePlainText = async () => {
     setIsMigrating(true);
@@ -110,6 +115,18 @@ export default function Main() {
         >
           {isMigrating ? "Migrating..." : "Migrate 1000 PlainText"}
         </Button>
+        {inboxNodes &&
+          inboxNodes.map((inboxNode) => (
+            <Button
+              key={inboxNode.id}
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => handleInboxClick(inboxNode)}
+            >
+              {inboxNode.inboxName || inboxNode.InboxName}
+            </Button>
+          ))}
         {editedMeeting && (
           <div style={{ fontSize: "0.85rem", color: "#666" }}>EditedMeeting: {editedMeeting}</div>
         )}
@@ -128,42 +145,50 @@ export default function Main() {
           />
         </div>
       </div>
-      <JournalTreeContextProvider debug={debug} setDebug={setDebug}>
-        <DndProvider backend={HTML5Backend}>
+      <DndProvider backend={HTML5Backend}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: "20px",
+            padding: "0 12px",
+            alignItems: "flex-start",
+          }}
+        >
           <div
             style={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              gap: "20px",
-              padding: "0 12px",
-              alignItems: "flex-start",
+              display: showTree ? "block" : "none",
+              width: "350px",
+              minWidth: "280px",
+              maxWidth: "100%",
+              flexShrink: 0,
+              borderRight: "1px solid #e0e0e0",
+              paddingRight: "12px",
+              boxSizing: "border-box",
             }}
           >
-            <div
-              style={{
-                display: showTree ? "block" : "none",
-                width: "350px",
-                minWidth: "280px",
-                maxWidth: "100%",
-                flexShrink: 0,
-                borderRight: "1px solid #e0e0e0",
-                paddingRight: "12px",
-                boxSizing: "border-box",
-              }}
-            >
-              <Tree
-                setSelectedTreeNode={setSelectedTreeNode}
-                selectedTreeNode={selectedTreeNode}
-                createNewMeeting={newMeeting}
-              />
-            </div>
-            <div style={{ flex: 1, minWidth: "300px", maxWidth: "100%" }}>
-              <PageList selectedTreeNode={selectedTreeNode} />
-            </div>
+            <Tree
+              setSelectedTreeNode={handleTreeNodeSelect}
+              selectedTreeNode={selectedTreeNode}
+              createNewMeeting={newMeeting}
+            />
           </div>
-        </DndProvider>
-      </JournalTreeContextProvider>
+          <div style={{ flex: 1, minWidth: "300px", maxWidth: "100%" }}>
+            <PageList selectedTreeNode={selectedTreeNode} newPageTrigger={newPageTrigger} />
+          </div>
+        </div>
+      </DndProvider>
     </div>
+  );
+}
+
+export default function Main() {
+  const [debug, setDebug] = useState(false);
+
+  return (
+    <JournalTreeContextProvider debug={debug} setDebug={setDebug}>
+      <MainContent debug={debug} setDebug={setDebug} />
+    </JournalTreeContextProvider>
   );
 }
