@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import React, { useState, useContext, memo } from 'react';
 import { useDrag, useDrop } from 'react-dnd'
 import * as apiService from 'services/apiService'
 import * as Common from '../Common.js'
@@ -28,7 +28,7 @@ TransitionComponent.propTypes = {
     in: PropTypes.bool,
 };
 
-export default function StyledTreeItem(props) {
+function StyledTreeItem(props) {
     const journalTreeContext = useContext(JournalTreeContext);
     const isDebug = journalTreeContext?.debug;
 
@@ -37,11 +37,10 @@ export default function StyledTreeItem(props) {
     const hasInboxName = Boolean(node.inboxName || node.InboxName);
     const currentInboxName = node.inboxName || node.InboxName;
 
-    const treeClick = (e, node) => {
+    const treeClick = (e) => {
         e.stopPropagation();
         setSelectedTreeNode(node);
     }
-
 
     const changeParent2 = async (source, targetParentId) => {
         if (!source || !targetParentId || source.id === targetParentId) return;
@@ -67,14 +66,11 @@ export default function StyledTreeItem(props) {
     const [{ isOver }, dropRef] = useDrop({
         accept: ['tree', 'page'],
         drop: (item, monitor) => {
-            console.log(item);
-            console.log(monitor.getItemType())
             let type = monitor.getItemType();
             if (type === 'tree') {
                 changeParent2(item, node.id);
             }
             if (type === 'page') {
-                debugger;
                 let page = item.page;
                 let pageWithNewParent = { ...page, journalId: node.id }
                 apiService.updateJournal(pageWithNewParent);
@@ -138,18 +134,12 @@ export default function StyledTreeItem(props) {
 
     const [contextMenu, setContextMenu] = useState(null);
 
-
     const handleContextMenu = (event) => {
-        setContextMenu(null);
-        console.log("handleContextMenu");
-        console.log(event);
         event.preventDefault();
-        setContextMenu(contextMenu == null ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6 } : null)
-
+        setContextMenu(contextMenu == null ? { mouseX: event.clientX + 2, mouseY: event.clientY - 6 } : null);
     }
 
     const handleClose = () => {
-        console.log(props);
         setContextMenu(null);
     }
 
@@ -190,7 +180,7 @@ export default function StyledTreeItem(props) {
                         <MenuItem onClick={copyPublicLink}>Copy Public Link</MenuItem>
                     </Menu>
                     <span
-                        onClick={(e) => treeClick(e, node)}
+                        onClick={treeClick}
                         style={{
                             cursor: 'pointer',
                             userSelect: 'none',
@@ -214,3 +204,5 @@ export default function StyledTreeItem(props) {
         </TreeItem>
     );
 }
+
+export default memo(StyledTreeItem);

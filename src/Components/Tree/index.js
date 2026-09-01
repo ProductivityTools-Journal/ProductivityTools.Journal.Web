@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext, useCallback } from "react";
 import SvgIcon from "@mui/material/SvgIcon";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -131,10 +131,32 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     return deepest || { node, depth };
   };
 
-  const fetchData = async () => {
-    const r = await apiService.getTree();
-    console.log(r);
+  const getNodePath = useCallback((node, targetId) => {
+    if (targetId == null || !node) return [];
+    const targetStr = targetId.toString();
+    const path = [];
+    const dfs = (curr) => {
+      if (!curr) return false;
+      path.push(curr.id.toString());
+      if (curr.id.toString() === targetStr) return true;
+      if (curr.nodes && Array.isArray(curr.nodes)) {
+        for (let i = 0; i < curr.nodes.length; i++) {
+          if (dfs(curr.nodes[i])) return true;
+        }
+      }
+      path.pop();
+      return false;
+    };
 
+    const rootList = Array.isArray(node) ? node : [node];
+    for (const r of rootList) {
+      if (dfs(r)) return path;
+    }
+    return [];
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    const r = await apiService.getTree();
     journalTreeContext.setJournalTree(r);
     if (r != null) {
       setRoot(r);
@@ -150,24 +172,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         setExpanded((prev) => (prev.length === 0 ? [rootNode.id.toString()] : prev));
       }
     }
-  };
-  const getNodePath = (node, targetId) => {
-    if (targetId == null || !node) return [];
-
-    if (node.id === targetId || node.id.toString() === targetId.toString()) {
-      var result = [targetId.toString()];
-      return result;
-    } else if (node.nodes && Array.isArray(node.nodes)) {
-      for (let n of node.nodes) {
-        var chain = getNodePath(n, targetId);
-        if (chain != null && chain.length > 0) {
-          var finalResult = chain.concat(node.id.toString());
-          return finalResult;
-        }
-      }
-    }
-    return [];
-  };
+  }, [journalTreeContext, params.TreeId, getNodePath]);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -221,7 +226,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
 
   useEffect(() => {
     fetchData();
-  }, [params.TreeId]);
+  }, [params.TreeId, fetchData]);
 
   useEffect(() => {
     if (selectedTreeNode?.id && root) {
@@ -234,7 +239,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         });
       }
     }
-  }, [selectedTreeNode?.id, root]);
+  }, [selectedTreeNode?.id, root, getNodePath]);
 
   const findElement = (candidateElement, nodeId) => {
     if (!candidateElement) {
@@ -276,8 +281,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     }
   }
 
-  const changeParent = (source, targetParentId) => {
-    console.log("change parent", source, "targetParentId", targetParentId);
+  const changeParent = useCallback((source, targetParentId) => {
     if (!root || !source || source.id === targetParentId) {
       return;
     }
@@ -301,29 +305,13 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     setRoot(updatedRoot);
     journalTreeContext.setJournalTree(updatedRoot);
     setSelectedTreeNode(source);
-  };
+  }, [root, journalTreeContext, setSelectedTreeNode]);
 
-  const handleToggle = (event, nodeIds) => {
+  const handleToggle = useCallback((event, nodeIds) => {
     setExpanded(nodeIds);
-  };
+  }, []);
 
-  // const menuItems = [
-  //   {
-  //     text: 'Add new tree item',
-  //     onclick: (treeId) => { setSelectedTreeNode(treeId); handleModalOpen(); }
-  //   },
-  //   {
-  //     text: 'Delete',
-  //     onclick: (treeId) => { setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
-  //   },
-  //   {
-  //     text: 'Rename',
-  //     onclick: (treeId) => { setSelectedTreeNode(treeId); handleDeleteDialogOpen(); }
-  //   }
-  // ];
-
-  const openModal = (type) => {
-    console.log("openModal);");
+  const openModal = useCallback((type) => {
     switch (type) {
       case "rename":
         setRenameModalOpen(true);
@@ -338,26 +326,21 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         setInboxModalOpen(true);
         break;
       default:
-        console.log("Not working!!!");
+        break;
     }
-    console.log("handleModalOpen");
-  };
+  }, []);
 
-  const handleDeleteDialogOpen = () => {
-    setDeleteModalOpen(true);
-  };
-
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setDeleteModalOpen(false);
     setRenameModalOpen(false);
     setNewModalOpen(false);
     setInboxModalOpen(false);
-  };
+  }, []);
 
-  const closeAndRefresh = () => {
+  const closeAndRefresh = useCallback(() => {
     fetchData();
     closeModal();
-  };
+  }, [fetchData, closeModal]);
 
   function GetNode(node) {
     if (!node) return null;

@@ -1,9 +1,9 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useMemo, useCallback } from "react";
 
 export const JournalTreeContext = createContext({
-  journalTree: "pawel",
+  journalTree: null,
   setJournalTree: () => {},
-  findPath: () => {},
+  findPath: () => "",
   debug: false,
   setDebug: () => {},
 });
@@ -15,35 +15,54 @@ export function JournalTreeContextProvider({ children, debug: debugProp, setDebu
   const debug = debugProp !== undefined ? debugProp : internalDebug;
   const setDebug = setDebugProp !== undefined ? setDebugProp : setInternalDebug;
 
-  const findRecurency = (id, node) => {
-    //console.log(node);
-    if (!node) return undefined;
-    if (node.id == id || node.id == node.parentId) {
-      return node;
-    } else if (node.nodes && Array.isArray(node.nodes)) {
-      for (const n of node.nodes) {
-        var r = findRecurency(id, n);
-        if (r != undefined) {
-          return r;
+  // Build flat lookup Map for O(1) node lookup and O(depth) path reconstruction
+  const nodeMap = useMemo(() => {
+    const map = new Map();
+    if (!journalTree) return map;
+
+    const traverse = (node) => {
+      if (!node) return;
+      if (Array.isArray(node)) {
+        for (const n of node) {
+          traverse(n);
+        }
+        return;
+      }
+      map.set(node.id, { id: node.id, name: node.name, parentId: node.parentId });
+      if (node.nodes && Array.isArray(node.nodes)) {
+        for (const child of node.nodes) {
+          traverse(child);
         }
       }
-    }
-  };
+    };
 
-  const findPath = (id) => {
-    console.log(journalTree);
-    
-    let nodeInJournalTree = findRecurency(id, journalTree);
-    console.log(nodeInJournalTree);
-    var path = "";
-    while (nodeInJournalTree != null && nodeInJournalTree.id != nodeInJournalTree.parentId) {
-      path = nodeInJournalTree.name + ">>" + path;
-      nodeInJournalTree = findRecurency(nodeInJournalTree.parentId, journalTree);
-    }
-    return path.slice(0, path.length - 2);
-  };
+    traverse(journalTree);
+    return map;
+  }, [journalTree]);
 
-  const value = { journalTree, setJournalTree, findPath, debug, setDebug };
+  const findPath = useCallback(
+    (id) => {
+      if (!id || !nodeMap.has(id)) return "";
+      const pathParts = [];
+      let current = nodeMap.get(id);
+      const visited = new Set();
+
+      while (current && current.id !== current.parentId && !visited.has(current.id)) {
+        visited.add(current.id);
+        pathParts.unshift(current.name);
+        if (current.parentId == null || current.parentId === current.id) break;
+        current = nodeMap.get(current.parentId);
+      }
+
+      return pathParts.join(">>");
+    },
+    [nodeMap]
+  );
+
+  const value = useMemo(
+    () => ({ journalTree, setJournalTree, findPath, debug, setDebug }),
+    [journalTree, findPath, debug, setDebug]
+  );
 
   return <JournalTreeContext.Provider value={value}>{children}</JournalTreeContext.Provider>;
 }
