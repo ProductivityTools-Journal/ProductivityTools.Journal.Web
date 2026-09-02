@@ -54,7 +54,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [inboxModalOpen, setInboxModalOpen] = useState(false);
 
-  const journalTreeContext = useContext(JournalTreeContext);
+  const { setJournalTree } = useContext(JournalTreeContext);
 
   const containerRef = useRef(null);
 
@@ -157,7 +157,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
 
   const fetchData = useCallback(async () => {
     const r = await apiService.getTree();
-    journalTreeContext.setJournalTree(r);
+    setJournalTree(r);
     if (r != null) {
       setRoot(r);
       const rootNode = Array.isArray(r) ? r[0] : r;
@@ -172,7 +172,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         setExpanded((prev) => (prev.length === 0 ? [rootNode.id.toString()] : prev));
       }
     }
-  }, [journalTreeContext, params.TreeId, getNodePath]);
+  }, [setJournalTree, params.TreeId, getNodePath]);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -226,7 +226,8 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
 
   useEffect(() => {
     fetchData();
-  }, [params.TreeId, fetchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.TreeId]);
 
   useEffect(() => {
     if (selectedTreeNode?.id && root) {
@@ -277,7 +278,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
       newElement[propertyName] = propertyValue;
       const updatedRoot = Array.isArray(root) ? [...root] : { ...rootNode };
       setRoot(updatedRoot);
-      journalTreeContext.setJournalTree(updatedRoot);
+      setJournalTree(updatedRoot);
     }
   }
 
@@ -303,9 +304,9 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     }
     const updatedRoot = Array.isArray(root) ? [...root] : { ...rootNode };
     setRoot(updatedRoot);
-    journalTreeContext.setJournalTree(updatedRoot);
+    setJournalTree(updatedRoot);
     setSelectedTreeNode(source);
-  }, [root, journalTreeContext, setSelectedTreeNode]);
+  }, [root, setJournalTree, setSelectedTreeNode]);
 
   const handleToggle = useCallback((event, nodeIds) => {
     setExpanded(nodeIds);
