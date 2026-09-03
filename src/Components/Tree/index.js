@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext, useCallback } from "react";
+import React, { useState, useEffect, useRef, useContext, useCallback, useMemo } from "react";
 import SvgIcon from "@mui/material/SvgIcon";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -47,6 +47,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const [expanded, setExpanded] = useState([]);
   const [root, setRoot] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const params = useParams();
 
   const [newModalOpen, setNewModalOpen] = useState(false);
@@ -58,78 +59,105 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
 
   const containerRef = useRef(null);
 
-  const filterTree = (node, term) => {
-    if (!node) return null;
-    const trimmed = term.trim().toLowerCase();
-    if (!trimmed) return node;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 180);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
-    const isMatch = (node.name && node.name.toLowerCase().includes(trimmed)) ||
-      (node.inboxName && node.inboxName.toLowerCase().includes(trimmed)) ||
-      (node.InboxName && node.InboxName.toLowerCase().includes(trimmed));
+  const filterTree = useCallback((rootNode, term) => {
+    if (!rootNode) return null;
+    const trimmed = term ? term.trim().toLowerCase() : "";
+    if (!trimmed) return rootNode;
 
-    let filteredChildren = [];
-    if (node.nodes && Array.isArray(node.nodes)) {
-      filteredChildren = node.nodes
-        .map((child) => filterTree(child, term))
-        .filter(Boolean);
-    }
+    const filterNode = (node) => {
+      if (!node) return null;
+      const isMatch =
+        (node.name && node.name.toLowerCase().includes(trimmed)) ||
+        (node.inboxName && node.inboxName.toLowerCase().includes(trimmed)) ||
+        (node.InboxName && node.InboxName.toLowerCase().includes(trimmed));
 
-    if (isMatch || filteredChildren.length > 0) {
-      return {
-        ...node,
-        nodes: filteredChildren.length > 0 ? filteredChildren : (isMatch ? (node.nodes || []) : []),
-      };
-    }
-    return null;
-  };
-
-  const getAllNodeIds = (node) => {
-    if (!node) return [];
-    if (Array.isArray(node)) {
-      let ids = [];
-      for (const n of node) {
-        ids = ids.concat(getAllNodeIds(n));
+      let filteredChildren = [];
+      if (node.nodes && Array.isArray(node.nodes)) {
+        for (let i = 0; i < node.nodes.length; i++) {
+          const childFiltered = filterNode(node.nodes[i]);
+          if (childFiltered) {
+            filteredChildren.push(childFiltered);
+          }
+        }
       }
-      return ids;
-    }
-    let ids = [node.id.toString()];
-    if (node.nodes && Array.isArray(node.nodes)) {
-      for (const child of node.nodes) {
-        ids = ids.concat(getAllNodeIds(child));
+
+      if (isMatch || filteredChildren.length > 0) {
+        return {
+          ...node,
+          nodes: filteredChildren.length > 0 ? filteredChildren : (isMatch ? (node.nodes || []) : []),
+        };
       }
+      return null;
+    };
+
+    if (Array.isArray(rootNode)) {
+      const filteredList = [];
+      for (let i = 0; i < rootNode.length; i++) {
+        const res = filterNode(rootNode[i]);
+        if (res) filteredList.push(res);
+      }
+      return filteredList.length > 0 ? filteredList : null;
     }
+
+    return filterNode(rootNode);
+  }, []);
+
+  const getAllNodeIds = useCallback((rootNode) => {
+    if (!rootNode) return [];
+    const ids = [];
+    const traverse = (node) => {
+      if (!node) return;
+      if (Array.isArray(node)) {
+        for (let i = 0; i < node.length; i++) {
+          traverse(node[i]);
+        }
+        return;
+      }
+      ids.push(node.id.toString());
+      if (node.nodes && Array.isArray(node.nodes)) {
+        for (let i = 0; i < node.nodes.length; i++) {
+          traverse(node.nodes[i]);
+        }
+      }
+    };
+    traverse(rootNode);
     return ids;
-  };
+  }, []);
 
-  const findDeepestNode = (node, depth = 0) => {
-    if (!node) return null;
-    if (Array.isArray(node)) {
-      let deepest = null;
-      for (const n of node) {
-        const d = findDeepestNode(n, depth);
-        if (d && (!deepest || d.depth > deepest.depth)) {
-          deepest = d;
+  const findDeepestNode = useCallback((rootNode) => {
+    if (!rootNode) return null;
+    let bestNode = null;
+    let maxDepth = -1;
+
+    const dfs = (node, depth) => {
+      if (!node) return;
+      if (Array.isArray(node)) {
+        for (let i = 0; i < node.length; i++) {
+          dfs(node[i], depth);
+        }
+        return;
+      }
+      if (depth > maxDepth) {
+        maxDepth = depth;
+        bestNode = node;
+      }
+      if (node.nodes && Array.isArray(node.nodes)) {
+        for (let i = 0; i < node.nodes.length; i++) {
+          dfs(node.nodes[i], depth + 1);
         }
       }
-      return deepest;
-    }
+    };
 
-    if (!node.nodes || node.nodes.length === 0) {
-      return { node, depth };
-    }
-
-    let deepest = null;
-    for (const child of node.nodes) {
-      const childDeepest = findDeepestNode(child, depth + 1);
-      if (childDeepest) {
-        if (!deepest || childDeepest.depth > deepest.depth) {
-          deepest = childDeepest;
-        }
-      }
-    }
-
-    return deepest || { node, depth };
-  };
+    dfs(rootNode, 0);
+    return bestNode ? { node: bestNode, depth: maxDepth } : null;
+  }, []);
 
   const getNodePath = useCallback((node, targetId) => {
     if (targetId == null || !node) return [];
@@ -175,33 +203,30 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   }, [setJournalTree, params.TreeId, getNodePath]);
 
   const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    if (value.trim()) {
-      const rootNode = Array.isArray(root) ? root[0] : root;
-      const filtered = filterTree(rootNode, value);
-      if (filtered) {
-        const allFilteredIds = getAllNodeIds(filtered);
-        setExpanded(allFilteredIds);
-      }
-    } else {
-      const rootNode = Array.isArray(root) ? root[0] : root;
-      if (selectedTreeNode?.id && rootNode) {
-        const fullPath = getNodePath(rootNode, selectedTreeNode.id);
-        if (fullPath && fullPath.length > 0) {
-          setExpanded(fullPath);
-        }
+    setSearchTerm(e.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    setDebouncedSearchTerm("");
+    const rootNode = Array.isArray(root) ? root[0] : root;
+    if (selectedTreeNode?.id && rootNode) {
+      const fullPath = getNodePath(rootNode, selectedTreeNode.id);
+      if (fullPath && fullPath.length > 0) {
+        setExpanded(fullPath);
       } else if (rootNode?.id != null) {
         setExpanded([rootNode.id.toString()]);
       }
+    } else if (rootNode?.id != null) {
+      setExpanded([rootNode.id.toString()]);
     }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (!root) return;
       const rootNode = Array.isArray(root) ? root[0] : root;
+      if (!rootNode) return;
 
       if (searchTerm.trim()) {
         const filtered = filterTree(rootNode, searchTerm);
@@ -220,6 +245,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
           }
         }
         setSearchTerm("");
+        setDebouncedSearchTerm("");
       }
     }
   };
@@ -364,7 +390,31 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   }
 
   const rootNode = Array.isArray(root) ? root[0] : root;
-  const displayedRoot = searchTerm.trim() ? filterTree(rootNode, searchTerm) : root;
+  const displayedRoot = useMemo(() => {
+    if (!rootNode) return null;
+    if (!debouncedSearchTerm.trim()) return root;
+    return filterTree(rootNode, debouncedSearchTerm);
+  }, [root, rootNode, debouncedSearchTerm, filterTree]);
+
+  useEffect(() => {
+    if (debouncedSearchTerm.trim()) {
+      if (displayedRoot) {
+        const allFilteredIds = getAllNodeIds(displayedRoot);
+        setExpanded(allFilteredIds);
+      }
+    } else if (rootNode) {
+      if (selectedTreeNode?.id) {
+        const fullPath = getNodePath(rootNode, selectedTreeNode.id);
+        if (fullPath && fullPath.length > 0) {
+          setExpanded(fullPath);
+        } else if (rootNode?.id != null) {
+          setExpanded([rootNode.id.toString()]);
+        }
+      } else if (rootNode?.id != null) {
+        setExpanded([rootNode.id.toString()]);
+      }
+    }
+  }, [debouncedSearchTerm, displayedRoot, rootNode, selectedTreeNode?.id, getAllNodeIds, getNodePath]);
 
   return (
     <div className="conainer" ref={containerRef}>
@@ -387,17 +437,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
             <InputAdornment position="end">
               <IconButton
                 size="small"
-                onClick={() => {
-                  setSearchTerm("");
-                  if (selectedTreeNode?.id && rootNode) {
-                    const fullPath = getNodePath(rootNode, selectedTreeNode.id);
-                    if (fullPath && fullPath.length > 0) {
-                      setExpanded(fullPath);
-                    }
-                  } else if (rootNode?.id != null) {
-                    setExpanded([rootNode.id.toString()]);
-                  }
-                }}
+                onClick={handleClearSearch}
               >
                 <ClearIcon fontSize="small" />
               </IconButton>
