@@ -8,6 +8,7 @@ import Home from "Components/Home";
 import Main from "Components/Main";
 import Login from "Session/Login";
 import Image from "Components/Image";
+import Report from "Components/Report";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,6 +44,8 @@ function App() {
               <Route path="/Home" element={<Home />} />
               <Route path="/List" element={<Main />} />
               <Route path="/Image" element={<Image />} />
+              <Route path="/raport/:guid" element={<Report />} />
+              <Route path="/report/:guid" element={<Report />} />
             </Routes>
           </BrowserRouter>
           <ToastContainer />

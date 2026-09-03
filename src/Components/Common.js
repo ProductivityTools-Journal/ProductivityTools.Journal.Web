@@ -175,14 +175,15 @@ export const getPagePublicUrl = (hashOrUrl) => {
     return `${cleanBase}${Consts.PATH_MEETINGS_CONTROLER}/Public/${raw}`;
 };
 
-export const getJournalPublicUrl = (hashOrUrl) => {
+export const getJournalReportUrl = (hashOrUrl) => {
     const raw = extractHash(hashOrUrl);
     if (!raw) return "";
-    if (raw.startsWith("http://") || raw.startsWith("https://")) {
-        return raw;
-    }
-    const cleanBase = config.PATH_BASE.endsWith("/") ? config.PATH_BASE : `${config.PATH_BASE}/`;
-    return `${cleanBase}${Consts.PATH_TREE_CONTROLER}/Public/${raw}`;
+    const origin = typeof window !== 'undefined' && window.location?.origin ? window.location.origin : config.clientRoot.replace(/\/$/, "");
+    return `${origin}/raport/${raw}`;
+};
+
+export const getJournalPublicUrl = (hashOrUrl) => {
+    return getJournalReportUrl(hashOrUrl);
 };
 
 export const copyTextToClipboard = async (text) => {

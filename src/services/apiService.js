@@ -341,6 +341,13 @@ async function getPagesWithoutPlainText() {
   return invokeCallWithToast(call, "Fetching unmigrated pages", "Unmigrated pages fetched");
 }
 
+async function getPublicTreeNotes(guid) {
+  const response = await axios.get(
+    `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/Public/${guid}`
+  );
+  return response.data;
+}
+
 export {
   getTree,
   getUserEmail,
@@ -362,4 +369,5 @@ export {
   getPagesWithoutPlainText,
   setInboxName,
   removeInboxName,
+  getPublicTreeNotes,
 };
