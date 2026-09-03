@@ -282,7 +282,7 @@ export default function Report() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewMode, setViewMode] = useState("unified"); // 'unified' | 'cards'
+  const [viewMode, setViewMode] = useState("cards"); // 'cards' | 'unified'
 
   const loadData = useCallback(async () => {
     if (!guid) {
@@ -454,11 +454,11 @@ export default function Report() {
             size="small"
             aria-label="view mode"
           >
-            <ToggleButton value="unified" title="Continuous Document">
-              <ArticleIcon fontSize="small" sx={{ mr: 0.5 }} /> Document
-            </ToggleButton>
             <ToggleButton value="cards" title="Separate Note Cards">
               <ViewAgendaIcon fontSize="small" sx={{ mr: 0.5 }} /> Cards
+            </ToggleButton>
+            <ToggleButton value="unified" title="Continuous Document">
+              <ArticleIcon fontSize="small" sx={{ mr: 0.5 }} /> Document
             </ToggleButton>
           </ToggleButtonGroup>
 
@@ -502,17 +502,7 @@ export default function Report() {
 
       {!loading && !error && (
         <>
-          {viewMode === "unified" ? (
-            <div className="report-document-paper report-plate-editor">
-              <Plate
-                key={`unified-${filteredPages.length}-${searchTerm}`}
-                initialValue={unifiedPlateValue}
-                value={unifiedPlateValue}
-                plugins={reportPlugins}
-                readOnly={true}
-              />
-            </div>
-          ) : (
+          {viewMode === "cards" ? (
             <Box sx={{ maxWidth: 960, margin: "28px auto", px: 2 }}>
               {filteredPages.map((page) => {
                 const noteBlocks = parsePageBlocks(page);
@@ -531,7 +521,6 @@ export default function Report() {
                     >
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Chip
-                          icon={<ArticleIcon />}
                           label={page.path || "Note"}
                           size="small"
                           color="primary"
@@ -555,6 +544,16 @@ export default function Report() {
                 );
               })}
             </Box>
+          ) : (
+            <div className="report-document-paper report-plate-editor">
+              <Plate
+                key={`unified-${filteredPages.length}-${searchTerm}`}
+                initialValue={unifiedPlateValue}
+                value={unifiedPlateValue}
+                plugins={reportPlugins}
+                readOnly={true}
+              />
+            </div>
           )}
         </>
       )}
