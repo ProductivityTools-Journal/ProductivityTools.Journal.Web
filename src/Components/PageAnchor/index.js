@@ -3,7 +3,7 @@ import { useDrag } from "react-dnd";
 import Button from "@mui/material/Button";
 import AnchorIcon from "@mui/icons-material/Anchor";
 
-export default function PageAnchor({ page, removePageFromList }) {
+export default function PageAnchor({ page, removePageFromList, size = "small" }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "page",
     item: { page: page, removePageFromList: removePageFromList },
@@ -17,8 +17,9 @@ export default function PageAnchor({ page, removePageFromList }) {
       ref={drag}
       variant="outlined"
       color="primary"
+      size={size}
       startIcon={<AnchorIcon />}
-      style={{ cursor: "grab", opacity: isDragging ? 0.5 : 1 }}
+      style={{ cursor: "grab", opacity: isDragging ? 0.5 : 1, height: 32 }}
       title="Drag to move page to another journal"
     >
       Anchor {isDragging && "😱"}

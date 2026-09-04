@@ -85,12 +85,10 @@ const reportPlateUI = createPlateUI({
     as: "h1",
     styles: {
       root: {
-        margin: "24px 0 6px 0",
+        margin: "20px 0 6px 0",
         fontSize: "24px",
         fontWeight: "700",
         color: "#1565c0",
-        borderBottom: "1px solid #e0e0e0",
-        paddingBottom: "4px",
       },
     },
   }),

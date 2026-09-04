@@ -1,5 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import ShareIcon from "@mui/icons-material/Share";
+import PushPinIcon from "@mui/icons-material/PushPin";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 import * as moment from "moment";
 import NotesLabel from "Components/NotesLabel";
 import Notes from "Components/Notes";
@@ -49,11 +64,6 @@ import {
   unwrapCodeBlock,
 } from "@udecode/plate";
 import ToolbarButtons from "./ToolbarButtons";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PageAnchor from "Components/PageAnchor";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 import { toast } from "react-toastify";
@@ -63,32 +73,116 @@ const createTitlePlugin = createPluginFactory({
   isElement: true,
 });
 
+const createParagraphAltPlugin = createPluginFactory({
+  key: "paragraph",
+  isElement: true,
+});
+
+const LinkComponent = (props) => {
+  const { attributes, children, element } = props;
+  return (
+    <a
+      {...attributes}
+      href={element.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        color: "#1976d2",
+        textDecoration: "underline",
+        cursor: "pointer",
+        wordBreak: "break-word",
+      }}
+    >
+      {children}
+    </a>
+  );
+};
+
 const plateUI = createPlateUI({
   title: withProps(StyledElement, {
+    as: "h1",
     styles: {
       root: {
-        margin: "0 0 0 0",
-        fontSize: "25px",
-        fontWeight: "1000",
-        color: "gray",
+        margin: "6px 0 8px 0",
+        fontSize: "22px",
+        fontWeight: "700",
+        color: "#1565c0",
+      },
+    },
+  }),
+  paragraph: withProps(StyledElement, {
+    as: "p",
+    styles: {
+      root: {
+        margin: "4px 0",
+        lineHeight: 1.6,
       },
     },
   }),
   h1: withProps(StyledElement, {
+    as: "h1",
     styles: {
       root: {
-        margin: "0 0 0 0",
+        margin: "18px 0 6px 0",
         fontSize: "20px",
-        fontWeight: "1000",
+        fontWeight: "700",
+        color: "#222",
       },
     },
   }),
+  h2: withProps(StyledElement, {
+    as: "h2",
+    styles: {
+      root: {
+        margin: "14px 0 4px 0",
+        fontSize: "18px",
+        fontWeight: "600",
+        color: "#333",
+      },
+    },
+  }),
+  code_block: withProps(StyledElement, {
+    as: "pre",
+    styles: {
+      root: {
+        backgroundColor: "#f5f5f5",
+        padding: "12px 16px",
+        borderRadius: "6px",
+        fontFamily: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace',
+        fontSize: "13px",
+        lineHeight: "1.45",
+        overflowX: "auto",
+        margin: "10px 0",
+        border: "1px solid #e0e0e0",
+      },
+    },
+  }),
+  code_line: withProps(StyledElement, {
+    as: "div",
+    styles: {
+      root: {
+        fontFamily: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace',
+        fontSize: "13px",
+        whiteSpace: "pre-wrap",
+      },
+    },
+  }),
+  lic: withProps(StyledElement, {
+    as: "span",
+    styles: {
+      root: {
+        display: "inline",
+      },
+    },
+  }),
+  a: LinkComponent,
 });
 
 const platePlugins = createPlugins(
   [
     createBasicElementsPlugin(),
     createTitlePlugin(),
+    createParagraphAltPlugin(),
     createNormalizeTypesPlugin({
       options: {
         rules: [{ path: [0], strictType: "title" }],
@@ -353,54 +447,150 @@ function Page({ page, updatePageInList, key }) {
 
   const getEditModeButtons = () => {
     return (
-      <p style={buttonStyle}>
-        {journalTreeContext?.debug && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => {
-              setJournalPath(journalTreeContext.findPath(page.journalId));
-            }}
-          >
-            Update Context
-          </Button>
-        )}
-        <Button variant="contained" color="primary" onClick={save}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          mt: 2,
+          pt: 1.5,
+          borderTop: "1px solid #f0f0f0",
+          flexWrap: "wrap",
+          "& .MuiButton-root": {
+            height: 32,
+            boxSizing: "border-box",
+          },
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<SaveIcon />}
+          onClick={save}
+        >
           Save
         </Button>
-        <Button variant="contained" color="primary" onClick={close}>
+        <Button
+          variant="outlined"
+          color="inherit"
+          size="small"
+          startIcon={<CloseIcon />}
+          onClick={close}
+        >
           Close
         </Button>
-        <Button variant="outlined" color="primary" onClick={deletePage}>
+        <Button
+          variant="outlined"
+          color="error"
+          size="small"
+          startIcon={<DeleteOutlineIcon />}
+          onClick={deletePage}
+        >
           Delete
         </Button>
-        {journalTreeContext?.debug && (
-          <Button variant="outlined" color="primary" onClick={checkState}>
-            Check State
-          </Button>
-        )}
-        <Button variant="outlined" color="primary" onClick={copyPublicLink}>
-          Get public link
+        <Button
+          variant={Boolean(localPageObject?.pinned) ? "contained" : "outlined"}
+          color={Boolean(localPageObject?.pinned) ? "secondary" : "inherit"}
+          size="small"
+          startIcon={<PushPinIcon />}
+          onClick={togglePinned}
+        >
+          Pinned
         </Button>
-        <PageAnchor page={page} removePageFromList={removePageFromList} />
-        <input type="file" accept="image/png, image/jpg" onChange={onFileChange} />
-        <span>{imageUrl}</span>
-        <img src={imageUrl}></img>
-      </p>
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          startIcon={<ShareIcon />}
+          onClick={copyPublicLink}
+        >
+          Public Link
+        </Button>
+        <PageAnchor page={page} removePageFromList={removePageFromList} size="small" />
+        {journalTreeContext?.debug && (
+          <>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => {
+                setJournalPath(journalTreeContext.findPath(page.journalId));
+              }}
+            >
+              Update Context
+            </Button>
+            <Button variant="outlined" size="small" onClick={checkState}>
+              Check State
+            </Button>
+          </>
+        )}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: "auto" }}>
+          <input
+            accept="image/png, image/jpeg"
+            id={`upload-file-${localPageObject.pageId || localPageObject.frontendId}`}
+            type="file"
+            style={{ display: "none" }}
+            onChange={onFileChange}
+          />
+          <label htmlFor={`upload-file-${localPageObject.pageId || localPageObject.frontendId}`}>
+            <Button
+              variant="outlined"
+              component="span"
+              size="small"
+              startIcon={<AttachFileIcon />}
+            >
+              Attach Image
+            </Button>
+          </label>
+          {imageUrl && (
+            <img
+              src={imageUrl}
+              alt="Uploaded"
+              style={{ maxHeight: 32, borderRadius: 4, border: "1px solid #e0e0e0" }}
+            />
+          )}
+        </Box>
+      </Box>
     );
   };
 
   const getReadOnlyModeButtons = () => {
     return (
-      <p style={buttonStyle}>
-        <Button variant="contained" color="primary" onClick={edit}>
-          Edit page
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          mt: 2,
+          pt: 1.5,
+          borderTop: "1px solid #f0f0f0",
+          flexWrap: "wrap",
+          "& .MuiButton-root": {
+            height: 32,
+            boxSizing: "border-box",
+          },
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          startIcon={<EditIcon />}
+          onClick={edit}
+        >
+          Edit
         </Button>
-        <Button variant="outlined" color="primary" onClick={copyPublicLink}>
-          Get public link
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          startIcon={<ShareIcon />}
+          onClick={copyPublicLink}
+        >
+          Public Link
         </Button>
-        <PageAnchor page={page} removePageFromList={removePageFromList} />
-      </p>
+        <PageAnchor page={page} removePageFromList={removePageFromList} size="small" />
+      </Box>
     );
   };
   // const getComponent = () => {
@@ -441,53 +631,75 @@ function Page({ page, updatePageInList, key }) {
     console.log(localPageObject);
   };
 
-  const pinnedChanged=(e)=>{
-    console.log("pinnedChanged",e.target.checked)
-    setLocalPageObject({ ...localPageObject, pinned: e.target.checked });
-  }
+  const togglePinned = () => {
+    const newPinned = !Boolean(localPageObject?.pinned);
+    localPageObject.pinned = newPinned;
+    setLocalPageObject({ ...localPageObject, pinned: newPinned });
+  };
 
   const getComponent2 = () => {
-    console.log(localPageObject);
-    console.log("Get Component");
-    if (localPageObject != null && localPageObject.Deleted != true) {
-      //console.log(localPageObject.mode)
+    if (localPageObject != null && localPageObject.Deleted !== true) {
       return (
-        <fieldset key={localPageObject.pageId}>
-          {/* <p>mode: {localPageObject.mode}  </p> */}
-          {/* <p>PageId: {localPageObject.pageId}</p> */}
-          <legend>
-            {journalTreeContext?.debug && `[${localPageObject?.pageId}] `}
-            {dtFormated} ({dtDescription})
-            {localPageObject?.subject && localPageObject.subject !== "Page" && ` - ${localPageObject.subject}`}
-            {journalTreeContext?.debug && ` Treeid:${localPageObject?.journalId}`}
-          </legend>
-          <div
-            style={{
+        <div
+          key={localPageObject.pageId || localPageObject.frontendId}
+          className="journal-note-card report-plate-editor"
+        >
+          <Box
+            sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: "4px",
+              mb: 1,
+              pb: 0.75,
+              borderBottom: "1px solid #f0f0f0",
+              flexWrap: "wrap",
+              gap: 0.75,
             }}
           >
-            <div>
-              {!readonly() && (
-                <span>
-                  <input type="checkbox" onClick={pinnedChanged} checked={localPageObject.pinned} />
-                  Pinned
-                </span>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, flexWrap: "wrap" }}>
+              {journalPath && (
+                <Chip
+                  label={journalPath}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                  sx={{ height: 22, fontSize: "0.75rem" }}
+                />
               )}
-            </div>
-            <div
-              style={{
-                color: "#888",
-                fontSize: "0.85rem",
-                textAlign: "right",
-                fontStyle: "italic",
-              }}
-            >
-              {journalPath}
-            </div>
-          </div>
+              {Boolean(localPageObject?.pinned) && (
+                <Chip
+                  icon={<PushPinIcon style={{ fontSize: "0.85rem" }} />}
+                  label="Pinned"
+                  size="small"
+                  color="secondary"
+                  variant="outlined"
+                  sx={{ height: 22, fontSize: "0.75rem" }}
+                />
+              )}
+              {localPageObject?.subject && localPageObject.subject !== "Page" && (
+                <Typography variant="body2" sx={{ fontWeight: 600, color: "#555", fontSize: "0.85rem", lineHeight: 1.2 }}>
+                  {localPageObject.subject}
+                </Typography>
+              )}
+              {journalTreeContext?.debug && (
+                <Chip
+                  label={`ID: ${localPageObject?.pageId || "new"} | Tree: ${localPageObject?.journalId}`}
+                  size="small"
+                  variant="outlined"
+                  sx={{ height: 22, fontSize: "0.75rem" }}
+                />
+              )}
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {page.date && (
+                <Tooltip title={dtDescription}>
+                  <Typography variant="caption" sx={{ color: "#888", fontSize: "0.75rem", lineHeight: 1 }}>
+                    {dtFormated}
+                  </Typography>
+                </Tooltip>
+              )}
+            </Box>
+          </Box>
           <Plate
             key={`${localPageObject.pageId || localPageObject.frontendId}-${localPageObject.mode}`}
             initialValue={localPageObject.contentObject || [{ type: "p", children: [{ text: "" }] }]}
@@ -498,7 +710,14 @@ function Page({ page, updatePageInList, key }) {
             editableProps={{ placeholder: "Type..." }}
             firstChildren={
               !readonly() ? (
-                <HeadingToolbar>
+                <HeadingToolbar
+                  style={{
+                    marginBottom: "12px",
+                    borderRadius: "6px",
+                    background: "#f8f9fa",
+                    border: "1px solid #e0e0e0",
+                  }}
+                >
                   <ToolbarButtons />
                 </HeadingToolbar>
               ) : null
@@ -507,9 +726,9 @@ function Page({ page, updatePageInList, key }) {
           {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
 
           {journalTreeContext?.debug && (
-            <Accordion>
+            <Accordion sx={{ mt: 2, boxShadow: "none", border: "1px solid #e0e0e0" }}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                <Typography>Debuginfo</Typography>
+                <Typography variant="body2" sx={{ color: "#666" }}>Debug Info</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <SlateEditor
@@ -518,11 +737,13 @@ function Page({ page, updatePageInList, key }) {
                   readOnly={readonly()}
                   pageContentObjectChanged={pageContentObjectChanged}
                 ></SlateEditor>
-                <span>{JSON.stringify(localPageObject.contentObject)}</span>
+                <pre style={{ fontSize: "11px", overflowX: "auto", background: "#f5f5f5", padding: "8px", borderRadius: 4 }}>
+                  {JSON.stringify(localPageObject.contentObject, null, 2)}
+                </pre>
               </AccordionDetails>
             </Accordion>
           )}
-        </fieldset>
+        </div>
       );
     }
   };

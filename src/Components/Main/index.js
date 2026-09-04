@@ -10,6 +10,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
+import Typography from "@mui/material/Typography";
 import * as apiService from "services/apiService";
 import * as Common from "../Common.js";
 import { toast } from "react-toastify";
@@ -83,54 +84,75 @@ function MainContent({ debug, setDebug }) {
   };
 
   return (
-    <div>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f4f6f8", paddingBottom: "40px" }}>
       <div
         style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
+          background: "#ffffff",
+          borderBottom: "1px solid #e0e0e0",
+          padding: "10px 24px",
           display: "flex",
           alignItems: "center",
-          gap: "10px",
-          padding: "8px 12px",
-          borderBottom: "1px solid #e0e0e0",
-          marginBottom: "12px",
+          justifyContent: "space-between",
           flexWrap: "wrap",
+          gap: "12px",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.04)",
+          marginBottom: "20px",
         }}
       >
-        <IconButton
-          color="primary"
-          aria-label="toggle navigation tree"
-          onClick={() => setShowTree((prev) => !prev)}
-          title={showTree ? "Hide Tree" : "Show Tree"}
-        >
-          {showTree ? <MenuOpenIcon /> : <MenuIcon />}
-        </IconButton>
-        <Link to="/" style={{ textDecoration: "none", color: "#1976d2", fontWeight: 500 }}>
-          Home
-        </Link>
-        <Button
-          variant="contained"
-          color="secondary"
-          size="small"
-          onClick={migratePlainText}
-          disabled={isMigrating}
-        >
-          {isMigrating ? "Migrating..." : "Migrate 1000 PlainText"}
-        </Button>
-        {inboxNodes &&
-          inboxNodes.map((inboxNode) => (
-            <Button
-              key={inboxNode.id}
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={() => handleInboxClick(inboxNode)}
-            >
-              {inboxNode.inboxName || inboxNode.InboxName}
-            </Button>
-          ))}
-        {editedMeeting && (
-          <div style={{ fontSize: "0.85rem", color: "#666" }}>EditedMeeting: {editedMeeting}</div>
-        )}
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+          <IconButton
+            color="primary"
+            aria-label="toggle navigation tree"
+            onClick={() => setShowTree((prev) => !prev)}
+            title={showTree ? "Hide Tree" : "Show Tree"}
+            size="small"
+          >
+            {showTree ? <MenuOpenIcon /> : <MenuIcon />}
+          </IconButton>
+          <Link
+            to="/"
+            style={{
+              textDecoration: "none",
+              color: "#1976d2",
+              fontWeight: 700,
+              fontSize: "1.15rem",
+              letterSpacing: "-0.5px",
+            }}
+          >
+            Journal
+          </Link>
+          {inboxNodes &&
+            inboxNodes.map((inboxNode) => (
+              <Button
+                key={inboxNode.id}
+                variant="outlined"
+                color="primary"
+                size="small"
+                onClick={() => handleInboxClick(inboxNode)}
+              >
+                {inboxNode.inboxName || inboxNode.InboxName}
+              </Button>
+            ))}
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            size="small"
+            onClick={migratePlainText}
+            disabled={isMigrating}
+          >
+            {isMigrating ? "Migrating..." : "Migrate PlainText"}
+          </Button>
+          {editedMeeting && (
+            <Typography variant="body2" sx={{ color: "#666" }}>
+              Edited: {editedMeeting}
+            </Typography>
+          )}
           <FormControlLabel
             control={
               <Checkbox
@@ -140,7 +162,7 @@ function MainContent({ debug, setDebug }) {
                 color="primary"
               />
             }
-            label="Debug"
+            label={<Typography variant="body2" sx={{ color: "#666" }}>Debug</Typography>}
             style={{ margin: 0, userSelect: "none" }}
           />
         </div>
@@ -151,20 +173,26 @@ function MainContent({ debug, setDebug }) {
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
-            gap: "20px",
-            padding: "0 12px",
+            gap: "24px",
+            padding: "0 24px",
             alignItems: "flex-start",
+            maxWidth: "1600px",
+            margin: "0 auto",
+            boxSizing: "border-box",
           }}
         >
           <div
             style={{
               display: showTree ? "block" : "none",
-              width: "350px",
+              width: "360px",
               minWidth: "280px",
               maxWidth: "100%",
               flexShrink: 0,
-              borderRight: "1px solid #e0e0e0",
-              paddingRight: "12px",
+              backgroundColor: "#ffffff",
+              borderRadius: "8px",
+              border: "1px solid #e0e0e0",
+              boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
+              padding: "16px",
               boxSizing: "border-box",
             }}
           >
@@ -174,7 +202,7 @@ function MainContent({ debug, setDebug }) {
               createNewMeeting={newMeeting}
             />
           </div>
-          <div style={{ flex: 1, minWidth: "300px", maxWidth: "100%" }}>
+          <div style={{ flex: 1, minWidth: "320px", maxWidth: "100%" }}>
             <PageList selectedTreeNode={selectedTreeNode} newPageTrigger={newPageTrigger} />
           </div>
         </div>
