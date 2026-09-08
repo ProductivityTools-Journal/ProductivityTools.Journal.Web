@@ -1,6 +1,5 @@
 import {createContext, useEffect,useContext, useState} from 'react'
 import {auth} from './firebase'
-import {toast} from 'react-toastify'
 
 
 const AuthContext=createContext({
@@ -9,46 +8,42 @@ const AuthContext=createContext({
 
 export function AuthProvider({children}){
     const [user,setUser]=useState(null)
+    const [tokenRefreshTime, setTokenRefreshTime] = useState(() => {
+        const stored = localStorage.getItem("tokenRefreshTime");
+        return stored ? new Date(stored) : null;
+    });
 
     useEffect(() => {
         //Adds an observer for changes to the signed-in user's ID token, which includes sign-in, sign-out, and token refresh events.
         return auth.onIdTokenChanged(async (user) => {
             if (!user) {
                // console.log("missing user")
-                setUser(null)
+                setUser(null);
+                setTokenRefreshTime(null);
+                localStorage.removeItem("tokenRefreshTime");
             }   
             else {
                 const token = await user.getIdToken();
-                
+                const now = new Date();
                 setUser(user);
                 localStorage.setItem("token", token);
                 localStorage.setItem("refreshToken", user.refreshToken);
+                localStorage.setItem("tokenRefreshTime", now.toISOString());
+                setTokenRefreshTime(now);
                // console.log("After getIdToken, onIdTokenChanged method invoked and token in the localstorage updated", token);
-                toast("New token saved in local storage")
             }
         })
     }, []);
 
-    
-    useEffect(() => {
-        const minutes=4;
-        const interval=minutes * 60 * 10000;
-        
-        const handle = setInterval(async () => {
-            const user = auth.currentUser;
-            if (user) {
-              //  console.log("Auth Context, setInterval invoked, getIdToken o user performed");
-                toast(minutes + ' min passed and token refresh invoked')
-                //true - force refresh
-                await user.getIdToken(true);
-                //console.log(user);
-            }
-        }, interval);
-        return () => clearInterval(handle);
-    }, [])
+    const refreshToken = async () => {
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+            await currentUser.getIdToken(true);
+        }
+    };
 
     return (
-        <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ user, tokenRefreshTime, refreshToken }}>{children}</AuthContext.Provider>
     )    
 }
 

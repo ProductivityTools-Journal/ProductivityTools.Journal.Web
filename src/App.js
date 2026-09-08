@@ -13,6 +13,7 @@ import Report from "Components/Report";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./Session/AuthContext";
+import SessionBar from "./Session/SessionBar";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
@@ -37,6 +38,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <AuthProvider>
         <div className="App">
+          <SessionBar />
           <BrowserRouter>
             <Routes>
               <Route path="/Login" element={<Login />} />
