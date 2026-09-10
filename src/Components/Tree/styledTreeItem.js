@@ -2,7 +2,7 @@ import React, { useState, useContext, memo } from 'react';
 import { useDrag, useDrop } from 'react-dnd'
 import * as apiService from 'services/apiService'
 import * as Common from '../Common.js'
-import { toast } from 'react-toastify'
+import statusService from 'services/statusService'
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -128,7 +128,7 @@ function StyledTreeItem(props) {
         if (result) {
             const fullUrl = Common.getJournalPublicUrl(result);
             await Common.copyTextToClipboard(fullUrl);
-            toast.success("Journal public link copied to clipboard!");
+            statusService.success("Journal public link copied to clipboard!");
         }
     }
 

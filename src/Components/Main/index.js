@@ -13,7 +13,7 @@ import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import Typography from "@mui/material/Typography";
 import * as apiService from "services/apiService";
 import * as Common from "../Common.js";
-import { toast } from "react-toastify";
+import statusService from "services/statusService";
 import { JournalTreeContextProvider, JournalTreeContext } from "../JournalContext";
 
 function MainContent({ debug, setDebug }) {
@@ -47,11 +47,11 @@ function MainContent({ debug, setDebug }) {
     try {
       const pages = await apiService.getPagesWithoutPlainText();
       if (!pages || pages.length === 0) {
-        toast.info("No pages without PlainText found!");
+        statusService.info("No pages without PlainText found!");
         setIsMigrating(false);
         return;
       }
-      toast.info(`Found ${pages.length} pages to migrate. Starting conversion...`);
+      statusService.info(`Found ${pages.length} pages to migrate. Starting conversion...`);
       let successCount = 0;
       for (const page of pages) {
         try {
@@ -74,10 +74,10 @@ function MainContent({ debug, setDebug }) {
           console.error("Error migrating page", page.pageId, err);
         }
       }
-      toast.success(`Successfully migrated ${successCount}/${pages.length} pages!`);
+      statusService.success(`Successfully migrated ${successCount}/${pages.length} pages!`);
     } catch (err) {
       console.error("Migration failed", err);
-      toast.error("Migration failed!");
+      statusService.error("Migration failed!");
     } finally {
       setIsMigrating(false);
     }

@@ -10,8 +10,6 @@ import Login from "Session/Login";
 import Image from "Components/Image";
 import Report from "Components/Report";
 
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./Session/AuthContext";
 import SessionBar from "./Session/SessionBar";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -50,7 +48,6 @@ function App() {
               <Route path="/report/:guid" element={<Report />} />
             </Routes>
           </BrowserRouter>
-          <ToastContainer />
         </div>
       </AuthProvider>
     </ThemeProvider>

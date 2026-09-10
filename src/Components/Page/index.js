@@ -66,7 +66,7 @@ import {
 import ToolbarButtons from "./ToolbarButtons";
 import PageAnchor from "Components/PageAnchor";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
-import { toast } from "react-toastify";
+import statusService from "services/statusService";
 
 const createTitlePlugin = createPluginFactory({
   key: "title",
@@ -434,14 +434,14 @@ function Page({ page, updatePageInList, key }) {
   const copyPublicLink = async () => {
     const pageId = localPageObject?.pageId || page?.pageId;
     if (!pageId) {
-      toast.warn("Page is not saved yet");
+      statusService.warn("Page is not saved yet");
       return;
     }
     const result = await apiService.getPagePublicHash(pageId);
     if (result) {
       const fullUrl = Common.getPagePublicUrl(result);
       await Common.copyTextToClipboard(fullUrl);
-      toast.success("Page public link copied to clipboard!");
+      statusService.success("Page public link copied to clipboard!");
     }
   };
 

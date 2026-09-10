@@ -1,8 +1,8 @@
 import axios from "axios";
 import * as Consts from "Consts";
 import { config } from "Consts";
-import { toast } from "react-toastify";
 import { auth } from "../Session/firebase";
+import statusService from "./statusService";
 
 async function getTree() {
   console.log("GetTreeInvoked");
@@ -45,7 +45,7 @@ async function addTreeNode(parentId, name) {
     console.log(response.data);
     return response.data;
   };
-  return invokeCallWithToast(call);
+  return invokeCallWithToast(call, "Adding tree item", "Tree item added");
 }
 
 async function moveTreeNode(sourceId, targetParentId) {
@@ -123,7 +123,7 @@ async function savePage(page) {
     );
     return response.data;
   };
-  return invokeCallWithToast(call, "Creating new Jounral Item", "New Journal Item created");
+  return invokeCallWithToast(call, "Creating new Journal Item", "New Journal Item created");
 }
 
 async function fetchMeeting(id) {
@@ -153,7 +153,7 @@ async function updateJournal(meeting) {
     );
     return response.data;
   };
-  return invokeCallWithToast(call, "Updating Jounral Item", "Journal Item Updated");
+  return invokeCallWithToast(call, "Updating Journal Item", "Journal Item Updated");
 }
 
 async function getDate() {
@@ -186,20 +186,23 @@ async function deleteMeeting(journalId) {
 }
 
 async function invokeCallWithToast(call, pendingMessage, successMessage) {
-  return toast.promise(invokeCall(call), {
-    pending: pendingMessage ? pendingMessage : "Missing pending message",
-    success: successMessage ? successMessage : "Missing sucesss message",
-    error: {
-      render({ data }) {
-        console.log(data);
-        return (
-          <p>
-            {data.message} [{data.response.data.message}]
-          </p>
-        );
-      },
-    },
-  });
+  const pending = pendingMessage || "Processing...";
+  const success = successMessage || "Completed";
+  const opId = statusService.start(pending);
+  try {
+    const response = await invokeCall(call);
+    statusService.success(opId, success);
+    return response;
+  } catch (error) {
+    console.error("API call error:", error);
+    const errText =
+      error?.response?.data?.message ||
+      (typeof error?.response?.data === "string" ? error?.response?.data : null) ||
+      error?.message ||
+      "Request failed";
+    statusService.error(opId, errText);
+    throw error;
+  }
 }
 
 async function fetchPageList(treeId) {
@@ -285,15 +288,9 @@ async function getCookie(idtoken) {
 
 async function invokeCall(call) {
   let token = localStorage.getItem("token");
-  //console.log("token from localstorage", token)
   const header = { headers: { Authorization: `Bearer ${token}` } };
-  try {
-    const response = call(header);
-    return response;
-  } catch (error) {
-    console.log("Call endpoint");
-    console.log(error);
-  }
+  const response = await call(header);
+  return response;
 }
 
 async function getPagePublicHash(pageId) {

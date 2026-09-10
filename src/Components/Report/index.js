@@ -20,7 +20,7 @@ import ArticleIcon from "@mui/icons-material/Article";
 import ViewAgendaIcon from "@mui/icons-material/ViewAgenda";
 import * as apiService from "services/apiService";
 import * as Common from "../Common.js";
-import { toast } from "react-toastify";
+import statusService from "services/statusService";
 import "./index.css";
 
 import {
@@ -391,7 +391,7 @@ export default function Report() {
       .join("\n\n");
 
     await Common.copyTextToClipboard(allText);
-    toast.success("All notes copied to clipboard!");
+    statusService.success("All notes copied to clipboard!");
   };
 
   const handlePrint = () => {
