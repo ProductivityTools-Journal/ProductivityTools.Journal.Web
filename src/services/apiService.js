@@ -2,6 +2,7 @@ import axios from "axios";
 import * as Consts from "Consts";
 import { config } from "Consts";
 import { auth } from "../Session/firebase";
+import { isJwtExpired } from "jwt-check-expiration";
 import statusService from "./statusService";
 
 async function getTree() {
@@ -119,7 +120,8 @@ async function savePage(page) {
     console.log("saveMeeting");
     const response = await axios.post(
       `${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETING_NEW_MEETING}`,
-      page
+      page,
+      header
     );
     return response.data;
   };
@@ -236,61 +238,73 @@ async function uploadPhoto(photo, journalId, pageId) {
 async function getUserEmail() {
   let call = async (header) => {
     const data = { Id: 1, DrillDown: true };
-    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/UserEmail`, data);
+    const response = await axios.post(`${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/UserEmail`, data, header);
     console.log(response.data);
     return response.data;
   };
-  return invokeCallWithToast(call, "Trying to meeting list", "Meeting list returned");
+  return invokeCallWithToast(call, "Trying to get user email", "User email returned");
 }
 
 async function getCookie(idtoken) {
-  // let call = async (header) => {
-  //   const data = { Idtoken: idtoken };
-  //   const response = await axios.post(
-  //     `${config.PATH_BASE}Session/Login`,
-  //     data,
-  //     header
-  //   );
-  //   console.log(response.data);
-  //   return response.data;
-  // };
-  // return invokeCall(call, "Trying to upload photo", "Photo uploaded");
   const header = {
     headers: {},
   };
   console.log(header);
-  //comented
   var response = await axios.get(`${config.PATH_BASE}Session/LoginGet?token=${auth.currentUser.accessToken}`, {
-
     withCredentials: true,
   });
   console.log(response.data);
 }
 
-// async function callAuthorizedEndpoint(call) {
-//   console.log("auth", auth);
-//   console.log("current user", auth.currentUser);
-//   axios.defaults.withCredentials = true;
-//   if (auth && auth.currentUser && auth.currentUser.accessToken) {
-//     const header = {
-//       headers: { Authorization: `Bearer ${auth.currentUser.accessToken}` },
-//     };
-//     try {
-//       const result = await call(header);
-//       return result;
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   } else {
-//     console.log("User not authenticated");
-//   }
-// }
+async function getValidToken() {
+  let token = localStorage.getItem("token");
+  const currentUser = auth.currentUser;
+
+  let needsRefresh = !token;
+  if (token) {
+    try {
+      if (isJwtExpired(token)) {
+        needsRefresh = true;
+      }
+    } catch (e) {
+      needsRefresh = true;
+    }
+  }
+
+  if (currentUser) {
+    try {
+      const freshToken = await currentUser.getIdToken(needsRefresh);
+      if (freshToken && freshToken !== token) {
+        localStorage.setItem("token", freshToken);
+        const now = new Date();
+        localStorage.setItem("tokenRefreshTime", now.toISOString());
+      }
+      return freshToken || token;
+    } catch (err) {
+      console.error("Failed to get token from Firebase:", err);
+    }
+  }
+  return token;
+}
 
 async function invokeCall(call) {
-  let token = localStorage.getItem("token");
+  let token = await getValidToken();
   const header = { headers: { Authorization: `Bearer ${token}` } };
-  const response = await call(header);
-  return response;
+  try {
+    const response = await call(header);
+    return response;
+  } catch (error) {
+    if (error?.response?.status === 401 && auth.currentUser) {
+      console.log("Received 401, forcing token refresh and retrying request...");
+      const freshToken = await auth.currentUser.getIdToken(true);
+      localStorage.setItem("token", freshToken);
+      const now = new Date();
+      localStorage.setItem("tokenRefreshTime", now.toISOString());
+      const retryHeader = { headers: { Authorization: `Bearer ${freshToken}` } };
+      return await call(retryHeader);
+    }
+    throw error;
+  }
 }
 
 async function getPagePublicHash(pageId) {
