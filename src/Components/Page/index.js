@@ -39,6 +39,7 @@ import {
   createUnderlinePlugin,
   createStrikethroughPlugin,
   createCodePlugin,
+  createFontColorPlugin,
   createListPlugin,
   createIndentPlugin,
   createTablePlugin,
@@ -63,7 +64,7 @@ import {
   isSelectionAtCodeBlockStart,
   unwrapCodeBlock,
 } from "@udecode/plate";
-import ToolbarButtons from "./ToolbarButtons";
+import ToolbarButtons, { openColorContextMenu } from "./ToolbarButtons";
 import PageAnchor from "Components/PageAnchor";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 import statusService from "services/statusService";
@@ -77,6 +78,27 @@ const createParagraphAltPlugin = createPluginFactory({
   key: "paragraph",
   isElement: true,
 });
+
+let isRightAltDown = false;
+if (typeof window !== "undefined") {
+  window.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.code === "AltRight") isRightAltDown = true;
+    },
+    true
+  );
+  window.addEventListener(
+    "keyup",
+    (e) => {
+      if (e.code === "AltRight") isRightAltDown = false;
+    },
+    true
+  );
+  window.addEventListener("blur", () => {
+    isRightAltDown = false;
+  });
+}
 
 const LinkComponent = (props) => {
   const { attributes, children, element } = props;
@@ -258,6 +280,23 @@ const platePlugins = createPlugins(
     createUnderlinePlugin(),
     createStrikethroughPlugin(),
     createCodePlugin(),
+    createFontColorPlugin({
+      handlers: {
+        onKeyDown: (editor) => (e) => {
+          if (e.defaultPrevented) return;
+          const lower = (e.key || "").toLowerCase();
+          const isCtrlM =
+            (e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && (lower === "m" || e.code === "KeyM");
+          const isLeftAltC =
+            e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && !isRightAltDown && (lower === "c" || e.code === "KeyC");
+          if (isCtrlM || isLeftAltC) {
+            e.preventDefault();
+            e.stopPropagation();
+            openColorContextMenu(editor);
+          }
+        },
+      },
+    }),
     createListPlugin(),
     createIndentPlugin({
       offset: 24,
@@ -716,6 +755,7 @@ function Page({ page, updatePageInList, key }) {
                     borderRadius: "6px",
                     background: "#f8f9fa",
                     border: "1px solid #e0e0e0",
+                    flexWrap: "wrap",
                   }}
                 >
                   <ToolbarButtons />

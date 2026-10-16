@@ -38,6 +38,7 @@ import {
   createUnderlinePlugin,
   createStrikethroughPlugin,
   createCodePlugin,
+  createFontColorPlugin,
   createListPlugin,
   createIndentPlugin,
   createTablePlugin,
@@ -175,6 +176,7 @@ const reportPlugins = createPlugins(
     createUnderlinePlugin(),
     createStrikethroughPlugin(),
     createCodePlugin(),
+    createFontColorPlugin(),
     createListPlugin(),
     createIndentPlugin({ offset: 24, unit: "px" }),
     createTablePlugin({ options: { initialTableWidth: 600 } }),
@@ -207,6 +209,7 @@ function sanitizeSlateChild(node) {
     if (node.underline) cleanText.underline = true;
     if (node.strikethrough) cleanText.strikethrough = true;
     if (node.code) cleanText.code = true;
+    if (node.color) cleanText.color = node.color;
     return cleanText;
   }
 
