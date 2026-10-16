@@ -57,9 +57,12 @@ import {
   insertTableColumn,
   deleteColumn,
 } from "@udecode/plate";
+import "tippy.js/dist/tippy.css";
 
 const tooltip = (content) => ({
   content,
+  arrow: true,
+  delay: [200, 0],
 });
 
 export const ToolbarButtons = () => {
@@ -98,32 +101,32 @@ export const ToolbarButtons = () => {
         icon={<Looks6 />}
       />
       <MarkToolbarButton
-        tooltip={tooltip("Bold (⌘+B)")}
+        tooltip={tooltip("Bold (Ctrl+B)")}
         type={getPluginType(editor, MARK_BOLD)}
         icon={<FormatBold />}
       />
       <MarkToolbarButton
-        tooltip={tooltip("Italic (⌘+I)")}
+        tooltip={tooltip("Italic (Ctrl+I)")}
         type={getPluginType(editor, MARK_ITALIC)}
         icon={<FormatItalic />}
       />
       <MarkToolbarButton
-        tooltip={tooltip("Underline (⌘+U)")}
+        tooltip={tooltip("Underline (Ctrl+U)")}
         type={getPluginType(editor, MARK_UNDERLINE)}
         icon={<FormatUnderlined />}
       />
       <MarkToolbarButton
-        tooltip={tooltip("Strikethrough (⌘+⇧+X)")}
+        tooltip={tooltip("Strikethrough (Ctrl+Shift+X)")}
         type={getPluginType(editor, MARK_STRIKETHROUGH)}
         icon={<FormatStrikethrough />}
       />
       <BlockToolbarButton
-        tooltip={tooltip("Block Quote (⌘+⇧+.)")}
+        tooltip={tooltip("Block Quote (Ctrl+Shift+.)")}
         type={getPluginType(editor, ELEMENT_BLOCKQUOTE)}
         icon={<FormatQuote />}
       />
-      <CodeBlockToolbarButton icon={<CodeBlock />} />
-      <LinkToolbarButton icon={<LinkIcon />} />
+      <CodeBlockToolbarButton tooltip={tooltip("Code Block")} icon={<CodeBlock />} />
+      <LinkToolbarButton tooltip={tooltip("Link")} icon={<LinkIcon />} />
       <ListToolbarButton
         tooltip={tooltip("Bullet List")}
         type={getPluginType(editor, ELEMENT_UL)}
@@ -184,7 +187,7 @@ export const ToolbarButtons = () => {
         icon={<BorderRight />}
         transform={deleteColumn}
       />
-      <ImageToolbarButton icon={<ImageIcon />} />
+      <ImageToolbarButton tooltip={tooltip("Image")} icon={<ImageIcon />} />
     </>
   );
 };

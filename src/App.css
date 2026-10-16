@@ -42,3 +42,20 @@ fieldset {
 .MuiButton-root, button {
   text-transform: none !important;
 }
+
+.tippy-box {
+  background-color: rgba(44, 62, 80, 0.95) !important;
+  color: #ffffff !important;
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+}
+
+.tippy-content {
+  padding: 5px 10px !important;
+}
+
+.tippy-arrow {
+  color: rgba(44, 62, 80, 0.95) !important;
+}
