@@ -5,13 +5,13 @@ import { auth } from "../Session/firebase";
 import { isJwtExpired } from "jwt-check-expiration";
 import statusService from "./statusService";
 
-async function getTree() {
+async function getTree(includeArchived = false) {
   console.log("GetTreeInvoked");
   console.log(auth);
   let call = async (header) => {
     const response = await axios.post(
       `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_GET}`,
-      {},
+      { includeArchived: Boolean(includeArchived) },
       header
     );
     return response.data;
@@ -113,6 +113,38 @@ async function removeInboxName(journalId) {
     return response.data;
   };
   return invokeCallWithToast(call, "Removing inbox name", "Inbox name removed");
+}
+
+async function archiveJournal(journalId, archived = true) {
+  let call = async (header) => {
+    const data = { JournalId: Number(journalId), Archived: Boolean(archived) };
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_ARCHIVE}`,
+      data,
+      header
+    );
+    console.log(response.data);
+    return response.data;
+  };
+  return invokeCallWithToast(
+    call,
+    archived ? "Archiving journal" : "Unarchiving journal",
+    archived ? "Journal archived" : "Journal unarchived"
+  );
+}
+
+async function unarchiveJournal(journalId) {
+  let call = async (header) => {
+    const data = { JournalId: Number(journalId) };
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_UNARCHIVE}`,
+      data,
+      header
+    );
+    console.log(response.data);
+    return response.data;
+  };
+  return invokeCallWithToast(call, "Unarchiving journal", "Journal unarchived");
 }
 
 async function savePage(page) {
@@ -380,5 +412,7 @@ export {
   getPagesWithoutPlainText,
   setInboxName,
   removeInboxName,
+  archiveJournal,
+  unarchiveJournal,
   getPublicTreeNotes,
 };

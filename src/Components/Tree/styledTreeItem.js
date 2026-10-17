@@ -34,6 +34,7 @@ function StyledTreeItem(props) {
 
     const { changeParent, node, openModal, closeAndRefresh, selectedTreeNode, setSelectedTreeNode, ...rest } = props;
     const isSelected = selectedTreeNode?.id === node.id;
+    const isArchived = Boolean(node.archived);
     const hasInboxName = Boolean(node.inboxName || node.InboxName);
     const currentInboxName = node.inboxName || node.InboxName;
 
@@ -121,6 +122,21 @@ function StyledTreeItem(props) {
         }
     }
 
+    const handleToggleArchive = async (event) => {
+        event.stopPropagation();
+        setContextMenu(null);
+        const nextArchived = !isArchived;
+        const r = nextArchived
+            ? await apiService.archiveJournal(node.id, true)
+            : await apiService.unarchiveJournal(node.id);
+        if (r) {
+            props.setSelectedTreeNode({ ...node, archived: nextArchived });
+            if (closeAndRefresh) {
+                closeAndRefresh();
+            }
+        }
+    }
+
     const copyPublicLink = async (event) => {
         event.stopPropagation();
         setContextMenu(null);
@@ -171,6 +187,9 @@ function StyledTreeItem(props) {
                         <MenuItem onClick={openNewModal}>New Journal</MenuItem>
                         <MenuItem onClick={openRenameModal}>Rename</MenuItem>
                         <MenuItem onClick={openDeleteModal}>Remove</MenuItem>
+                        <MenuItem onClick={handleToggleArchive}>
+                            {isArchived ? "Unarchive" : "Archive"}
+                        </MenuItem>
                         {hasInboxName ? (
                             <MenuItem onClick={handleClearInboxName}>Clear inbox name {currentInboxName}</MenuItem>
                         ) : (
@@ -184,7 +203,7 @@ function StyledTreeItem(props) {
                         style={{
                             cursor: 'pointer',
                             userSelect: 'none',
-                            color: isSelected ? '#1565c0' : (hasInboxName ? '#1976d2' : 'inherit'),
+                            color: isArchived ? 'gray' : (isSelected ? '#1565c0' : (hasInboxName ? '#1976d2' : 'inherit')),
                             fontWeight: isSelected ? 600 : (hasInboxName ? 600 : 400),
                             backgroundColor: isSelected ? '#bbdefb' : (hasInboxName ? '#e8f0fe' : 'transparent'),
                             borderRadius: '3px',

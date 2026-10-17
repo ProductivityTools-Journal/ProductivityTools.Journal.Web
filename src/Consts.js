@@ -14,6 +14,8 @@ export const PATH_TREE_MOVEITEM='Move'
 export const PATH_TREE_DELETE='Delete'
 export const PATH_TREE_SET_INBOX_NAME = 'SetInboxName'
 export const PATH_TREE_REMOVE_INBOX_NAME = 'RemoveInboxName'
+export const PATH_TREE_ARCHIVE = 'Archive'
+export const PATH_TREE_UNARCHIVE = 'Unarchive'
 
 //export const stsAuthority = 'http://192.168.0.51:8083/';
 

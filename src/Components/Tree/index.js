@@ -3,6 +3,9 @@ import SvgIcon from "@mui/material/SvgIcon";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
@@ -46,6 +49,7 @@ function CloseSquare(props) {
 export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNode }) {
   const [expanded, setExpanded] = useState([]);
   const [root, setRoot] = useState(null);
+  const [includeArchived, setIncludeArchived] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const params = useParams();
@@ -184,7 +188,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   }, []);
 
   const fetchData = useCallback(async () => {
-    const r = await apiService.getTree();
+    const r = await apiService.getTree(includeArchived);
     setJournalTree(r);
     if (r != null) {
       setRoot(r);
@@ -200,7 +204,24 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         setExpanded((prev) => (prev.length === 0 ? [rootNode.id.toString()] : prev));
       }
     }
-  }, [setJournalTree, params.TreeId, getNodePath]);
+  }, [includeArchived, setJournalTree, params.TreeId, getNodePath]);
+
+  const handleArchiveSelected = async () => {
+    if (!selectedTreeNode?.id) return;
+    const isSelectedArchived = Boolean(selectedTreeNode.archived);
+    const nextArchived = !isSelectedArchived;
+    const updated = nextArchived
+      ? await apiService.archiveJournal(selectedTreeNode.id, true)
+      : await apiService.unarchiveJournal(selectedTreeNode.id);
+    if (updated) {
+      if (!includeArchived && nextArchived) {
+        setSelectedTreeNode(null);
+      } else {
+        setSelectedTreeNode({ ...selectedTreeNode, archived: nextArchived });
+      }
+      await fetchData();
+    }
+  };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -253,7 +274,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.TreeId]);
+  }, [params.TreeId, includeArchived]);
 
   useEffect(() => {
     if (selectedTreeNode?.id && root) {
@@ -418,6 +439,40 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
 
   return (
     <div className="conainer" ref={containerRef}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "8px",
+          gap: "8px",
+          flexWrap: "wrap",
+        }}
+      >
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={includeArchived}
+              onChange={(e) => setIncludeArchived(e.target.checked)}
+              color="primary"
+            />
+          }
+          label={<span style={{ fontSize: "0.85rem", color: "#555" }}>Show archived</span>}
+          style={{ margin: 0, userSelect: "none" }}
+        />
+        {selectedTreeNode && (
+          <Button
+            size="small"
+            variant="outlined"
+            color={selectedTreeNode.archived ? "primary" : "inherit"}
+            onClick={handleArchiveSelected}
+            style={{ textTransform: "none", fontSize: "0.8rem", padding: "2px 8px" }}
+          >
+            {selectedTreeNode.archived ? "Unarchive" : "Archive"}
+          </Button>
+        )}
+      </div>
       <TextField
         size="small"
         fullWidth
