@@ -5,7 +5,6 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Button from "@mui/material/Button";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
@@ -205,23 +204,6 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
       }
     }
   }, [includeArchived, setJournalTree, params.TreeId, getNodePath]);
-
-  const handleArchiveSelected = async () => {
-    if (!selectedTreeNode?.id) return;
-    const isSelectedArchived = Boolean(selectedTreeNode.archived);
-    const nextArchived = !isSelectedArchived;
-    const updated = nextArchived
-      ? await apiService.archiveJournal(selectedTreeNode.id, true)
-      : await apiService.unarchiveJournal(selectedTreeNode.id);
-    if (updated) {
-      if (!includeArchived && nextArchived) {
-        setSelectedTreeNode(null);
-      } else {
-        setSelectedTreeNode({ ...selectedTreeNode, archived: nextArchived });
-      }
-      await fetchData();
-    }
-  };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -461,17 +443,6 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
           label={<span style={{ fontSize: "0.85rem", color: "#555" }}>Show archived</span>}
           style={{ margin: 0, userSelect: "none" }}
         />
-        {selectedTreeNode && (
-          <Button
-            size="small"
-            variant="outlined"
-            color={selectedTreeNode.archived ? "primary" : "inherit"}
-            onClick={handleArchiveSelected}
-            style={{ textTransform: "none", fontSize: "0.8rem", padding: "2px 8px" }}
-          >
-            {selectedTreeNode.archived ? "Unarchive" : "Archive"}
-          </Button>
-        )}
       </div>
       <TextField
         size="small"
