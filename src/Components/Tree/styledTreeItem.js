@@ -205,11 +205,7 @@ function StyledTreeItem(props) {
                             userSelect: 'none',
                             color: isArchived ? 'gray' : (isSelected ? '#1565c0' : (hasInboxName ? '#1976d2' : 'inherit')),
                             fontWeight: isSelected ? 600 : (hasInboxName ? 600 : 400),
-                            backgroundColor: isSelected ? '#bbdefb' : (hasInboxName ? '#e8f0fe' : 'transparent'),
-                            borderRadius: '3px',
                             textDecoration: 'none',
-                            display: 'inline-block',
-                            padding: '2px 4px'
                         }}
                     >
                         {getLabel(node)}
