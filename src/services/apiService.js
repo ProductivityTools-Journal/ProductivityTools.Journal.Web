@@ -533,10 +533,15 @@ async function fetchPageList(treeId) {
       "Meeting list returned"
     );
     offlineService.setOnlineStatus(true);
+    const isCompleteSubtree = (serverPages || []).length < 50;
     await offlineService.cacheSubtreePages(treeId, serverPages || [], {
-      markSynced: true,
+      markSynced: isCompleteSubtree,
+      isFullSubtreeResponse: isCompleteSubtree,
     });
-    return await offlineService.getCachedPagesForSubtree(treeId);
+    if (isCompleteSubtree) {
+      return await offlineService.getCachedPagesForSubtree(treeId);
+    }
+    return serverPages || [];
   } catch (error) {
     if (isOfflineOrNetworkError(error)) {
       offlineService.setOnlineStatus(false);
@@ -755,7 +760,7 @@ async function syncSubtreeForOffline(treeId, treeName = "") {
       async (header) => {
         const response = await axios.post(
           `${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`,
-          { Id: Number(treeId), DrillDown: true },
+          { Id: Number(treeId), DrillDown: true, FullSync: true },
           header
         );
         return response.data;
@@ -834,7 +839,7 @@ async function syncAllForOffline() {
     const allPages = await invokeCall(async (header) => {
       const res = await axios.post(
         `${config.PATH_BASE}${Consts.PATH_MEETINGS_CONTROLER}/${Consts.PATH_MEETINGS_ACTION}`,
-        { Id: Number(rootNode.id), DrillDown: true },
+        { Id: Number(rootNode.id), DrillDown: true, FullSync: true },
         header
       );
       return res.data;

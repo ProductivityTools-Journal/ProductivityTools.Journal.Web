@@ -397,7 +397,11 @@ class OfflineService {
 
   // ---- PAGES CACHE ----
 
-  async cacheSubtreePages(treeId, pagesFromServer, options = { markSynced: false, isFullSync: false }) {
+  async cacheSubtreePages(
+    treeId,
+    pagesFromServer,
+    options = { markSynced: false, isFullSync: false, isFullSubtreeResponse: false }
+  ) {
     const subtreeIds = await this.getSubtreeNodeIds(treeId, false);
     const outbox = await getOutboxFromDB();
     const pendingPageIds = new Set();
@@ -417,13 +421,19 @@ class OfflineService {
 
     const existingPages = await getAllPagesFromDB();
     const serverPageIds = new Set((pagesFromServer || []).map((p) => Number(p.pageId)));
+    const canPruneStale =
+      Boolean(options?.isFullSubtreeResponse) ||
+      Boolean(options?.markSynced) ||
+      (pagesFromServer || []).length < 50;
 
-    // Remove stale server pages in this subtree that were deleted on the server
-    for (const existing of existingPages) {
-      const pid = Number(existing.pageId);
-      const jid = Number(existing.journalId);
-      if (pid > 0 && subtreeIds.has(jid) && !serverPageIds.has(pid) && !pendingPageIds.has(pid)) {
-        await deletePageFromDB(pid);
+    // Remove stale server pages in this subtree only when the response was not truncated by .Take(50)
+    if (canPruneStale) {
+      for (const existing of existingPages) {
+        const pid = Number(existing.pageId);
+        const jid = Number(existing.journalId);
+        if (pid > 0 && subtreeIds.has(jid) && !serverPageIds.has(pid) && !pendingPageIds.has(pid)) {
+          await deletePageFromDB(pid);
+        }
       }
     }
 

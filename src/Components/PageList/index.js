@@ -15,9 +15,14 @@ import { JournalTreeContext } from "Components/JournalContext/index.js";
 
 export default function PageList({ selectedTreeNode, newPageTrigger }) {
   const [pages, setPages] = useState([]);
+  const [visibleLimit, setVisibleLimit] = useState(50);
   const [refreshTick, setRefreshTick] = useState(0);
   const journalTreeContext = useContext(JournalTreeContext);
   const handledTriggerRef = useRef(null);
+
+  useEffect(() => {
+    setVisibleLimit(50);
+  }, [selectedTreeNode?.id]);
 
   useEffect(() => {
     const unsub = offlineService.onDataRefreshed(() => {
@@ -199,9 +204,23 @@ export default function PageList({ selectedTreeNode, newPageTrigger }) {
           </Button>
         </Box>
       ) : (
-        sortedPages.map(function (item) {
-          return <Page page={item} updatePageInList={updatePageInList} key={item.frontendId} />;
-        })
+        <>
+          {sortedPages.slice(0, visibleLimit).map(function (item) {
+            return <Page page={item} updatePageInList={updatePageInList} key={item.frontendId} />;
+          })}
+          {sortedPages.length > visibleLimit && (
+            <Box sx={{ textAlign: "center", my: 2 }}>
+              <Button
+                variant="outlined"
+                color="primary"
+                size="small"
+                onClick={() => setVisibleLimit((prev) => prev + 50)}
+              >
+                Show more notes (showing {visibleLimit} of {sortedPages.length})
+              </Button>
+            </Box>
+          )}
+        </>
       )}
     </div>
   );
