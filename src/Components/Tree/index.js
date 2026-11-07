@@ -17,6 +17,7 @@ import JounralDeleteDialog from "../JounralDeleteDialog";
 import JournalRenameModal from "Components/JournalRenameModal";
 import JournalInboxModal from "../JournalInboxModal";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
+import offlineService from "services/offlineService";
 
 function MinusSquare(props) {
   return (
@@ -57,10 +58,18 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [inboxModalOpen, setInboxModalOpen] = useState(false);
+  const [syncedNodes, setSyncedNodes] = useState(() => offlineService.getState().syncedNodes || {});
 
   const { setJournalTree } = useContext(JournalTreeContext);
 
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    const unsub = offlineService.subscribe((state) => {
+      setSyncedNodes(state.syncedNodes || {});
+    });
+    return unsub;
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -259,6 +268,13 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   }, [params.TreeId, includeArchived]);
 
   useEffect(() => {
+    const unsub = offlineService.onDataRefreshed(() => {
+      fetchData();
+    });
+    return unsub;
+  }, [fetchData]);
+
+  useEffect(() => {
     if (selectedTreeNode?.id && root) {
       const rootNode = Array.isArray(root) ? root[0] : root;
       const fullPath = getNodePath(rootNode, selectedTreeNode.id);
@@ -386,6 +402,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         openModal={openModal}
         closeAndRefresh={closeAndRefresh}
         node={node}
+        syncedInfo={syncedNodes?.[node.id]}
       >
         {node?.nodes?.map((x) => GetNode(x))}
       </StyledTreeItem>

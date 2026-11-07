@@ -7,7 +7,10 @@ import { TreeItem } from '@mui/x-tree-view/TreeItem';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import PropTypes from 'prop-types';
-import { Menu, MenuItem, Divider, Typography } from '@mui/material';
+import { Menu, MenuItem, Divider, Typography, Tooltip } from '@mui/material';
+import CloudDoneOutlinedIcon from '@mui/icons-material/CloudDoneOutlined';
+import CloudSyncOutlinedIcon from '@mui/icons-material/CloudSyncOutlined';
+import * as moment from 'moment';
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 
 
@@ -32,11 +35,13 @@ function StyledTreeItem(props) {
     const journalTreeContext = useContext(JournalTreeContext);
     const isDebug = journalTreeContext?.debug;
 
-    const { changeParent, node, openModal, closeAndRefresh, selectedTreeNode, setSelectedTreeNode, ...rest } = props;
+    const { changeParent, node, openModal, closeAndRefresh, selectedTreeNode, setSelectedTreeNode, syncedInfo, ...rest } = props;
     const isSelected = selectedTreeNode?.id === node.id;
     const isArchived = Boolean(node.archived);
     const hasInboxName = Boolean(node.inboxName || node.InboxName);
     const currentInboxName = node.inboxName || node.InboxName;
+    const isOfflinePending = Boolean(node.isOfflinePending);
+    const isSyncedOffline = Boolean(syncedInfo?.syncedAt);
 
     const treeClick = (e) => {
         e.stopPropagation();
@@ -148,6 +153,12 @@ function StyledTreeItem(props) {
         }
     }
 
+    const handleSyncSubtreeOffline = async (event) => {
+        event.stopPropagation();
+        setContextMenu(null);
+        await apiService.syncSubtreeForOffline(node.id, node.name);
+    }
+
     const [contextMenu, setContextMenu] = useState(null);
 
     const handleContextMenu = (event) => {
@@ -196,6 +207,7 @@ function StyledTreeItem(props) {
                             <MenuItem onClick={openSetInboxNameModal}>Set inbox name</MenuItem>
                         )}
                         <Divider />
+                        <MenuItem onClick={handleSyncSubtreeOffline}>Sync tree for offline</MenuItem>
                         <MenuItem onClick={copyPublicLink}>Copy Public Link</MenuItem>
                     </Menu>
                     <span
@@ -206,9 +218,21 @@ function StyledTreeItem(props) {
                             color: isArchived ? 'gray' : (isSelected ? '#1565c0' : (hasInboxName ? '#1976d2' : 'inherit')),
                             fontWeight: isSelected ? 600 : (hasInboxName ? 600 : 400),
                             textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '5px',
                         }}
                     >
-                        {getLabel(node)}
+                        <span>{getLabel(node)}</span>
+                        {isOfflinePending ? (
+                            <Tooltip title="Pending offline sync">
+                                <CloudSyncOutlinedIcon sx={{ fontSize: 13, color: '#ed6c02' }} />
+                            </Tooltip>
+                        ) : isSyncedOffline ? (
+                            <Tooltip title={`Available offline (synced ${moment(syncedInfo.syncedAt).format('YYYY.MM.DD HH:mm')})`}>
+                                <CloudDoneOutlinedIcon sx={{ fontSize: 13, color: '#2e7d32', opacity: 0.75 }} />
+                            </Tooltip>
+                        ) : null}
                     </span>
                     <span>{isDragging && '😱'}</span>
                     <span> {isOver && <span>Drop Here!</span>}</span>

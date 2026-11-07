@@ -23,8 +23,10 @@ export default function JournalNewModal({ open, selectedTreeNode, closeAndRefres
     console.log(selectedTreeNode);
     const [treeName, setTreeeName] = useState("");
 
-    const addNewItem = function () {
-        apiService.addTreeNode(Number(selectedTreeNode.id), treeName);
+    const addNewItem = async function () {
+        if (!treeName || !treeName.trim()) return;
+        await apiService.addTreeNode(Number(selectedTreeNode.id), treeName.trim());
+        setTreeeName("");
         closeAndRefresh();
     }
 

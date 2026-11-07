@@ -12,14 +12,20 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CloseIcon from "@mui/icons-material/Close";
+import CloudDoneOutlinedIcon from "@mui/icons-material/CloudDoneOutlined";
+import CloudOffOutlinedIcon from "@mui/icons-material/CloudOffOutlined";
+import CloudSyncOutlinedIcon from "@mui/icons-material/CloudSyncOutlined";
 import * as moment from "moment";
 import { useAuth } from "./AuthContext";
 import statusService from "../services/statusService";
+import offlineService from "../services/offlineService";
+import * as apiService from "../services/apiService";
 
 export default function SessionBar() {
   const { user, tokenRefreshTime, refreshToken } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [statusState, setStatusState] = useState(() => statusService.getState());
+  const [offlineState, setOfflineState] = useState(() => offlineService.getState());
   const [popoverAnchor, setPopoverAnchor] = useState(null);
 
   useEffect(() => {
@@ -29,9 +35,32 @@ export default function SessionBar() {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = offlineService.subscribe((state) => {
+      setOfflineState(state);
+    });
+    return unsubscribe;
+  }, []);
+
   if (!user) {
     return null;
   }
+
+  const handleSyncAllOffline = async () => {
+    try {
+      await apiService.syncAllForOffline();
+    } catch (err) {
+      console.error("Failed full offline sync:", err);
+    }
+  };
+
+  const handleSyncPending = async () => {
+    try {
+      await apiService.syncPendingChanges();
+    } catch (err) {
+      console.error("Failed pending sync:", err);
+    }
+  };
 
   const handleRefresh = async () => {
     try {
@@ -123,20 +152,149 @@ export default function SessionBar() {
         boxSizing: "border-box",
       }}
     >
-      {/* Left: User Session */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, flexShrink: 0 }}>
+      {/* Left: User Session + Offline Status */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, flexShrink: 0, flexWrap: "wrap" }}>
         <Box
           sx={{
             width: 6,
             height: 6,
             borderRadius: "50%",
-            backgroundColor: "#4caf50",
+            backgroundColor: offlineState.isOnline ? "#4caf50" : "#ed6c02",
             flexShrink: 0,
           }}
         />
         <Typography sx={{ fontSize: "11px", color: "#666" }}>
           Session: <strong style={{ color: "#444" }}>{user.email}</strong>
         </Typography>
+
+        <Box
+          sx={{
+            width: "1px",
+            height: "12px",
+            backgroundColor: "#d0d0d0",
+            mx: 0.5,
+            flexShrink: 0,
+          }}
+        />
+
+        {offlineState.isOnline ? (
+          <Tooltip
+            title={
+              offlineState.lastFullSyncAt
+                ? `Online • ${offlineState.cachedPagesCount} notes cached offline (last full sync: ${moment(offlineState.lastFullSyncAt).format("YYYY.MM.DD HH:mm:ss")})`
+                : `Online • ${offlineState.cachedPagesCount} notes cached offline`
+            }
+          >
+            <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.5, color: "#2e7d32" }}>
+              <CloudDoneOutlinedIcon sx={{ fontSize: 13 }} />
+              <Typography sx={{ fontSize: "11px", color: "#2e7d32", fontWeight: 600 }}>
+                Online ({offlineState.cachedPagesCount} cached)
+              </Typography>
+            </Box>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Offline mode — browsing and editing use local IndexedDB cache">
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 0.5,
+                backgroundColor: "#fff3e0",
+                border: "1px solid #ffb74d",
+                color: "#e65100",
+                px: 0.75,
+                py: "1px",
+                borderRadius: "4px",
+              }}
+            >
+              <CloudOffOutlinedIcon sx={{ fontSize: 13 }} />
+              <Typography sx={{ fontSize: "11px", color: "#e65100", fontWeight: 700 }}>
+                OFFLINE ({offlineState.cachedPagesCount} cached)
+              </Typography>
+            </Box>
+          </Tooltip>
+        )}
+
+        {offlineState.outboxCount > 0 && (
+          <Tooltip
+            title={
+              offlineState.isOnline
+                ? `Click to sync ${offlineState.outboxCount} pending offline change(s) now`
+                : `${offlineState.outboxCount} change(s) queued — will sync automatically when back online`
+            }
+          >
+            <Box
+              onClick={offlineState.isOnline && !offlineState.isSyncing ? handleSyncPending : undefined}
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 0.5,
+                backgroundColor: "#e3f2fd",
+                border: "1px solid #90caf9",
+                color: "#1565c0",
+                px: 0.75,
+                py: "1px",
+                borderRadius: "4px",
+                cursor: offlineState.isOnline && !offlineState.isSyncing ? "pointer" : "default",
+                "&:hover": {
+                  backgroundColor:
+                    offlineState.isOnline && !offlineState.isSyncing ? "#bbdefb" : "#e3f2fd",
+                },
+              }}
+            >
+              <CloudSyncOutlinedIcon sx={{ fontSize: 13 }} />
+              <Typography sx={{ fontSize: "11px", color: "#1565c0", fontWeight: 600 }}>
+                Pending sync: {offlineState.outboxCount}
+                {offlineState.isOnline ? " (Sync now)" : ""}
+              </Typography>
+            </Box>
+          </Tooltip>
+        )}
+
+        <Tooltip
+          title={
+            offlineState.isOnline
+              ? "Download all trees and notes for offline use (e.g. before a flight)"
+              : "Connect to the internet to download all trees for offline"
+          }
+        >
+          <span>
+            <Box
+              component="button"
+              type="button"
+              disabled={!offlineState.isOnline || offlineState.isSyncing}
+              onClick={handleSyncAllOffline}
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 0.5,
+                fontSize: "11px",
+                fontWeight: 600,
+                color: !offlineState.isOnline || offlineState.isSyncing ? "#9e9e9e" : "#1976d2",
+                backgroundColor: "#ffffff",
+                border: "1px solid #cbd5e1",
+                borderRadius: "4px",
+                px: 0.75,
+                py: "1px",
+                cursor: !offlineState.isOnline || offlineState.isSyncing ? "not-allowed" : "pointer",
+                "&:hover": {
+                  backgroundColor:
+                    !offlineState.isOnline || offlineState.isSyncing ? "#ffffff" : "#f0f7ff",
+                },
+              }}
+            >
+              <CloudSyncOutlinedIcon
+                sx={{
+                  fontSize: 13,
+                  animation: offlineState.isSyncing ? "spin 1s linear infinite" : "none",
+                }}
+              />
+              {offlineState.isSyncing
+                ? offlineState.syncProgress?.label || "Syncing..."
+                : "Sync All Offline"}
+            </Box>
+          </span>
+        </Tooltip>
       </Box>
 
       {/* Right: Info / Status + Vertical Line + Token Refresh */}

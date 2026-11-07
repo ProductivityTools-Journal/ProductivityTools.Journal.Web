@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
+import React, { useEffect, useState, useContext, useRef, useMemo, useCallback } from "react";
 import Page from "Components/Page";
 import * as apiService from "services/apiService";
+import offlineService from "services/offlineService";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import AddIcon from "@mui/icons-material/Add";
+import CloudSyncOutlinedIcon from "@mui/icons-material/CloudSyncOutlined";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import { v4 as uuid } from "uuid";
 import * as Common from "../Common.js";
@@ -13,8 +15,16 @@ import { JournalTreeContext } from "Components/JournalContext/index.js";
 
 export default function PageList({ selectedTreeNode, newPageTrigger }) {
   const [pages, setPages] = useState([]);
+  const [refreshTick, setRefreshTick] = useState(0);
   const journalTreeContext = useContext(JournalTreeContext);
   const handledTriggerRef = useRef(null);
+
+  useEffect(() => {
+    const unsub = offlineService.onDataRefreshed(() => {
+      setRefreshTick((t) => t + 1);
+    });
+    return unsub;
+  }, []);
 
   useEffect(() => {
     let isCancelled = false;
@@ -52,10 +62,33 @@ export default function PageList({ selectedTreeNode, newPageTrigger }) {
     return () => {
       isCancelled = true;
     };
-  }, [selectedTreeNode?.id, newPageTrigger?.timestamp]);
+  }, [selectedTreeNode?.id, newPageTrigger?.timestamp, refreshTick]);
 
-  const updatePageInList = (page) => {
-    return;
+  const updatePageInList = useCallback((updatedPage) => {
+    if (!updatedPage) return;
+    setPages((prevPages) => {
+      if (updatedPage.Deleted) {
+        return prevPages.filter(
+          (p) =>
+            (updatedPage.pageId == null || p.pageId !== updatedPage.pageId) &&
+            (updatedPage.frontendId == null || p.frontendId !== updatedPage.frontendId)
+        );
+      }
+      return prevPages.map((p) => {
+        if (
+          (updatedPage.frontendId && p.frontendId === updatedPage.frontendId) ||
+          (updatedPage.pageId != null && p.pageId === updatedPage.pageId)
+        ) {
+          return { ...p, ...updatedPage };
+        }
+        return p;
+      });
+    });
+  }, []);
+
+  const syncCurrentTreeOffline = async () => {
+    if (!selectedTreeNode?.id) return;
+    await apiService.syncSubtreeForOffline(selectedTreeNode.id, selectedTreeNode.name);
   };
 
   const newEvent = () => {
@@ -112,6 +145,18 @@ export default function PageList({ selectedTreeNode, newPageTrigger }) {
           {journalTreeContext?.debug && (
             <Button variant="outlined" size="small" onClick={checkState}>
               Check State
+            </Button>
+          )}
+          {selectedTreeNode?.id != null && (
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              startIcon={<CloudSyncOutlinedIcon />}
+              onClick={syncCurrentTreeOffline}
+              title="Download this folder and its subfolders for offline use"
+            >
+              Sync Folder Offline
             </Button>
           )}
           <Button

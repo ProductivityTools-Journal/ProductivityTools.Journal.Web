@@ -8,13 +8,19 @@ const AuthContext = createContext({
 });
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const cachedEmail = localStorage.getItem("cachedUserEmail");
+    return cachedEmail ? { email: cachedEmail, isCachedOfflineUser: true } : null;
+  });
   const [tokenRefreshTime, setTokenRefreshTime] = useState(() => {
     const stored = localStorage.getItem("tokenRefreshTime");
     return stored ? new Date(stored) : null;
   });
 
   const refreshToken = useCallback(async () => {
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      return localStorage.getItem("token");
+    }
     const currentUser = auth.currentUser;
     if (currentUser) {
       const token = await currentUser.getIdToken(true);
@@ -31,31 +37,49 @@ export function AuthProvider({ children }) {
     // Adds an observer for changes to the signed-in user's ID token (sign-in, sign-out, token refresh)
     const unsubscribe = auth.onIdTokenChanged(async (firebaseUser) => {
       if (!firebaseUser) {
+        if (typeof navigator !== "undefined" && !navigator.onLine) {
+          const cachedEmail = localStorage.getItem("cachedUserEmail");
+          if (cachedEmail) {
+            setUser({ email: cachedEmail, isCachedOfflineUser: true });
+            return;
+          }
+        }
         setUser(null);
         setTokenRefreshTime(null);
         localStorage.removeItem("token");
         localStorage.removeItem("tokenRefreshTime");
+        localStorage.removeItem("cachedUserEmail");
       } else {
         setUser(firebaseUser);
-        const token = await firebaseUser.getIdToken();
-        let expired = false;
-        try {
-          expired = isJwtExpired(token);
-        } catch (e) {
-          expired = true;
+        if (firebaseUser.email) {
+          localStorage.setItem("cachedUserEmail", firebaseUser.email);
         }
+        if (typeof navigator !== "undefined" && !navigator.onLine) {
+          return;
+        }
+        try {
+          const token = await firebaseUser.getIdToken();
+          let expired = false;
+          try {
+            expired = isJwtExpired(token);
+          } catch (e) {
+            expired = true;
+          }
 
-        if (expired) {
-          await refreshToken();
-        } else {
-          localStorage.setItem("token", token);
-          localStorage.setItem("refreshToken", firebaseUser.refreshToken);
-          const tokenResult = await firebaseUser.getIdTokenResult();
-          const issuedAt = tokenResult?.claims?.iat
-            ? new Date(tokenResult.claims.iat * 1000)
-            : new Date();
-          localStorage.setItem("tokenRefreshTime", issuedAt.toISOString());
-          setTokenRefreshTime(issuedAt);
+          if (expired) {
+            await refreshToken();
+          } else {
+            localStorage.setItem("token", token);
+            localStorage.setItem("refreshToken", firebaseUser.refreshToken);
+            const tokenResult = await firebaseUser.getIdTokenResult();
+            const issuedAt = tokenResult?.claims?.iat
+              ? new Date(tokenResult.claims.iat * 1000)
+              : new Date();
+            localStorage.setItem("tokenRefreshTime", issuedAt.toISOString());
+            setTokenRefreshTime(issuedAt);
+          }
+        } catch (err) {
+          console.warn("Token check skipped (likely offline):", err);
         }
       }
     });
@@ -65,6 +89,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const checkAndRefreshIfNeeded = async () => {
+      if (typeof navigator !== "undefined" && !navigator.onLine) return;
       const currentUser = auth.currentUser;
       if (!currentUser) return;
 

@@ -429,7 +429,12 @@ function Page({ page, updatePageInList, key }) {
       eventSum = { ...localPageObject, ...savedEvent };
       setLocalPageObject(eventSum);
     } else {
-      apiService.updateJournal(localPageObject);
+      let updatedRes = await apiService.updateJournal(localPageObject);
+      eventSum = {
+        ...localPageObject,
+        isOfflinePending: Boolean(updatedRes?.isOfflinePending),
+      };
+      setLocalPageObject(eventSum);
     }
     updatePageInList(eventSum);
   };
@@ -438,12 +443,11 @@ function Page({ page, updatePageInList, key }) {
     setLocalPageObject({ ...localPageObject, mode: "readonly" });
   };
 
-  const deletePage = () => {
-    //console.log("delete whole journal item")
-    //console.log(localPageObject);
-    apiService.deleteMeeting(localPageObject.pageId);
-    setLocalPageObject({ ...localPageObject, Deleted: true });
-    //removePageFromList(localPageObject);
+  const deletePage = async () => {
+    await apiService.deleteMeeting(localPageObject.pageId);
+    const deletedObj = { ...localPageObject, Deleted: true };
+    setLocalPageObject(deletedObj);
+    updatePageInList(deletedObj);
   };
 
   const removePageFromList = (page) => {
@@ -713,6 +717,15 @@ function Page({ page, updatePageInList, key }) {
                   color="secondary"
                   variant="outlined"
                   sx={{ height: 22, fontSize: "0.75rem" }}
+                />
+              )}
+              {Boolean(localPageObject?.isOfflinePending) && (
+                <Chip
+                  label="Pending Sync"
+                  size="small"
+                  color="warning"
+                  variant="outlined"
+                  sx={{ height: 22, fontSize: "0.75rem", fontWeight: 600 }}
                 />
               )}
               {localPageObject?.subject && localPageObject.subject !== "Page" && (
