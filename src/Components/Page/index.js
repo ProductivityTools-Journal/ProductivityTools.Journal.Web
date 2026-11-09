@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
@@ -77,6 +77,83 @@ const createTitlePlugin = createPluginFactory({
 const createParagraphAltPlugin = createPluginFactory({
   key: "paragraph",
   isElement: true,
+});
+
+const stripPolishDiacritics = (str) =>
+  str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ł/g, "l")
+    .replace(/Ł/g, "L")
+    .toLowerCase();
+
+const createTabletAutocompleteFixPlugin = createPluginFactory({
+  key: "tabletAutocompleteFix",
+  withOverrides: (editor) => {
+    const { insertText } = editor;
+    let isPasteOrDrop = false;
+
+    editor._setPasteOrDrop = (val) => {
+      isPasteOrDrop = val;
+    };
+
+    editor.insertText = (text) => {
+      if (!isPasteOrDrop && typeof text === "string" && editor.selection) {
+        const trimmed = text.trim();
+        const { anchor, focus } = editor.selection;
+        const isCollapsed =
+          anchor &&
+          focus &&
+          anchor.offset === focus.offset &&
+          anchor.path.length === focus.path.length &&
+          anchor.path.every((v, i) => v === focus.path[i]);
+
+        if (isCollapsed && trimmed.length >= 2 && !/^\s/.test(text) && !/\s/.test(trimmed)) {
+          try {
+            let node = editor;
+            for (const idx of anchor.path) {
+              node = node?.children?.[idx];
+            }
+            if (node && typeof node.text === "string") {
+              const beforeCursor = node.text.slice(0, anchor.offset);
+              const wordMatch = beforeCursor.match(/([^\s.,!?;:()[\]{}"'`~@#$%^&*+=<>\\/|]+)$/);
+              if (wordMatch) {
+                const typedWord = wordMatch[1];
+                const normTrimmed = stripPolishDiacritics(trimmed);
+                const normTyped = stripPolishDiacritics(typedWord);
+                if (normTrimmed.startsWith(normTyped) && normTrimmed.length >= normTyped.length) {
+                  const wordStartOffset = anchor.offset - typedWord.length;
+                  if (typeof editor.select === "function") {
+                    editor.select({
+                      anchor: { path: anchor.path, offset: wordStartOffset },
+                      focus: anchor,
+                    });
+                  }
+                }
+              }
+            }
+          } catch (_e) {}
+        }
+      }
+      insertText(text);
+    };
+
+    return editor;
+  },
+  handlers: {
+    onPaste: (editor) => () => {
+      if (editor._setPasteOrDrop) {
+        editor._setPasteOrDrop(true);
+        setTimeout(() => editor._setPasteOrDrop(false), 0);
+      }
+    },
+    onDrop: (editor) => () => {
+      if (editor._setPasteOrDrop) {
+        editor._setPasteOrDrop(true);
+        setTimeout(() => editor._setPasteOrDrop(false), 0);
+      }
+    },
+  },
 });
 
 let isRightAltDown = false;
@@ -313,6 +390,7 @@ const platePlugins = createPlugins(
     createImagePlugin(),
     createMediaEmbedPlugin(),
     createSoftBreakPlugin(),
+    createTabletAutocompleteFixPlugin(),
   ],
   {
     components: plateUI,
@@ -342,6 +420,8 @@ function Page({ page, updatePageInList, key }) {
   });
   const [imageUrl, setImageUrl] = useState();
   const [journalPath, setJournalPath] = useState();
+  const contentObjectRef = useRef(localPageObject?.contentObject);
+  const editableProps = useMemo(() => ({ placeholder: "Type..." }), []);
 
   const journalTreeContext = useContext(JournalTreeContext);
 
@@ -357,6 +437,7 @@ function Page({ page, updatePageInList, key }) {
       pageContentObject = Common.getObjectSlateStructureFromRawDetails("Title14", page.content);
     }
 
+    contentObjectRef.current = pageContentObject;
     let x = {
       ...page,
       contentObject: pageContentObject,
@@ -389,15 +470,13 @@ function Page({ page, updatePageInList, key }) {
   const buttonStyle = { textAlign: "left" };
 
   const pageContentObjectChanged = (contentObject) => {
-    // console.log("pageContentObjectChanged");
-    // console.log(contentObject);
+    contentObjectRef.current = contentObject;
     setLocalPageObject({ ...localPageObject, contentObject: contentObject });
   };
 
   const edit = () => {
-    //console.log()
-    //setMode('edit');
-    setLocalPageObject({ ...localPageObject, mode: "edit" });
+    const latestContent = contentObjectRef.current || localPageObject.contentObject;
+    setLocalPageObject({ ...localPageObject, contentObject: latestContent, mode: "edit" });
   };
 
   const updateState = (event) => {
@@ -420,9 +499,11 @@ function Page({ page, updatePageInList, key }) {
 
   const save = async () => {
     let eventSum = undefined; //we need it to keep mode=edit, which is not returned from server
+    const latestContentObject = contentObjectRef.current || localPageObject.contentObject;
+    localPageObject.contentObject = latestContentObject;
     localPageObject.contentType = "Slate";
-    localPageObject.content = JSON.stringify(localPageObject.contentObject);
-    localPageObject.plainText = Common.getPlainTextFromSlateStructure(localPageObject.contentObject);
+    localPageObject.content = JSON.stringify(latestContentObject);
+    localPageObject.plainText = Common.getPlainTextFromSlateStructure(latestContentObject);
     if (localPageObject.pageId == null) {
       let savedEvent = await apiService.savePage(localPageObject);
 
@@ -440,7 +521,8 @@ function Page({ page, updatePageInList, key }) {
   };
 
   const close = () => {
-    setLocalPageObject({ ...localPageObject, mode: "readonly" });
+    const latestContentObject = contentObjectRef.current || localPageObject.contentObject;
+    setLocalPageObject({ ...localPageObject, contentObject: latestContentObject, mode: "readonly" });
   };
 
   const deletePage = async () => {
@@ -668,16 +750,19 @@ function Page({ page, updatePageInList, key }) {
   const readonly = () => localPageObject.mode === "readonly";
 
   const contentChanged = (contentObject) => {
-    console.log("content changed");
-    console.log(contentObject);
-    setLocalPageObject({ ...localPageObject, contentObject: contentObject });
-    console.log(localPageObject);
+    contentObjectRef.current = contentObject;
+    localPageObject.contentObject = contentObject;
+    if (journalTreeContext?.debug) {
+      setLocalPageObject((prev) => ({ ...prev, contentObject }));
+    }
   };
 
   const togglePinned = () => {
     const newPinned = !Boolean(localPageObject?.pinned);
+    const latestContentObject = contentObjectRef.current || localPageObject.contentObject;
     localPageObject.pinned = newPinned;
-    setLocalPageObject({ ...localPageObject, pinned: newPinned });
+    localPageObject.contentObject = latestContentObject;
+    setLocalPageObject({ ...localPageObject, contentObject: latestContentObject, pinned: newPinned });
   };
 
   const getComponent2 = () => {
@@ -753,13 +838,12 @@ function Page({ page, updatePageInList, key }) {
             </Box>
           </Box>
           <Plate
-            key={`${localPageObject.pageId || localPageObject.frontendId}-${localPageObject.mode}`}
-            initialValue={localPageObject.contentObject || [{ type: "p", children: [{ text: "" }] }]}
-            value={localPageObject.contentObject || [{ type: "p", children: [{ text: "" }] }]}
+            key={`${localPageObject.pageId || localPageObject.frontendId}-${localPageObject.mode}-${readonly() ? page?.content?.length || 0 : "edit"}`}
+            initialValue={contentObjectRef.current || localPageObject.contentObject || [{ type: "p", children: [{ text: "" }] }]}
             onChange={contentChanged}
             plugins={platePlugins}
             readOnly={readonly()}
-            editableProps={{ placeholder: "Type..." }}
+            editableProps={editableProps}
             firstChildren={
               !readonly() ? (
                 <HeadingToolbar
