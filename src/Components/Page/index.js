@@ -421,7 +421,7 @@ function Page({ page, updatePageInList, key }) {
   const [imageUrl, setImageUrl] = useState();
   const [journalPath, setJournalPath] = useState();
   const contentObjectRef = useRef(localPageObject?.contentObject);
-  const editableProps = useMemo(() => ({ placeholder: "Type..." }), []);
+  const editableProps = useMemo(() => ({ placeholder: "Type...", spellCheck: true }), []);
 
   const journalTreeContext = useContext(JournalTreeContext);
 
