@@ -13,12 +13,13 @@ import { v4 as uuid } from "uuid";
 import * as Common from "../Common.js";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 
-export default function PageList({ selectedTreeNode, newPageTrigger }) {
+export default function PageList({ selectedTreeNode, newPageTrigger, highlightedPageId }) {
   const [pages, setPages] = useState([]);
   const [visibleLimit, setVisibleLimit] = useState(50);
   const [refreshTick, setRefreshTick] = useState(0);
   const journalTreeContext = useContext(JournalTreeContext);
   const handledTriggerRef = useRef(null);
+  const scrolledPageRef = useRef(null);
 
   useEffect(() => {
     setVisibleLimit(50);
@@ -117,6 +118,32 @@ export default function PageList({ selectedTreeNode, newPageTrigger }) {
     });
   }, [pages]);
 
+  useEffect(() => {
+    if (highlightedPageId == null || sortedPages.length === 0) return;
+    const targetIdx = sortedPages.findIndex(
+      (p) => p.pageId != null && Number(p.pageId) === Number(highlightedPageId)
+    );
+    if (targetIdx === -1) return;
+
+    if (targetIdx >= visibleLimit) {
+      setVisibleLimit(targetIdx + 10);
+      return;
+    }
+
+    const scrollKey = `${selectedTreeNode?.id}-${highlightedPageId}`;
+    if (scrolledPageRef.current === scrollKey) return;
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById(`journal-page-${highlightedPageId}`);
+      if (el) {
+        scrolledPageRef.current = scrollKey;
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [highlightedPageId, sortedPages, visibleLimit, selectedTreeNode?.id]);
+
   return (
     <div style={{ color: "#3b3d3b" }}>
       <Box
@@ -206,7 +233,18 @@ export default function PageList({ selectedTreeNode, newPageTrigger }) {
       ) : (
         <>
           {sortedPages.slice(0, visibleLimit).map(function (item) {
-            return <Page page={item} updatePageInList={updatePageInList} key={item.frontendId} />;
+            const isHighlighted =
+              highlightedPageId != null &&
+              item.pageId != null &&
+              Number(item.pageId) === Number(highlightedPageId);
+            return (
+              <Page
+                page={item}
+                updatePageInList={updatePageInList}
+                isHighlighted={isHighlighted}
+                key={item.frontendId}
+              />
+            );
           })}
           {sortedPages.length > visibleLimit && (
             <Box sx={{ textAlign: "center", my: 2 }}>

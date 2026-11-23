@@ -397,7 +397,7 @@ const platePlugins = createPlugins(
   }
 );
 
-function Page({ page, updatePageInList, key }) {
+function Page({ page, updatePageInList, isHighlighted }) {
   //const { meeting, ...rest } = props;
   const [localPageObject, setLocalPageObject] = useState(() => {
     let pageContentObject = null;
@@ -769,8 +769,11 @@ function Page({ page, updatePageInList, key }) {
     if (localPageObject != null && localPageObject.Deleted !== true) {
       return (
         <div
+          id={localPageObject.pageId != null ? `journal-page-${localPageObject.pageId}` : undefined}
           key={localPageObject.pageId || localPageObject.frontendId}
-          className="journal-note-card report-plate-editor"
+          className={`journal-note-card report-plate-editor ${
+            isHighlighted ? "journal-note-card--highlighted" : ""
+          }`}
         >
           <Box
             sx={{

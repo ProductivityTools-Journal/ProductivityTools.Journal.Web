@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import Tree from "Components/Tree";
 import PageList from "Components/PageList";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Checkbox from "@mui/material/Checkbox";
@@ -16,17 +16,76 @@ import * as Common from "../Common.js";
 import statusService from "services/statusService";
 import { JournalTreeContextProvider, JournalTreeContext } from "../JournalContext";
 
+function findNodeInTree(node, targetId) {
+  if (!node || targetId == null) return null;
+  const targetNum = Number(targetId);
+  if (Array.isArray(node)) {
+    for (const item of node) {
+      const found = findNodeInTree(item, targetNum);
+      if (found) return found;
+    }
+    return null;
+  }
+  if (Number(node.id) === targetNum) {
+    return node;
+  }
+  if (Array.isArray(node.nodes)) {
+    for (const child of node.nodes) {
+      const found = findNodeInTree(child, targetNum);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
 function MainContent({ debug, setDebug }) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [editedMeeting, setEditedMeeting] = useState(undefined);
   const [selectedTreeNode, setSelectedTreeNode] = useState(null);
   const [newPageTrigger, setNewPageTrigger] = useState(null);
+  const [highlightedPageId, setHighlightedPageId] = useState(() => {
+    const pid = searchParams.get("pageId");
+    return pid != null ? Number(pid) : null;
+  });
   const [isMigrating, setIsMigrating] = useState(false);
   const [showTree, setShowTree] = useState(() => {
     return typeof window !== "undefined" ? window.innerWidth > 768 : true;
   });
+  const handledUrlKeyRef = useRef(null);
 
   const journalTreeContext = useContext(JournalTreeContext);
   const inboxNodes = Common.getInboxNodes(journalTreeContext?.journalTree);
+
+  useEffect(() => {
+    const treeIdParam = searchParams.get("treeId");
+    const pageIdParam = searchParams.get("pageId");
+    const newNoteParam = searchParams.get("newNote");
+
+    if (!treeIdParam || !journalTreeContext?.journalTree) {
+      return;
+    }
+
+    const urlKey = `${treeIdParam}|${pageIdParam || ""}|${newNoteParam || ""}`;
+    if (handledUrlKeyRef.current === urlKey) {
+      return;
+    }
+
+    const targetNode = findNodeInTree(journalTreeContext.journalTree, treeIdParam);
+    if (!targetNode) {
+      return;
+    }
+
+    handledUrlKeyRef.current = urlKey;
+    setSelectedTreeNode(targetNode);
+    setHighlightedPageId(pageIdParam != null ? Number(pageIdParam) : null);
+
+    if (newNoteParam === "1") {
+      setNewPageTrigger({ treeNodeId: targetNode.id, timestamp: Date.now() });
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete("newNote");
+      setSearchParams(nextParams, { replace: true });
+    }
+  }, [journalTreeContext?.journalTree, searchParams, setSearchParams]);
 
   function newMeeting() {
     setEditedMeeting(null);
@@ -35,11 +94,21 @@ function MainContent({ debug, setDebug }) {
   const handleTreeNodeSelect = (node) => {
     setSelectedTreeNode(node);
     setNewPageTrigger(null);
+    setHighlightedPageId(null);
+    if (searchParams.toString()) {
+      handledUrlKeyRef.current = null;
+      setSearchParams({}, { replace: true });
+    }
   };
 
   const handleInboxClick = (node) => {
     setSelectedTreeNode(node);
+    setHighlightedPageId(null);
     setNewPageTrigger({ treeNodeId: node.id, timestamp: Date.now() });
+    if (searchParams.toString()) {
+      handledUrlKeyRef.current = null;
+      setSearchParams({}, { replace: true });
+    }
   };
 
   const migratePlainText = async () => {
@@ -114,15 +183,35 @@ function MainContent({ debug, setDebug }) {
           </IconButton>
           <Link
             to="/"
+            title="Powrót na stronę główną"
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "10px",
               textDecoration: "none",
               color: "#1976d2",
               fontWeight: 700,
               fontSize: "1.15rem",
-              letterSpacing: "-0.5px",
+              letterSpacing: "-0.4px",
             }}
           >
-            Journal
+            <span
+              style={{
+                width: "28px",
+                height: "28px",
+                borderRadius: "6px",
+                backgroundColor: "#1976d2",
+                color: "#ffffff",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "0.9rem",
+                fontWeight: 700,
+              }}
+            >
+              J
+            </span>
+            <span>Journal</span>
           </Link>
           {inboxNodes &&
             inboxNodes.map((inboxNode) => (
@@ -203,7 +292,11 @@ function MainContent({ debug, setDebug }) {
             />
           </div>
           <div style={{ flex: 1, minWidth: "320px", maxWidth: "100%" }}>
-            <PageList selectedTreeNode={selectedTreeNode} newPageTrigger={newPageTrigger} />
+            <PageList
+              selectedTreeNode={selectedTreeNode}
+              newPageTrigger={newPageTrigger}
+              highlightedPageId={highlightedPageId}
+            />
           </div>
         </div>
       </DndProvider>
