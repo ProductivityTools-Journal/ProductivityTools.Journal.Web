@@ -243,6 +243,8 @@ function sanitizeSlateElement(node) {
   };
 
   if (node.url) cleanEl.url = node.url;
+  if (node.width) cleanEl.width = node.width;
+  if (node.caption) cleanEl.caption = node.caption;
   if (node.target) cleanEl.target = node.target;
   if (node.lang) cleanEl.lang = node.lang;
   if (node.indent) cleanEl.indent = node.indent;

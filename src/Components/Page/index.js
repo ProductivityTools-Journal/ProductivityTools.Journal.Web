@@ -68,6 +68,12 @@ import ToolbarButtons, { openColorContextMenu } from "./ToolbarButtons";
 import PageAnchor from "Components/PageAnchor";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 import statusService from "services/statusService";
+import {
+  extractImageFilesFromDataTransfer,
+  insertImageFilesIntoEditor,
+  getActiveUploadCount,
+  subscribeUploadCount,
+} from "services/imageService";
 
 const createTitlePlugin = createPluginFactory({
   key: "title",
@@ -277,6 +283,28 @@ const plateUI = createPlateUI({
   a: LinkComponent,
 });
 
+const createJournalImagePasteDropPlugin = createPluginFactory({
+  key: "journalImagePasteDrop",
+  withOverrides: (editor) => {
+    const { insertData } = editor;
+
+    editor.insertData = (dataTransfer) => {
+      const imageFiles = extractImageFilesFromDataTransfer(dataTransfer);
+      if (imageFiles.length > 0) {
+        const plainText = (dataTransfer.getData("text/plain") || "").trim();
+        const isFileUriOnly = plainText.startsWith("file://");
+        if (!plainText || isFileUriOnly) {
+          insertImageFilesIntoEditor(editor, imageFiles);
+          return;
+        }
+      }
+      insertData(dataTransfer);
+    };
+
+    return editor;
+  },
+});
+
 const platePlugins = createPlugins(
   [
     createBasicElementsPlugin(),
@@ -387,7 +415,12 @@ const platePlugins = createPlugins(
     createLinkPlugin({
       renderAfterEditable: PlateFloatingLink,
     }),
-    createImagePlugin(),
+    createImagePlugin({
+      options: {
+        disableUploadInsert: true,
+      },
+    }),
+    createJournalImagePasteDropPlugin(),
     createMediaEmbedPlugin(),
     createSoftBreakPlugin(),
     createTabletAutocompleteFixPlugin(),
@@ -418,10 +451,16 @@ function Page({ page, updatePageInList, isHighlighted }) {
       mode: page?.mode === undefined ? "readonly" : page.mode,
     };
   });
-  const [imageUrl, setImageUrl] = useState();
   const [journalPath, setJournalPath] = useState();
+  const [uploadCount, setUploadCount] = useState(() => getActiveUploadCount());
   const contentObjectRef = useRef(localPageObject?.contentObject);
+  const plateEditorRef = useRef(null);
   const editableProps = useMemo(() => ({ placeholder: "Type...", spellCheck: true }), []);
+
+  useEffect(() => {
+    const unsub = subscribeUploadCount((cnt) => setUploadCount(cnt));
+    return unsub;
+  }, []);
 
   const journalTreeContext = useContext(JournalTreeContext);
 
@@ -544,15 +583,10 @@ function Page({ page, updatePageInList, isHighlighted }) {
   };
 
   const onFileChange = async (event) => {
-    console.log(event.target.files);
-    if (event.target.files.length > 0) {
-      let file = event.target.files[0];
-      console.log("invoke service.uploadPhoto");
-      console.log(page);
-      var r = await apiService.uploadPhoto(file, page.journalId, page.pageId);
-      console.log("onFileUpload");
-      setImageUrl(r);
-      console.log(r);
+    const files = event.target.files ? Array.from(event.target.files) : [];
+    event.target.value = "";
+    if (files.length > 0 && plateEditorRef.current) {
+      await insertImageFilesIntoEditor(plateEditorRef.current, files);
     }
   };
 
@@ -593,8 +627,9 @@ function Page({ page, updatePageInList, isHighlighted }) {
           size="small"
           startIcon={<SaveIcon />}
           onClick={save}
+          disabled={uploadCount > 0}
         >
-          Save
+          {uploadCount > 0 ? "Uploading..." : "Save"}
         </Button>
         <Button
           variant="outlined"
@@ -651,7 +686,8 @@ function Page({ page, updatePageInList, isHighlighted }) {
         )}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: "auto" }}>
           <input
-            accept="image/png, image/jpeg"
+            accept="image/*"
+            multiple
             id={`upload-file-${localPageObject.pageId || localPageObject.frontendId}`}
             type="file"
             style={{ display: "none" }}
@@ -662,18 +698,12 @@ function Page({ page, updatePageInList, isHighlighted }) {
               variant="outlined"
               component="span"
               size="small"
+              disabled={uploadCount > 0}
               startIcon={<AttachFileIcon />}
             >
-              Attach Image
+              {uploadCount > 0 ? "Uploading..." : "Attach Image"}
             </Button>
           </label>
-          {imageUrl && (
-            <img
-              src={imageUrl}
-              alt="Uploaded"
-              style={{ maxHeight: 32, borderRadius: 4, border: "1px solid #e0e0e0" }}
-            />
-          )}
         </Box>
       </Box>
     );
@@ -858,7 +888,11 @@ function Page({ page, updatePageInList, isHighlighted }) {
                     flexWrap: "wrap",
                   }}
                 >
-                  <ToolbarButtons />
+                  <ToolbarButtons
+                    onEditorReady={(ed) => {
+                      plateEditorRef.current = ed;
+                    }}
+                  />
                 </HeadingToolbar>
               ) : null
             }

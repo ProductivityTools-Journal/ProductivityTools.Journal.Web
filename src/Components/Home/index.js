@@ -218,14 +218,34 @@ function analyzeJournalTree(treeData) {
   return { nodeMap, totalFolders, rootNode: primaryRoot, rootList };
 }
 
+function collectImageUrls(nodes, out = []) {
+  if (!nodes) return out;
+  if (Array.isArray(nodes)) {
+    for (const n of nodes) collectImageUrls(n, out);
+    return out;
+  }
+  if (typeof nodes === "object") {
+    const t = String(nodes.type || "").toLowerCase();
+    if ((t === "img" || t === "image") && typeof nodes.url === "string" && nodes.url) {
+      out.push(nodes.url);
+    }
+    if (Array.isArray(nodes.children)) {
+      collectImageUrls(nodes.children, out);
+    }
+  }
+  return out;
+}
+
 function extractNotePresentation(page) {
   let firstLine = "";
   let restBody = "";
+  const imageUrls = [];
 
   if (page?.content) {
     try {
       const parsed = JSON.parse(page.content);
       const blocks = Array.isArray(parsed) ? parsed : [parsed];
+      collectImageUrls(blocks, imageUrls);
       if (blocks.length > 0) {
         firstLine = Common.getPlainTextFromSlateStructure([blocks[0]]).trim();
         if (blocks.length > 1) {
@@ -273,6 +293,8 @@ function extractNotePresentation(page) {
     title,
     preview,
     hasBody: Boolean(preview),
+    firstImageUrl: imageUrls[0] || null,
+    imageCount: imageUrls.length,
   };
 }
 
@@ -498,7 +520,7 @@ export default function Home() {
     const list = pages.map((p) => {
       const jid = p.journalId != null ? Number(p.journalId) : null;
       const nodeInfo = jid != null ? nodeMap.get(jid) : null;
-      const { title, preview, hasBody } = extractNotePresentation(p);
+      const { title, preview, hasBody, firstImageUrl, imageCount } = extractNotePresentation(p);
       const dateKey = toDateKey(p.date);
       const timestamp = p.date ? new Date(p.date).getTime() : 0;
 
@@ -508,6 +530,8 @@ export default function Home() {
         title,
         preview,
         hasBody,
+        firstImageUrl,
+        imageCount,
         dateKey,
         timestamp: Number.isNaN(timestamp) ? 0 : timestamp,
         path: nodeInfo?.path || p.path || "Journal",
@@ -1609,13 +1633,32 @@ export default function Home() {
                               >
                                 {note.preview}
                               </p>
-                            ) : (
+                            ) : !note.firstImageUrl ? (
                               <p
                                 className="home-note-snippet"
                                 style={{ color: "#9ca3af", fontStyle: "italic" }}
                               >
                                 Brak dodatkowej treści pod nagłówkiem
                               </p>
+                            ) : null}
+
+                            {note.firstImageUrl && (
+                              <div style={{ marginTop: "8px" }}>
+                                <img
+                                  src={note.firstImageUrl}
+                                  alt={note.title}
+                                  loading="lazy"
+                                  onClick={() => openNoteInTree(note.journalId, note.pageId)}
+                                  style={{
+                                    maxHeight: "140px",
+                                    maxWidth: "100%",
+                                    borderRadius: "6px",
+                                    border: "1px solid #e5e7eb",
+                                    objectFit: "cover",
+                                    cursor: "pointer",
+                                  }}
+                                />
+                              </div>
                             )}
                           </div>
 

@@ -33,7 +33,6 @@ import {
   LinkToolbarButton,
   ListToolbarButton,
   TableToolbarButton,
-  ImageToolbarButton,
   ToolbarButton,
   ELEMENT_H1,
   ELEMENT_H2,
@@ -65,6 +64,7 @@ import {
   insertTableColumn,
   deleteColumn,
 } from "@udecode/plate";
+import { insertImageFilesIntoEditor } from "services/imageService";
 import "tippy.js/dist/tippy.css";
 
 const tooltip = (content) => ({
@@ -140,11 +140,18 @@ export const toggleColorMark = (editor, color) => {
   focusEditor(editor);
 };
 
-export const ToolbarButtons = () => {
+export const ToolbarButtons = ({ onEditorReady }) => {
   const editor = usePlateEditorState();
   const colorInputRef = useRef(null);
+  const imageInputRef = useRef(null);
   const savedSelectionRef = useRef(null);
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (onEditorReady && editor) {
+      onEditorReady(editor);
+    }
+  }, [onEditorReady, editor]);
   const [customColor, setCustomColor] = useState("#000000");
   const [menuState, setMenuState] = useState({
     open: false,
@@ -488,7 +495,50 @@ export const ToolbarButtons = () => {
         icon={<BorderRight />}
         transform={deleteColumn}
       />
-      <ImageToolbarButton tooltip={tooltip("Image")} icon={<ImageIcon />} />
+      <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
+        <ToolbarButton
+          tooltip={tooltip("Wstaw obrazek (lub wklej Ctrl+V / przeciągnij)")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            if (editor && editor.selection) {
+              savedSelectionRef.current = JSON.parse(JSON.stringify(editor.selection));
+            }
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (editor && editor.selection) {
+              savedSelectionRef.current = JSON.parse(JSON.stringify(editor.selection));
+            }
+            if (imageInputRef.current) {
+              imageInputRef.current.click();
+            }
+          }}
+          icon={<ImageIcon />}
+        />
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={async (e) => {
+            const files = e.target.files ? Array.from(e.target.files) : [];
+            e.target.value = "";
+            if (files.length > 0 && editor) {
+              await insertImageFilesIntoEditor(editor, files, savedSelectionRef.current);
+            }
+          }}
+          style={{
+            position: "absolute",
+            width: 0,
+            height: 0,
+            opacity: 0,
+            pointerEvents: "none",
+            border: 0,
+            padding: 0,
+          }}
+        />
+      </div>
       {menuState.open &&
         typeof document !== "undefined" &&
         ReactDOM.createPortal(
