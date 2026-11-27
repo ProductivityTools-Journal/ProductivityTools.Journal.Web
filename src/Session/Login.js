@@ -1,19 +1,42 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { auth, signInWithGoogle } from "./firebase.js";
 import { useAuthState } from "react-firebase-hooks/auth";
 import "./Login.css";
 
+export function getSafeReturnUrl(returnUrl) {
+  if (typeof returnUrl !== "string") return "/home";
+  const trimmed = returnUrl.trim();
+  if (
+    !trimmed ||
+    !trimmed.startsWith("/") ||
+    trimmed.startsWith("//") ||
+    trimmed.toLowerCase().startsWith("/login")
+  ) {
+    return "/home";
+  }
+  return trimmed;
+}
+
 export default function Login() {
   const [user, loading] = useAuthState(auth);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+
   useEffect(() => {
     if (loading) {
-      // maybe trigger a loading screen
       return;
     }
-    if (user) navigate("/home");
-  }, [user, loading]);
+    if (user) {
+      const requested =
+        searchParams.get("returnUrl") ||
+        (location.state && location.state.from) ||
+        "";
+      navigate(getSafeReturnUrl(requested), { replace: true });
+    }
+  }, [user, loading, navigate, searchParams, location.state]);
+
   return (
     <div className="login">
       <div className="login__container">
@@ -24,4 +47,3 @@ export default function Login() {
     </div>
   );
 }
-

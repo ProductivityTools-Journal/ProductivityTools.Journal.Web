@@ -489,6 +489,29 @@ async function deleteMeeting(journalId) {
   }
 }
 
+function normalizeApiError(error) {
+  const status = error?.response?.status ?? error?.status ?? null;
+  const data = error?.response?.data;
+  const code =
+    (data && typeof data === "object" && (data.code || data.Code)) ||
+    error?.code ||
+    null;
+  const message =
+    (data && typeof data === "object" && (data.message || data.Message)) ||
+    (typeof data === "string" && data.trim() ? data : null) ||
+    error?.apiMessage ||
+    error?.message ||
+    "Request failed";
+
+  const enriched = error instanceof Error ? error : new Error(message);
+  enriched.status = status;
+  if (code) {
+    enriched.code = code;
+  }
+  enriched.apiMessage = message;
+  return enriched;
+}
+
 async function invokeCallWithToast(call, pendingMessage, successMessage) {
   const pending = pendingMessage || "Processing...";
   const success = successMessage || "Completed";
@@ -499,13 +522,9 @@ async function invokeCallWithToast(call, pendingMessage, successMessage) {
     return response;
   } catch (error) {
     console.error("API call error:", error);
-    const errText =
-      error?.response?.data?.message ||
-      (typeof error?.response?.data === "string" ? error?.response?.data : null) ||
-      error?.message ||
-      "Request failed";
-    statusService.error(opId, errText);
-    throw error;
+    const enrichedError = normalizeApiError(error);
+    statusService.error(opId, enrichedError.apiMessage);
+    throw enrichedError;
   }
 }
 
@@ -918,9 +937,21 @@ async function getCookie(idtoken) {
   console.log(response.data);
 }
 
+async function waitForAuthReady() {
+  if (typeof navigator !== "undefined" && !navigator.onLine) {
+    return;
+  }
+  if (auth && typeof auth.authStateReady === "function") {
+    try {
+      await auth.authStateReady();
+    } catch (err) {
+      console.warn("Firebase authStateReady wait failed:", err);
+    }
+  }
+}
+
 async function getValidToken() {
   let token = localStorage.getItem("token");
-  const currentUser = auth.currentUser;
 
   if (typeof navigator !== "undefined" && !navigator.onLine) {
     return token;
@@ -937,6 +968,11 @@ async function getValidToken() {
     }
   }
 
+  if (!auth?.currentUser) {
+    await waitForAuthReady();
+  }
+
+  const currentUser = auth?.currentUser;
   if (currentUser) {
     try {
       const freshToken = await currentUser.getIdToken(needsRefresh);
@@ -960,14 +996,22 @@ async function invokeCall(call) {
     const response = await call(header);
     return response;
   } catch (error) {
-    if (error?.response?.status === 401 && auth.currentUser && navigator.onLine) {
-      console.log("Received 401, forcing token refresh and retrying request...");
-      const freshToken = await auth.currentUser.getIdToken(true);
-      localStorage.setItem("token", freshToken);
-      const now = new Date();
-      localStorage.setItem("tokenRefreshTime", now.toISOString());
-      const retryHeader = { headers: { Authorization: `Bearer ${freshToken}` } };
-      return await call(retryHeader);
+    if (
+      error?.response?.status === 401 &&
+      (typeof navigator === "undefined" || navigator.onLine)
+    ) {
+      if (!auth?.currentUser) {
+        await waitForAuthReady();
+      }
+      if (auth?.currentUser) {
+        console.log("Received 401, forcing token refresh and retrying request...");
+        const freshToken = await auth.currentUser.getIdToken(true);
+        localStorage.setItem("token", freshToken);
+        const now = new Date();
+        localStorage.setItem("tokenRefreshTime", now.toISOString());
+        const retryHeader = { headers: { Authorization: `Bearer ${freshToken}` } };
+        return await call(retryHeader);
+      }
     }
     throw error;
   }
@@ -1033,6 +1077,87 @@ async function getPublicTreeNotes(guid) {
   return response.data;
 }
 
+async function getGetTaskInboxes() {
+  let call = async (header) => {
+    const response = await axios.get(
+      `${config.PATH_BASE}${Consts.PATH_GETTASK_CONTROLLER}/${Consts.PATH_GETTASK_INBOXES}`,
+      header
+    );
+    return Array.isArray(response.data) ? response.data : [];
+  };
+  return invokeCallWithToast(
+    call,
+    "Loading GetTask3 inboxes...",
+    "GetTask3 inboxes loaded"
+  );
+}
+
+async function setGetTaskInbox(journalId, getTaskInboxElementId, getTaskInboxName) {
+  let call = async (header) => {
+    const data = {
+      journalId: Number(journalId),
+      getTaskInboxElementId: Number(getTaskInboxElementId),
+      getTaskInboxName: getTaskInboxName || "",
+    };
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_SET_GETTASK_INBOX}`,
+      data,
+      header
+    );
+    return response.data;
+  };
+  return invokeCallWithToast(
+    call,
+    "Setting default GetTask3 inbox...",
+    "Default GetTask3 inbox saved"
+  );
+}
+
+async function removeGetTaskInbox(journalId) {
+  let call = async (header) => {
+    const data = { journalId: Number(journalId) };
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_TREE_CONTROLER}/${Consts.PATH_TREE_REMOVE_GETTASK_INBOX}`,
+      data,
+      header
+    );
+    return response.data;
+  };
+  return invokeCallWithToast(
+    call,
+    "Clearing default GetTask3 inbox...",
+    "Default GetTask3 inbox cleared"
+  );
+}
+
+async function createGetTaskFromNote(payload) {
+  const body = {
+    clientTaskId: payload.clientTaskId,
+    pageId: Number(payload.pageId),
+    journalId: Number(payload.journalId),
+    title: payload.title,
+    detailsText: payload.detailsText ?? null,
+    pageTitle: payload.pageTitle ?? null,
+    overrideInboxElementId:
+      payload.overrideInboxElementId != null
+        ? Number(payload.overrideInboxElementId)
+        : null,
+  };
+  let call = async (header) => {
+    const response = await axios.post(
+      `${config.PATH_BASE}${Consts.PATH_GETTASK_CONTROLLER}/${Consts.PATH_GETTASK_TASKS}`,
+      body,
+      header
+    );
+    return response.data;
+  };
+  return invokeCallWithToast(
+    call,
+    "Sending task to GetTask3...",
+    "Task sent to GetTask3"
+  );
+}
+
 export {
   getTree,
   getUserEmail,
@@ -1054,10 +1179,16 @@ export {
   getPagesWithoutPlainText,
   setInboxName,
   removeInboxName,
+  getGetTaskInboxes,
+  setGetTaskInbox,
+  removeGetTaskInbox,
+  createGetTaskFromNote,
   archiveJournal,
   unarchiveJournal,
   getPublicTreeNotes,
   syncPendingChanges,
   syncSubtreeForOffline,
   syncAllForOffline,
+  getValidToken,
+  normalizeApiError,
 };

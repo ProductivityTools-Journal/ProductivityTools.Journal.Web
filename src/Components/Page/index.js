@@ -15,7 +15,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ShareIcon from "@mui/icons-material/Share";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import * as moment from "moment";
+import moment from "moment";
 import NotesLabel from "Components/NotesLabel";
 import Notes from "Components/Notes";
 import * as apiService from "services/apiService";
@@ -52,6 +52,7 @@ import {
   createNormalizeTypesPlugin,
   createTrailingBlockPlugin,
   createPluginFactory,
+  usePlateEditorState,
   withProps,
   StyledElement,
   KEYS_HEADING,
@@ -65,6 +66,12 @@ import {
   unwrapCodeBlock,
 } from "@udecode/plate";
 import ToolbarButtons, { openColorContextMenu } from "./ToolbarButtons";
+import {
+  ELEMENT_GETTASK_TASK,
+  createGetTaskPlugin,
+  GetTaskElement,
+} from "./GetTaskPlugin";
+import GetTaskPopovers from "./GetTaskPopovers";
 import {
   JournalTableElement,
   JournalTableRowElement,
@@ -287,6 +294,7 @@ const plateUI = createPlateUI({
     },
   }),
   a: LinkComponent,
+  [ELEMENT_GETTASK_TASK]: GetTaskElement,
   table: JournalTableElement,
   tr: JournalTableRowElement,
   td: JournalTableCellElement,
@@ -425,6 +433,7 @@ const platePlugins = createPlugins(
     createLinkPlugin({
       renderAfterEditable: PlateFloatingLink,
     }),
+    createGetTaskPlugin(),
     createImagePlugin({
       options: {
         disableUploadInsert: true,
@@ -439,6 +448,16 @@ const platePlugins = createPlugins(
     components: plateUI,
   }
 );
+
+function PlateEditorBridge({ onEditorReady }) {
+  const editor = usePlateEditorState();
+  useEffect(() => {
+    if (onEditorReady && editor) {
+      onEditorReady(editor);
+    }
+  }, [onEditorReady, editor]);
+  return null;
+}
 
 function Page({ page, updatePageInList, isHighlighted }) {
   //const { meeting, ...rest } = props;
@@ -463,7 +482,10 @@ function Page({ page, updatePageInList, isHighlighted }) {
   });
   const [journalPath, setJournalPath] = useState();
   const [uploadCount, setUploadCount] = useState(() => getActiveUploadCount());
+  const [readonlyVersion, setReadonlyVersion] = useState(0);
   const contentObjectRef = useRef(localPageObject?.contentObject);
+  const localPageObjectRef = useRef(localPageObject);
+  localPageObjectRef.current = localPageObject;
   const plateEditorRef = useRef(null);
   const editableProps = useMemo(() => ({ placeholder: "Type...", spellCheck: true }), []);
 
@@ -493,6 +515,7 @@ function Page({ page, updatePageInList, isHighlighted }) {
       contentType: "Slate",
       mode: page.mode === undefined ? "readonly" : page.mode,
     };
+    localPageObjectRef.current = x;
     setLocalPageObject(x);
   }, [page.pageId, page.frontendId, page.mode, page.content, page.contentType]);
 
@@ -546,27 +569,66 @@ function Page({ page, updatePageInList, isHighlighted }) {
   // 	setLocalPageObject(prevlocalPageObject => ({ ...prevlocalPageObject, notesList: newNotesList }));
   // }
 
-  const save = async () => {
+  const save = async (overrideContentObject = null, basePageOverride = null) => {
     let eventSum = undefined; //we need it to keep mode=edit, which is not returned from server
-    const latestContentObject = contentObjectRef.current || localPageObject.contentObject;
-    localPageObject.contentObject = latestContentObject;
-    localPageObject.contentType = "Slate";
-    localPageObject.content = JSON.stringify(latestContentObject);
-    localPageObject.plainText = Common.getPlainTextFromSlateStructure(latestContentObject);
-    if (localPageObject.pageId == null) {
-      let savedEvent = await apiService.savePage(localPageObject);
+    const currentPageObj = basePageOverride || localPageObjectRef.current || localPageObject;
+    const latestContentObject =
+      overrideContentObject || contentObjectRef.current || currentPageObj.contentObject;
+    contentObjectRef.current = latestContentObject;
+    const pageToSave = {
+      ...currentPageObj,
+      contentObject: latestContentObject,
+      contentType: "Slate",
+      content: JSON.stringify(latestContentObject),
+      plainText: Common.getPlainTextFromSlateStructure(latestContentObject),
+    };
+    if (pageToSave.pageId == null) {
+      let savedEvent = await apiService.savePage(pageToSave);
 
-      eventSum = { ...localPageObject, ...savedEvent };
+      eventSum = { ...pageToSave, ...savedEvent, mode: pageToSave.mode };
+      localPageObjectRef.current = eventSum;
       setLocalPageObject(eventSum);
     } else {
-      let updatedRes = await apiService.updateJournal(localPageObject);
+      let updatedRes = await apiService.updateJournal(pageToSave);
       eventSum = {
-        ...localPageObject,
+        ...pageToSave,
         isOfflinePending: Boolean(updatedRes?.isOfflinePending),
       };
+      localPageObjectRef.current = eventSum;
       setLocalPageObject(eventSum);
     }
+    if (pageToSave.mode === "readonly") {
+      setReadonlyVersion((v) => v + 1);
+    }
     updatePageInList(eventSum);
+    return eventSum;
+  };
+
+  const ensurePageSavedForGetTask = async () => {
+    const currentPageObj = localPageObjectRef.current || localPageObject;
+    if (currentPageObj.pageId != null) {
+      return currentPageObj;
+    }
+    return await save();
+  };
+
+  const persistCurrentAstForGetTask = async (astNodes, basePage = null) => {
+    const cloned = astNodes ? JSON.parse(JSON.stringify(astNodes)) : contentObjectRef.current;
+    const latestBase = basePage
+      ? { ...(localPageObjectRef.current || localPageObject), ...basePage }
+      : localPageObjectRef.current || localPageObject;
+    return await save(cloned, latestBase);
+  };
+
+  const getPageTitleForGetTask = () => {
+    const nodes = contentObjectRef.current || localPageObject?.contentObject;
+    if (Array.isArray(nodes) && nodes.length > 0) {
+      const firstLine = Common.getPlainTextFromSlateStructure([nodes[0]]).trim();
+      if (firstLine && firstLine !== "Page" && firstLine !== "Title") {
+        return firstLine;
+      }
+    }
+    return localPageObject?.subject || "";
   };
 
   const close = () => {
@@ -631,14 +693,14 @@ function Page({ page, updatePageInList, isHighlighted }) {
           },
         }}
       >
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          startIcon={<SaveIcon />}
-          onClick={save}
-          disabled={uploadCount > 0}
-        >
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            startIcon={<SaveIcon />}
+            onClick={() => save()}
+            disabled={uploadCount > 0}
+          >
           {uploadCount > 0 ? "Uploading..." : "Save"}
         </Button>
         <Button
@@ -881,34 +943,50 @@ function Page({ page, updatePageInList, isHighlighted }) {
             </Box>
           </Box>
           <Plate
-            key={`${localPageObject.pageId || localPageObject.frontendId}-${localPageObject.mode}-${readonly() ? page?.content?.length || 0 : "edit"}`}
+            id={`plate-${localPageObject.frontendId || localPageObject.pageId}`}
+            key={`${localPageObject.frontendId || localPageObject.pageId}-${localPageObject.mode}-${readonly() ? `${readonlyVersion}-${localPageObject?.content?.length || page?.content?.length || 0}` : "edit"}`}
             initialValue={contentObjectRef.current || localPageObject.contentObject || [{ type: "p", children: [{ text: "" }] }]}
             onChange={contentChanged}
             plugins={platePlugins}
             readOnly={readonly()}
             editableProps={editableProps}
             firstChildren={
-              !readonly() ? (
-                <HeadingToolbar
-                  style={{
-                    margin: "0 0 12px 0",
-                    padding: "4px 8px",
-                    minHeight: "unset",
-                    borderRadius: "6px",
-                    background: "#f8f9fa",
-                    border: "1px solid #e0e0e0",
-                    flexWrap: "wrap",
-                    gap: "2px",
+              <>
+                <PlateEditorBridge
+                  onEditorReady={(ed) => {
+                    plateEditorRef.current = ed;
                   }}
-                >
-                  <ToolbarButtons
-                    onEditorReady={(ed) => {
-                      plateEditorRef.current = ed;
+                />
+                {!readonly() ? (
+                  <HeadingToolbar
+                    style={{
+                      margin: "0 0 12px 0",
+                      padding: "4px 8px",
+                      minHeight: "unset",
+                      borderRadius: "6px",
+                      background: "#f8f9fa",
+                      border: "1px solid #e0e0e0",
+                      flexWrap: "wrap",
+                      gap: "2px",
                     }}
-                  />
-                </HeadingToolbar>
-              ) : null
+                  >
+                    <ToolbarButtons
+                      onEditorReady={(ed) => {
+                        plateEditorRef.current = ed;
+                      }}
+                    />
+                  </HeadingToolbar>
+                ) : null}
+              </>
             }
+          />
+          <GetTaskPopovers
+            editorRef={plateEditorRef}
+            page={localPageObject}
+            isReadOnly={readonly()}
+            ensurePageSaved={ensurePageSavedForGetTask}
+            persistCurrentAst={persistCurrentAstForGetTask}
+            getPageTitle={getPageTitleForGetTask}
           />
           {readonly() ? getReadOnlyModeButtons() : getEditModeButtons()}
 

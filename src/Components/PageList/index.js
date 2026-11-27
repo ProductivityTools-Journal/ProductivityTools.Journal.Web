@@ -13,13 +13,20 @@ import { v4 as uuid } from "uuid";
 import * as Common from "../Common.js";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 
-export default function PageList({ selectedTreeNode, newPageTrigger, highlightedPageId }) {
+export default function PageList({
+  selectedTreeNode,
+  newPageTrigger,
+  highlightedPageId,
+  deepLinkFallbackPage,
+  onResolvedDeepLinkPage,
+}) {
   const [pages, setPages] = useState([]);
   const [visibleLimit, setVisibleLimit] = useState(50);
   const [refreshTick, setRefreshTick] = useState(0);
   const journalTreeContext = useContext(JournalTreeContext);
   const handledTriggerRef = useRef(null);
   const scrolledPageRef = useRef(null);
+  const fallbackFetchedIdRef = useRef(null);
 
   useEffect(() => {
     setVisibleLimit(50);
@@ -36,18 +43,72 @@ export default function PageList({ selectedTreeNode, newPageTrigger, highlighted
     let isCancelled = false;
 
     const fetchData = async () => {
+      if (highlightedPageId == null) {
+        fallbackFetchedIdRef.current = null;
+      }
       if (!selectedTreeNode || selectedTreeNode.id == null) {
         setPages([]);
         return;
       }
 
-      const data = await apiService.fetchPageList(selectedTreeNode.id);
+      let data = [];
+      try {
+        data = (await apiService.fetchPageList(selectedTreeNode.id)) || [];
+      } catch (err) {
+        if (!deepLinkFallbackPage) {
+          throw err;
+        }
+        console.warn("fetchPageList failed for deep-link folder, using fallback note:", err);
+      }
       if (isCancelled) return;
 
-      const formattedData = (data || []).map((element) => ({
+      let formattedData = (data || []).map((element) => ({
         ...element,
         frontendId: element.frontendId || uuid(),
       }));
+
+      // Deep-link fallback: if highlightedPageId is missing from the 50-note list
+      // (older note, moved folder, or archived), inject deepLinkFallbackPage or fetch via POST Page/Meeting
+      if (highlightedPageId != null) {
+        const hasTarget = formattedData.some(
+          (p) => p.pageId != null && Number(p.pageId) === Number(highlightedPageId)
+        );
+        if (!hasTarget) {
+          if (
+            deepLinkFallbackPage &&
+            Number(deepLinkFallbackPage.pageId) === Number(highlightedPageId)
+          ) {
+            formattedData = [
+              {
+                ...deepLinkFallbackPage,
+                frontendId: deepLinkFallbackPage.frontendId || uuid(),
+              },
+              ...formattedData,
+            ];
+          } else if (fallbackFetchedIdRef.current !== Number(highlightedPageId)) {
+            fallbackFetchedIdRef.current = Number(highlightedPageId);
+            try {
+              const fetched = await apiService.fetchMeeting(Number(highlightedPageId));
+              if (isCancelled) return;
+              if (fetched && fetched.pageId != null) {
+                formattedData = [
+                  { ...fetched, frontendId: fetched.frontendId || uuid() },
+                  ...formattedData,
+                ];
+                if (
+                  typeof onResolvedDeepLinkPage === "function" &&
+                  fetched.journalId != null &&
+                  Number(fetched.journalId) !== Number(selectedTreeNode.id)
+                ) {
+                  onResolvedDeepLinkPage(fetched);
+                }
+              }
+            } catch (err) {
+              console.error("Failed to fetch fallback deep-linked page:", err);
+            }
+          }
+        }
+      }
 
       if (
         newPageTrigger &&
@@ -68,7 +129,14 @@ export default function PageList({ selectedTreeNode, newPageTrigger, highlighted
     return () => {
       isCancelled = true;
     };
-  }, [selectedTreeNode?.id, newPageTrigger?.timestamp, refreshTick]);
+  }, [
+    selectedTreeNode?.id,
+    newPageTrigger?.timestamp,
+    refreshTick,
+    highlightedPageId,
+    deepLinkFallbackPage,
+    onResolvedDeepLinkPage,
+  ]);
 
   const updatePageInList = useCallback((updatedPage) => {
     if (!updatedPage) return;

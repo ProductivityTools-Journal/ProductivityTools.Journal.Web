@@ -83,3 +83,76 @@ fieldset {
 .tippy-arrow {
   color: rgba(44, 62, 80, 0.95) !important;
 }
+
+.journal-gettask-inline {
+  display: inline;
+  border-radius: 3px;
+  padding: 1px 2px;
+  transition: background-color 0.15s ease;
+}
+
+.journal-gettask-inline--synced {
+  background-color: rgba(0, 121, 107, 0.1);
+  border-bottom: 1.5px solid rgba(0, 121, 107, 0.45);
+}
+
+.journal-gettask-inline--pending {
+  background-color: rgba(25, 118, 210, 0.1);
+  border-bottom: 1.5px dashed rgba(25, 118, 210, 0.55);
+}
+
+.journal-gettask-inline--failed {
+  background-color: rgba(211, 47, 47, 0.1);
+  border-bottom: 1.5px solid rgba(211, 47, 47, 0.6);
+}
+
+.journal-gettask-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 5px;
+  padding: 0px 6px;
+  border-radius: 10px;
+  font-size: 0.72em;
+  font-weight: 600;
+  line-height: 1.5;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.journal-gettask-chip:hover {
+  filter: brightness(0.95);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.journal-gettask-chip--synced {
+  background-color: #e0f2f1;
+  color: #00695c;
+  border-color: #80cbc4;
+}
+
+.journal-gettask-chip--pending {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border-color: #90caf9;
+}
+
+.journal-gettask-chip--failed {
+  background-color: #ffebee;
+  color: #c62828;
+  border-color: #ef9a9a;
+}
+
+.journal-gettask-chip__icon {
+  font-weight: 700;
+}
+
+.journal-gettask-chip__label {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

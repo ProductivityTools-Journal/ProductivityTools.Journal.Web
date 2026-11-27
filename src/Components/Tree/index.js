@@ -16,6 +16,7 @@ import JournalNewModal from "../JournalNewModal";
 import JounralDeleteDialog from "../JounralDeleteDialog";
 import JournalRenameModal from "Components/JournalRenameModal";
 import JournalInboxModal from "../JournalInboxModal";
+import GetTaskInboxModal from "../GetTaskInboxModal";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 import offlineService from "services/offlineService";
 
@@ -58,9 +59,10 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   const [renameModalOpen, setRenameModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [inboxModalOpen, setInboxModalOpen] = useState(false);
+  const [getTaskInboxModalOpen, setGetTaskInboxModalOpen] = useState(false);
   const [syncedNodes, setSyncedNodes] = useState(() => offlineService.getState().syncedNodes || {});
 
-  const { setJournalTree } = useContext(JournalTreeContext);
+  const { setJournalTree, treeRefreshVersion } = useContext(JournalTreeContext);
 
   const containerRef = useRef(null);
 
@@ -265,7 +267,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.TreeId, includeArchived]);
+  }, [params.TreeId, includeArchived, treeRefreshVersion]);
 
   useEffect(() => {
     const unsub = offlineService.onDataRefreshed(() => {
@@ -371,6 +373,9 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
       case "inbox":
         setInboxModalOpen(true);
         break;
+      case "gettask-inbox":
+        setGetTaskInboxModalOpen(true);
+        break;
       default:
         break;
     }
@@ -381,6 +386,7 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
     setRenameModalOpen(false);
     setNewModalOpen(false);
     setInboxModalOpen(false);
+    setGetTaskInboxModalOpen(false);
   }, []);
 
   const closeAndRefresh = useCallback(() => {
@@ -529,6 +535,12 @@ export default function CustomizedTreeView({ setSelectedTreeNode, selectedTreeNo
         closeModal={closeModal}
         closeAndRefresh={closeAndRefresh}
       ></JournalInboxModal>
+      <GetTaskInboxModal
+        open={getTaskInboxModalOpen}
+        selectedJournal={selectedTreeNode}
+        closeModal={closeModal}
+        closeAndRefresh={closeAndRefresh}
+      />
     </div>
   );
 }

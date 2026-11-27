@@ -1,19 +1,24 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect, useRef, useCallback } from "react";
 import Tree from "Components/Tree";
 import PageList from "Components/PageList";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import IconButton from "@mui/material/IconButton";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import Typography from "@mui/material/Typography";
+import { useAuthState } from "react-firebase-hooks/auth";
 import * as apiService from "services/apiService";
 import * as Common from "../Common.js";
 import statusService from "services/statusService";
+import { auth } from "../../Session/firebase";
+import { useAuth } from "../../Session/AuthContext";
 import { JournalTreeContextProvider, JournalTreeContext } from "../JournalContext";
 
 function findNodeInTree(node, targetId) {
@@ -40,9 +45,15 @@ function findNodeInTree(node, targetId) {
 
 function MainContent({ debug, setDebug }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user: contextUser } = useAuth();
+  const [firebaseUser, authLoading] = useAuthState(auth);
+
   const [editedMeeting, setEditedMeeting] = useState(undefined);
   const [selectedTreeNode, setSelectedTreeNode] = useState(null);
   const [newPageTrigger, setNewPageTrigger] = useState(null);
+  const [deepLinkFallbackPage, setDeepLinkFallbackPage] = useState(null);
   const [highlightedPageId, setHighlightedPageId] = useState(() => {
     const pid = searchParams.get("pageId");
     return pid != null ? Number(pid) : null;
@@ -56,36 +67,112 @@ function MainContent({ debug, setDebug }) {
   const journalTreeContext = useContext(JournalTreeContext);
   const inboxNodes = Common.getInboxNodes(journalTreeContext?.journalTree);
 
+  const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
+  const hasSession = Boolean(
+    firebaseUser ||
+      contextUser ||
+      (typeof localStorage !== "undefined" && localStorage.getItem("token"))
+  );
+
+  useEffect(() => {
+    if (authLoading || isOffline) {
+      return;
+    }
+    if (!hasSession) {
+      const returnUrl = `${location.pathname}${location.search}`;
+      navigate(`/Login?returnUrl=${encodeURIComponent(returnUrl)}`, { replace: true });
+    }
+  }, [authLoading, hasSession, isOffline, location.pathname, location.search, navigate]);
+
   useEffect(() => {
     const treeIdParam = searchParams.get("treeId");
     const pageIdParam = searchParams.get("pageId");
     const newNoteParam = searchParams.get("newNote");
 
-    if (!treeIdParam || !journalTreeContext?.journalTree) {
+    if ((!treeIdParam && !pageIdParam) || !journalTreeContext?.journalTree) {
       return;
     }
 
-    const urlKey = `${treeIdParam}|${pageIdParam || ""}|${newNoteParam || ""}`;
+    const urlKey = `${treeIdParam || ""}|${pageIdParam || ""}|${newNoteParam || ""}`;
     if (handledUrlKeyRef.current === urlKey) {
       return;
     }
 
-    const targetNode = findNodeInTree(journalTreeContext.journalTree, treeIdParam);
-    if (!targetNode) {
+    const targetNode = treeIdParam
+      ? findNodeInTree(journalTreeContext.journalTree, treeIdParam)
+      : null;
+
+    if (targetNode) {
+      handledUrlKeyRef.current = urlKey;
+      setDeepLinkFallbackPage(null);
+      setSelectedTreeNode(targetNode);
+      setHighlightedPageId(pageIdParam != null ? Number(pageIdParam) : null);
+
+      if (newNoteParam === "1") {
+        setNewPageTrigger({ treeNodeId: targetNode.id, timestamp: Date.now() });
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete("newNote");
+        setSearchParams(nextParams, { replace: true });
+      }
       return;
     }
 
-    handledUrlKeyRef.current = urlKey;
-    setSelectedTreeNode(targetNode);
-    setHighlightedPageId(pageIdParam != null ? Number(pageIdParam) : null);
+    // Fallback when treeId is absent, archived, or stale: fetch exact page by pageId
+    if (pageIdParam != null) {
+      let cancelled = false;
+      handledUrlKeyRef.current = urlKey;
+      const numericPageId = Number(pageIdParam);
+      setHighlightedPageId(numericPageId);
 
-    if (newNoteParam === "1") {
-      setNewPageTrigger({ treeNodeId: targetNode.id, timestamp: Date.now() });
-      const nextParams = new URLSearchParams(searchParams);
-      nextParams.delete("newNote");
-      setSearchParams(nextParams, { replace: true });
+      apiService
+        .fetchMeeting(numericPageId)
+        .then((fetchedPage) => {
+          if (cancelled || !fetchedPage || fetchedPage.pageId == null) return;
+          setDeepLinkFallbackPage(fetchedPage);
+          const actualNode =
+            fetchedPage.journalId != null
+              ? findNodeInTree(journalTreeContext.journalTree, fetchedPage.journalId)
+              : null;
+          if (actualNode) {
+            setSelectedTreeNode(actualNode);
+          } else if (fetchedPage.journalId != null) {
+            setSelectedTreeNode({
+              id: Number(fetchedPage.journalId),
+              name: fetchedPage.path || `Folder #${fetchedPage.journalId}`,
+              archived: true,
+            });
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to fetch deep-linked note:", err);
+        });
+
+      return () => {
+        cancelled = true;
+      };
     }
   }, [journalTreeContext?.journalTree, searchParams, setSearchParams]);
+
+  const handleResolvedDeepLinkPage = useCallback(
+    (fetchedPage) => {
+      if (!fetchedPage || fetchedPage.pageId == null) return;
+      setDeepLinkFallbackPage(fetchedPage);
+      if (
+        fetchedPage.journalId != null &&
+        journalTreeContext?.journalTree &&
+        Number(fetchedPage.journalId) !== Number(selectedTreeNode?.id)
+      ) {
+        const actualNode = findNodeInTree(
+          journalTreeContext.journalTree,
+          fetchedPage.journalId
+        );
+        if (actualNode) {
+          setSelectedTreeNode(actualNode);
+        }
+      }
+    },
+    [journalTreeContext?.journalTree, selectedTreeNode?.id]
+  );
 
   function newMeeting() {
     setEditedMeeting(null);
@@ -95,6 +182,7 @@ function MainContent({ debug, setDebug }) {
     setSelectedTreeNode(node);
     setNewPageTrigger(null);
     setHighlightedPageId(null);
+    setDeepLinkFallbackPage(null);
     if (searchParams.toString()) {
       handledUrlKeyRef.current = null;
       setSearchParams({}, { replace: true });
@@ -104,6 +192,7 @@ function MainContent({ debug, setDebug }) {
   const handleInboxClick = (node) => {
     setSelectedTreeNode(node);
     setHighlightedPageId(null);
+    setDeepLinkFallbackPage(null);
     setNewPageTrigger({ treeNodeId: node.id, timestamp: Date.now() });
     if (searchParams.toString()) {
       handledUrlKeyRef.current = null;
@@ -151,6 +240,30 @@ function MainContent({ debug, setDebug }) {
       setIsMigrating(false);
     }
   };
+
+  if (authLoading && !isOffline) {
+    return (
+      <Box
+        sx={{
+          minHeight: "60vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 1.5,
+        }}
+      >
+        <CircularProgress size={28} />
+        <Typography variant="body2" color="text.secondary">
+          Ładowanie sesji...
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (!hasSession && !isOffline) {
+    return null;
+  }
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f4f6f8", paddingBottom: "40px" }}>
@@ -296,6 +409,8 @@ function MainContent({ debug, setDebug }) {
               selectedTreeNode={selectedTreeNode}
               newPageTrigger={newPageTrigger}
               highlightedPageId={highlightedPageId}
+              deepLinkFallbackPage={deepLinkFallbackPage}
+              onResolvedDeepLinkPage={handleResolvedDeepLinkPage}
             />
           </div>
         </div>

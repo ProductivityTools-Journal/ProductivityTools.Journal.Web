@@ -200,7 +200,7 @@ const reportPlugins = createPlugins(
   }
 );
 
-function sanitizeSlateChild(node) {
+export function sanitizeSlateChild(node) {
   if (node === null || node === undefined) {
     return { text: "" };
   }
@@ -209,6 +209,16 @@ function sanitizeSlateChild(node) {
   }
   if (typeof node !== "object") {
     return { text: String(node) };
+  }
+
+  // Flatten gettask_task inline elements into plain text leaves so public reports never leak GetTask IDs/links
+  if (node.type === "gettask_task") {
+    const rawChildren = Array.isArray(node.children) ? node.children : [];
+    const flattened = rawChildren.flatMap((child) => {
+      const sanitized = sanitizeSlateChild(child);
+      return Array.isArray(sanitized) ? sanitized : [sanitized];
+    });
+    return flattened.length > 0 ? flattened : [{ text: "" }];
   }
 
   // If node has 'text' property or lacks element type/children, it is a Text (leaf) node
@@ -227,20 +237,23 @@ function sanitizeSlateChild(node) {
   return sanitizeSlateElement(node);
 }
 
-function sanitizeSlateElement(node) {
+export function sanitizeSlateElement(node) {
   if (!node || typeof node !== "object") {
     return { type: "p", children: [{ text: String(node || "") }] };
   }
 
   let nodeType = node.type || "p";
-  if (nodeType === "paragraph") {
+  if (nodeType === "paragraph" || nodeType === "gettask_task") {
     nodeType = "p";
   }
 
   const rawChildren = node.children;
   let cleanChildren = [];
   if (Array.isArray(rawChildren) && rawChildren.length > 0) {
-    cleanChildren = rawChildren.map(sanitizeSlateChild);
+    cleanChildren = rawChildren.flatMap((child) => {
+      const sanitized = sanitizeSlateChild(child);
+      return Array.isArray(sanitized) ? sanitized : [sanitized];
+    });
   }
 
   if (cleanChildren.length === 0) {
@@ -271,7 +284,7 @@ function sanitizeSlateElement(node) {
   return cleanEl;
 }
 
-function sanitizeSlateDocument(nodes) {
+export function sanitizeSlateDocument(nodes) {
   if (!nodes || !Array.isArray(nodes)) {
     return [{ type: "p", children: [{ text: "" }] }];
   }

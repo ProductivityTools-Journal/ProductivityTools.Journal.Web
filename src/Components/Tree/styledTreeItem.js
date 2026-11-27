@@ -10,8 +10,9 @@ import PropTypes from 'prop-types';
 import { Menu, MenuItem, Divider, Typography, Tooltip } from '@mui/material';
 import CloudDoneOutlinedIcon from '@mui/icons-material/CloudDoneOutlined';
 import CloudSyncOutlinedIcon from '@mui/icons-material/CloudSyncOutlined';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import * as moment from 'moment';
-import { JournalTreeContext } from "Components/JournalContext/index.js";
+import { JournalTreeContext, isKorzenNode } from "Components/JournalContext/index.js";
 
 
 function TransitionComponent(props) {
@@ -40,6 +41,13 @@ function StyledTreeItem(props) {
     const isArchived = Boolean(node.archived);
     const hasInboxName = Boolean(node.inboxName || node.InboxName);
     const currentInboxName = node.inboxName || node.InboxName;
+    const isKorzen = isKorzenNode(node);
+    const ownGetTaskInboxId = node.getTaskInboxElementId ?? node.GetTaskInboxElementId ?? null;
+    const ownGetTaskInboxName = node.getTaskInboxName ?? node.GetTaskInboxName ?? "";
+    const hasOwnGetTaskInbox = ownGetTaskInboxId != null;
+    const resolvedGetTaskInbox = journalTreeContext?.resolveGetTaskInbox
+        ? journalTreeContext.resolveGetTaskInbox(node.id)
+        : null;
     const isOfflinePending = Boolean(node.isOfflinePending);
     const isSyncedOffline = Boolean(syncedInfo?.syncedAt);
 
@@ -115,6 +123,13 @@ function StyledTreeItem(props) {
         setContextMenu(null);
         props.setSelectedTreeNode(node);
         openModal('inbox');
+    }
+
+    const openSetGetTaskInboxModal = (event) => {
+        event.stopPropagation();
+        setContextMenu(null);
+        props.setSelectedTreeNode(node);
+        openModal('gettask-inbox');
     }
 
     const handleClearInboxName = async (event) => {
@@ -194,6 +209,15 @@ function StyledTreeItem(props) {
                                     Inbox: {currentInboxName}
                                 </Typography>
                             )}
+                            {hasOwnGetTaskInbox ? (
+                                <Typography variant="caption" sx={{ color: '#00796b', display: 'block', fontWeight: 500 }}>
+                                    GetTask Inbox: {ownGetTaskInboxName || `#${ownGetTaskInboxId}`}
+                                </Typography>
+                            ) : (!isKorzen && resolvedGetTaskInbox ? (
+                                <Typography variant="caption" sx={{ color: '#546e7a', display: 'block', fontStyle: 'italic' }}>
+                                    GetTask Inbox: {resolvedGetTaskInbox.getTaskInboxName || `#${resolvedGetTaskInbox.getTaskInboxElementId}`} (z: {resolvedGetTaskInbox.sourceJournalName})
+                                </Typography>
+                            ) : null)}
                         </Box>
                         <MenuItem onClick={openNewModal}>New Journal</MenuItem>
                         <MenuItem onClick={openRenameModal}>Rename</MenuItem>
@@ -205,6 +229,9 @@ function StyledTreeItem(props) {
                             <MenuItem onClick={handleClearInboxName}>Clear inbox name {currentInboxName}</MenuItem>
                         ) : (
                             <MenuItem onClick={openSetInboxNameModal}>Set inbox name</MenuItem>
+                        )}
+                        {isKorzen && (
+                            <MenuItem onClick={openSetGetTaskInboxModal}>Set GetTask Inbox</MenuItem>
                         )}
                         <Divider />
                         <MenuItem onClick={handleSyncSubtreeOffline}>Sync tree for offline</MenuItem>
@@ -224,6 +251,11 @@ function StyledTreeItem(props) {
                         }}
                     >
                         <span>{getLabel(node)}</span>
+                        {isKorzen && hasOwnGetTaskInbox && (
+                            <Tooltip title={`Domyślny inbox GetTask3: ${ownGetTaskInboxName || `#${ownGetTaskInboxId}`}`}>
+                                <TaskAltIcon sx={{ fontSize: 13, color: '#00796b', opacity: 0.85 }} />
+                            </Tooltip>
+                        )}
                         {isOfflinePending ? (
                             <Tooltip title="Pending offline sync">
                                 <CloudSyncOutlinedIcon sx={{ fontSize: 13, color: '#ed6c02' }} />

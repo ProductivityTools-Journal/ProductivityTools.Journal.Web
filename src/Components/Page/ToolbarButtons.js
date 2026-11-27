@@ -20,6 +20,8 @@ import { FormatListNumbered } from "@styled-icons/material/FormatListNumbered";
 import { FormatIndentDecrease } from "@styled-icons/material/FormatIndentDecrease";
 import { FormatIndentIncrease } from "@styled-icons/material/FormatIndentIncrease";
 import { Image as ImageIcon } from "@styled-icons/material/Image";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import { triggerGetTaskAction } from "./GetTaskPlugin";
 import {
   TbTablePlus,
   TbTableOff,
@@ -577,6 +579,25 @@ export const ToolbarButtons = ({ onEditorReady }) => {
           }}
         />
       </div>
+      <span
+        style={{
+          width: "1px",
+          height: "18px",
+          backgroundColor: "#d8dee4",
+          margin: "0 4px",
+          display: "inline-block",
+        }}
+      />
+      <ToolbarButton
+        tooltip={tooltip("Send selection to GetTask3 (Ctrl+Shift+T)")}
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          triggerGetTaskAction(editor);
+        }}
+        icon={<AddTaskIcon style={{ fontSize: 20, color: "#00796b" }} />}
+      />
       {menuState.open &&
         typeof document !== "undefined" &&
         ReactDOM.createPortal(
