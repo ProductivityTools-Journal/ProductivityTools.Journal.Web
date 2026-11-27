@@ -21,6 +21,12 @@ import ViewAgendaIcon from "@mui/icons-material/ViewAgenda";
 import * as apiService from "services/apiService";
 import * as Common from "../Common.js";
 import statusService from "services/statusService";
+import {
+  JournalTableElement,
+  JournalTableRowElement,
+  JournalTableCellElement,
+  JournalTableCellHeaderElement,
+} from "Components/Page/TableElements";
 import "./index.css";
 
 import {
@@ -159,6 +165,10 @@ const reportPlateUI = createPlateUI({
     },
   }),
   a: LinkComponent,
+  table: JournalTableElement,
+  tr: JournalTableRowElement,
+  td: JournalTableCellElement,
+  th: JournalTableCellHeaderElement,
 });
 
 const reportPlugins = createPlugins(
@@ -250,6 +260,13 @@ function sanitizeSlateElement(node) {
   if (node.indent) cleanEl.indent = node.indent;
   if (node.align) cleanEl.align = node.align;
   if (node.listStyleType) cleanEl.listStyleType = node.listStyleType;
+  if (node.colSizes) cleanEl.colSizes = node.colSizes;
+  if (node.marginLeft !== undefined) cleanEl.marginLeft = node.marginLeft;
+  if (node.size !== undefined) cleanEl.size = node.size;
+  if (node.borders) cleanEl.borders = node.borders;
+  if (node.colSpan) cleanEl.colSpan = node.colSpan;
+  if (node.rowSpan) cleanEl.rowSpan = node.rowSpan;
+  if (node.background) cleanEl.background = node.background;
 
   return cleanEl;
 }

@@ -17,7 +17,7 @@ box-shadow:  -8px 8px 13px #ededed,
 .toolbar-grp{
     margin:0 10px;
 }
-select{
+.toolbar select{
     height: 30px;
     border: none;
     width: 6.9rem;

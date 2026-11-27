@@ -65,6 +65,12 @@ import {
   unwrapCodeBlock,
 } from "@udecode/plate";
 import ToolbarButtons, { openColorContextMenu } from "./ToolbarButtons";
+import {
+  JournalTableElement,
+  JournalTableRowElement,
+  JournalTableCellElement,
+  JournalTableCellHeaderElement,
+} from "./TableElements";
 import PageAnchor from "Components/PageAnchor";
 import { JournalTreeContext } from "Components/JournalContext/index.js";
 import statusService from "services/statusService";
@@ -281,6 +287,10 @@ const plateUI = createPlateUI({
     },
   }),
   a: LinkComponent,
+  table: JournalTableElement,
+  tr: JournalTableRowElement,
+  td: JournalTableCellElement,
+  th: JournalTableCellHeaderElement,
 });
 
 const createJournalImagePasteDropPlugin = createPluginFactory({

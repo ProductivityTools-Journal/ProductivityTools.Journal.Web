@@ -43,6 +43,7 @@ import {
   ELEMENT_BLOCKQUOTE,
   ELEMENT_UL,
   ELEMENT_OL,
+  ELEMENT_PARAGRAPH,
   MARK_BOLD,
   MARK_ITALIC,
   MARK_UNDERLINE,
@@ -55,6 +56,8 @@ import {
   setMarks,
   removeMark,
   select,
+  getEndPoint,
+  insertNodes,
   indent,
   outdent,
   insertTable,
@@ -138,6 +141,21 @@ export const toggleColorMark = (editor, color) => {
     setMarks(editor, { [colorType]: color });
   }
   focusEditor(editor);
+};
+
+const insertTableSafe = (editor, options) => {
+  if (!editor) return;
+  const paragraphType = getPluginType(editor, ELEMENT_PARAGRAPH) || "p";
+  if (!Array.isArray(editor.children) || editor.children.length < 2) {
+    insertNodes(editor, { type: paragraphType, children: [{ text: "" }] }, { at: [1] });
+  }
+  if (!editor.selection) {
+    const lastIdx = Math.max(1, editor.children.length - 1);
+    select(editor, getEndPoint(editor, [lastIdx]));
+  } else if (editor.selection.anchor?.path?.[0] === 0) {
+    select(editor, { path: [1, 0], offset: 0 });
+  }
+  insertTable(editor, options);
 };
 
 export const ToolbarButtons = ({ onEditorReady }) => {
@@ -468,7 +486,7 @@ export const ToolbarButtons = ({ onEditorReady }) => {
       <TableToolbarButton
         tooltip={tooltip("Table")}
         icon={<BorderAll />}
-        transform={insertTable}
+        transform={insertTableSafe}
       />
       <TableToolbarButton
         tooltip={tooltip("Remove Table")}

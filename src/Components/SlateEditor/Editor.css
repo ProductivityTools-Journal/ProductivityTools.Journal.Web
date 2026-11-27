@@ -1,4 +1,4 @@
-blockquote{
+.editor-wrapper blockquote {
     border-left: 2px solid #ddd;
     margin-left: 0;
     margin-right: 0;
@@ -6,41 +6,42 @@ blockquote{
     color: #aaa;
     font-style: italic;
 }
-table, th, td {
+.editor-wrapper table,
+.editor-wrapper th,
+.editor-wrapper td {
     border: 1px solid black;
 }
-table{
+.editor-wrapper table {
     border-collapse: collapse;
+    width: 100%;
 }
-button{
+.editor-wrapper td {
+    height: 50px;
+    padding: 0 5px;
+}
+.toolbar button {
     background-color: white;
-    border:none;
+    border: none;
     opacity: 0.5;
+    cursor: pointer;
 }
-.btnActive{
+.toolbar .btnActive {
     opacity: 1;
 }
-.editor-wrapper{
-    font-family:'Helvetica','Arial', sans-serif;
+.editor-wrapper {
+    font-family: 'Helvetica', 'Arial', sans-serif;
     border-radius: 10px;
-background: #ffffff;
-box-shadow:  -8px 8px 13px #ededed,
-             8px -8px 13px #ffffff;
+    background: #ffffff;
+    box-shadow: -8px 8px 13px #ededed,
+                8px -8px 13px #ffffff;
     min-height: 100px;
     height: fit-content;
 }
-table{
-    width:100%;
-}
-td{
-    height: 50px;
-    padding:0 5px;
-}
-.popup-wrapper{
+.popup-wrapper {
     display: inline;
     position: relative;
 }
-.popup{
+.popup {
     position: absolute;
     left: 0;
     background-color: white;
@@ -48,8 +49,4 @@ td{
     border: 1px solid lightgray;
     height: fit-content;
     z-index: 1;
-
-}
-button{
-    cursor: pointer;
 }
