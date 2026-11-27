@@ -19,13 +19,15 @@ import { FormatListBulleted } from "@styled-icons/material/FormatListBulleted";
 import { FormatListNumbered } from "@styled-icons/material/FormatListNumbered";
 import { FormatIndentDecrease } from "@styled-icons/material/FormatIndentDecrease";
 import { FormatIndentIncrease } from "@styled-icons/material/FormatIndentIncrease";
-import { BorderAll } from "@styled-icons/material/BorderAll";
-import { BorderClear } from "@styled-icons/material/BorderClear";
-import { BorderBottom } from "@styled-icons/material/BorderBottom";
-import { BorderTop } from "@styled-icons/material/BorderTop";
-import { BorderLeft } from "@styled-icons/material/BorderLeft";
-import { BorderRight } from "@styled-icons/material/BorderRight";
 import { Image as ImageIcon } from "@styled-icons/material/Image";
+import {
+  TbTablePlus,
+  TbTableOff,
+  TbRowInsertBottom,
+  TbRowRemove,
+  TbColumnInsertRight,
+  TbColumnRemove,
+} from "react-icons/tb";
 import {
   BlockToolbarButton,
   MarkToolbarButton,
@@ -483,35 +485,53 @@ export const ToolbarButtons = ({ onEditorReady }) => {
         }}
         icon={<FormatIndentIncrease />}
       />
+      <span
+        style={{
+          width: "1px",
+          height: "18px",
+          backgroundColor: "#d8dee4",
+          margin: "0 4px",
+          display: "inline-block",
+        }}
+      />
       <TableToolbarButton
-        tooltip={tooltip("Table")}
-        icon={<BorderAll />}
+        tooltip={tooltip("Insert Table")}
+        icon={<TbTablePlus />}
         transform={insertTableSafe}
       />
       <TableToolbarButton
         tooltip={tooltip("Remove Table")}
-        icon={<BorderClear />}
+        icon={<TbTableOff />}
         transform={deleteTable}
       />
       <TableToolbarButton
-        tooltip={tooltip("Table Row")}
-        icon={<BorderBottom />}
+        tooltip={tooltip("Add Row")}
+        icon={<TbRowInsertBottom />}
         transform={insertTableRow}
       />
       <TableToolbarButton
-        tooltip={tooltip("Remove Table Row")}
-        icon={<BorderTop />}
+        tooltip={tooltip("Remove Row")}
+        icon={<TbRowRemove />}
         transform={deleteRow}
       />
       <TableToolbarButton
-        tooltip={tooltip("Table Column")}
-        icon={<BorderLeft />}
+        tooltip={tooltip("Add Column")}
+        icon={<TbColumnInsertRight />}
         transform={insertTableColumn}
       />
       <TableToolbarButton
-        tooltip={tooltip("Remove Table Column")}
-        icon={<BorderRight />}
+        tooltip={tooltip("Remove Column")}
+        icon={<TbColumnRemove />}
         transform={deleteColumn}
+      />
+      <span
+        style={{
+          width: "1px",
+          height: "18px",
+          backgroundColor: "#d8dee4",
+          margin: "0 4px",
+          display: "inline-block",
+        }}
       />
       <div style={{ position: "relative", display: "inline-flex", alignItems: "center" }}>
         <ToolbarButton
