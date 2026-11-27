@@ -891,11 +891,14 @@ function Page({ page, updatePageInList, isHighlighted }) {
               !readonly() ? (
                 <HeadingToolbar
                   style={{
-                    marginBottom: "12px",
+                    margin: "0 0 12px 0",
+                    padding: "4px 8px",
+                    minHeight: "unset",
                     borderRadius: "6px",
                     background: "#f8f9fa",
                     border: "1px solid #e0e0e0",
                     flexWrap: "wrap",
+                    gap: "2px",
                   }}
                 >
                   <ToolbarButtons
